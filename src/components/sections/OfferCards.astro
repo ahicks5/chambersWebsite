@@ -47,14 +47,18 @@ const rendered = await Promise.all(
   <ul class="offers">
     {
       rendered.map(({ entry, Content }) => {
-        const { title, tagline, priceDisplay, sessions, includes, badge, cta } = entry.data;
+        const { title, tagline, priceDisplay, priceValue, sessions, includes, badge, cta } = entry.data;
         return (
           <li>
             <Card variant="offer" featured={Boolean(badge)} class="offer">
               {badge && <p class="offer__badge">{badge}</p>}
               <h3>{title}</h3>
               <p class="offer__tagline">{tagline}</p>
-              <p class="offer__price">{priceDisplay}</p>
+              {/* A number is the decision and is set large; "Scoped per
+                  engagement" is a label and is not. */}
+              <p class:list={['offer__price', priceValue === undefined && 'offer__price--label']}>
+                {priceDisplay}
+              </p>
               {sessions && <p class="offer__sessions">{sessions}</p>}
 
               {includes.length > 0 && (
@@ -103,9 +107,12 @@ const rendered = await Promise.all(
     list-style: none;
   }
 
+  /* As many columns as fit at a readable card width: three on desktop, two
+     on a tablet with the third card below, and two org cards fill the row
+     rather than leaving a third column empty. Audit §8.4: never five. */
   @media (min-width: 640px) {
     .offers {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
       gap: var(--s-4);
     }
   }
@@ -153,6 +160,11 @@ const rendered = await Promise.all(
     line-height: 1;
     letter-spacing: -0.01em;
     color: var(--c-accent);
+  }
+
+  .offer__price--label {
+    font-size: var(--fs-h3);
+    line-height: 1.2;
   }
 
   .offer__sessions {

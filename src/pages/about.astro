@@ -32,7 +32,7 @@ const { Content } = await render(page);
 
       <div>
         <h1>{h1}</h1>
-        {subhead && <p class="subhead">{subhead}</p>}
+        {subhead && <p class="subhead intro__subhead">{subhead}</p>}
         <Prose>
           <Content />
         </Prose>
@@ -99,11 +99,9 @@ const { Content } = await render(page);
     font-size: 0.95rem;
   }
 
-  .subhead {
-    max-width: var(--measure);
-    margin-block: var(--s-3);
-    color: var(--c-muted);
-    font-size: 1.25rem;
+
+  .intro__subhead {
+    margin-bottom: var(--s-3);
   }
 
   .journals {

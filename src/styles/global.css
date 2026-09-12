@@ -105,6 +105,16 @@
 }
 
 @layer components {
+  /* The line under a page's h1 — the positioning statement, not a caption.
+     Ink rather than muted, so it reads as the second sentence of the
+     headline; the hero uses the same setting. */
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    font-size: var(--fs-lede);
+    line-height: 1.5;
+  }
+
   /* Small uppercase label above a heading or beside a fact: section kickers,
      the offer badge, proof-strip groups. Bitter Black holds up at this size
      because the slab serifs keep the letterforms open. */
