@@ -1,0 +1,40 @@
+---
+/**
+ * A heading and its prose, read from src/content/bands. For the sections that
+ * are just copy — the About page's story, credentials and how-I-coach bands.
+ */
+import { getEntry, render, type CollectionEntry } from 'astro:content';
+import Section from '../layout/Section.astro';
+import Prose from '../ui/Prose.astro';
+
+interface Props {
+  band: CollectionEntry<'bands'>['id'];
+  alt?: boolean;
+  /** Heading level. The page owns the h1, so bands default to h2. */
+  as?: 'h2' | 'h3';
+}
+
+const { band: bandId, alt = false, as: Heading = 'h2' } = Astro.props;
+
+const band = await getEntry('bands', bandId);
+if (!band) throw new Error(`Missing src/content/bands/${bandId}.md`);
+const { Content } = await render(band);
+
+const headingId = `band-${bandId}`;
+---
+
+<Section {alt} aria-labelledby={headingId}>
+  <Heading id={headingId}>{band.data.title}</Heading>
+  <Prose>
+    <Content />
+  </Prose>
+  {band.data.note && <p class="band__note">{band.data.note}</p>}
+</Section>
+
+<style>
+  .band__note {
+    margin-top: var(--s-2);
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+</style>

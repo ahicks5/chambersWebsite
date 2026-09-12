@@ -1,0 +1,124 @@
+---
+/**
+ * About — implements the audit §5.5 blueprint.
+ *
+ * The audit's finding 5 in practice: the live page runs the long story first,
+ * the TL;DR second, the photo third, and the credentials last as a run-on
+ * sentence under four mismatched certificate screenshots. This inverts it —
+ * TL;DR and photo up top, badges next, the full story behind an opt-in subhead.
+ */
+import { getEntry } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import Section from '../components/layout/Section.astro';
+import Prose from '../components/ui/Prose.astro';
+import CopyBand from '../components/sections/CopyBand.astro';
+import ProofStrip from '../components/sections/ProofStrip.astro';
+import FinalCta from '../components/sections/FinalCta.astro';
+import { render } from 'astro:content';
+
+const page = await getEntry('pages', 'about');
+if (!page) throw new Error('Missing src/content/pages/about.md');
+const { title, description, h1, subhead } = page.data;
+const { Content } = await render(page);
+---
+
+<Base {title} {description} page="about">
+  <Section>
+    <div class="intro">
+      <div class="intro__photo" role="presentation">
+        <p class="intro__photo-note">Photo of John goes here.</p>
+      </div>
+
+      <div>
+        <h1>{h1}</h1>
+        {subhead && <p class="subhead">{subhead}</p>}
+        <Prose>
+          <Content />
+        </Prose>
+      </div>
+    </div>
+  </Section>
+
+  {/* Audit §2.2: the credentials are the most skimmable thing on the site. */}
+  <ProofStrip />
+
+  <CopyBand band="about-credentials" />
+  <CopyBand band="about-story" alt />
+  <CopyBand band="about-how-i-coach" />
+
+  {/*
+    Audit §3.3 calls the three journals a major authority signal that appears
+    nowhere useful. Titles are known from §2.6; the Amazon short links are not
+    in the repo yet — see docs/parity-checklist.md.
+  */}
+  <Section alt aria-labelledby="journals">
+    <h2 id="journals">Books and journals</h2>
+    <ul class="journals">
+      <li>Bhavana</li>
+      <li>Rest Regimen</li>
+      <li>Highlight of My Day</li>
+    </ul>
+    <p class="journals__note">
+      Needs John: clean Amazon short links and cover images for each.
+    </p>
+  </Section>
+
+  <FinalCta band="final-cta-home" cta="intro" page="about" alt={false} />
+</Base>
+
+<style>
+  .intro {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 900px) {
+    .intro {
+      grid-template-columns: 18rem 1fr;
+      gap: var(--s-8);
+      align-items: start;
+    }
+  }
+
+  .intro__photo {
+    aspect-ratio: 4 / 5;
+    max-width: 100%;
+    display: grid;
+    place-items: center;
+    padding: var(--s-3);
+    background: var(--c-surface);
+    border: 1px dashed var(--c-line);
+    border-radius: var(--radius);
+  }
+
+  .intro__photo-note {
+    margin: 0;
+    text-align: center;
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3);
+    color: var(--c-muted);
+    font-size: 1.25rem;
+  }
+
+  .journals {
+    margin: var(--s-3) 0 0;
+    padding-left: 1.1rem;
+    font-weight: 600;
+  }
+
+  .journals li {
+    margin-bottom: var(--s-1);
+  }
+
+  .journals__note {
+    margin-top: var(--s-3);
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+</style>

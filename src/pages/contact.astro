@@ -1,0 +1,213 @@
+---
+/**
+ * Contact — implements the audit §5.6 blueprint.
+ *
+ * Audit §2.7 found four problems here: the meta description was copy-pasted
+ * from Resources, there was no Calendly embed on the one page where booking is
+ * the whole point, no response-time expectation, and no location statement.
+ * All four are addressed; the description is schema-enforced unique.
+ */
+import { getEntry, render } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import Section from '../components/layout/Section.astro';
+import Prose from '../components/ui/Prose.astro';
+import Calendly from '../components/islands/Calendly.astro';
+import { site } from '../config/site';
+
+const page = await getEntry('pages', 'contact');
+if (!page) throw new Error('Missing src/content/pages/contact.md');
+const { title, description, h1, subhead } = page.data;
+
+const alternatives = await getEntry('bands', 'contact-alternatives');
+if (!alternatives) throw new Error('Missing src/content/bands/contact-alternatives.md');
+const { Content: Alternatives } = await render(alternatives);
+---
+
+<Base {title} {description} page="contact">
+  <Section>
+    <h1>{h1}</h1>
+    {subhead && <p class="subhead">{subhead}</p>}
+  </Section>
+
+  {/* Primary action, per §5.6. */}
+  <Section alt aria-labelledby="book">
+    <h2 id="book" class="visually-hidden">Book a call</h2>
+    <Calendly cta="intro" page="contact" />
+  </Section>
+
+  <Section aria-labelledby="email">
+    <div class="contact">
+      <div>
+        <h2 id="email">{alternatives.data.title}</h2>
+        <Prose>
+          <Alternatives />
+        </Prose>
+
+        <form
+          class="contact__form"
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          data-netlify-honeypot="bot-field"
+        >
+          <p class="contact__honeypot">
+            <label>
+              Leave this field empty
+              <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+            </label>
+          </p>
+
+          <div class="field">
+            <label for="contact-name">Your name</label>
+            <input id="contact-name" type="text" name="name" autocomplete="name" required />
+          </div>
+
+          <div class="field">
+            <label for="contact-email">Email address</label>
+            <input id="contact-email" type="email" name="email" autocomplete="email" required />
+          </div>
+
+          <div class="field">
+            <label for="contact-message">What is going on?</label>
+            <textarea id="contact-message" name="message" rows="5" required></textarea>
+          </div>
+
+          <button type="submit" class="button button--primary">Send it</button>
+
+          <p class="contact__privacy">
+            {alternatives.data.note} Your details stay between us — <a href="/privacy">privacy</a>.
+          </p>
+        </form>
+      </div>
+
+      {/* Audit §2.7: a buyer needs to know they can work with him from Denver. */}
+      <aside class="where">
+        <h3>Where I am</h3>
+        <p>
+          {site.locality}, {site.region}. I coach by video, so where you are does
+          not matter. In-person is possible if you are local — just ask.
+        </p>
+        <p>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </p>
+      </aside>
+    </div>
+  </Section>
+</Base>
+
+<style>
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    color: var(--c-muted);
+    font-size: 1.25rem;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .contact {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 900px) {
+    .contact {
+      grid-template-columns: 1.4fr 1fr;
+      gap: var(--s-8);
+      align-items: start;
+    }
+  }
+
+  .contact__form {
+    margin-top: var(--s-4);
+    max-width: 34rem;
+  }
+
+  .contact__honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .field {
+    display: grid;
+    gap: var(--s-1);
+    margin-bottom: var(--s-3);
+  }
+
+  .field label {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .field input,
+  .field textarea {
+    padding: 0.85rem 1rem;
+    font: inherit;
+    color: var(--c-text);
+    background: var(--c-bg);
+    /* Not --c-line: that token is decorative and misses the 3:1 non-text
+       contrast bar for a form control. See docs/brand/tokens.md. */
+    border: 2px solid var(--c-text);
+    border-radius: var(--radius);
+  }
+
+  .field textarea {
+    resize: vertical;
+  }
+
+  .button {
+    padding: 0.9rem 1.6rem;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .button--primary {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+    border: 2px solid var(--c-accent);
+  }
+
+  .contact__privacy {
+    margin-top: var(--s-3);
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .contact__privacy a {
+    color: inherit;
+  }
+
+  .where {
+    padding: var(--s-4);
+    background: var(--c-surface);
+    border-radius: var(--radius);
+  }
+
+  .where h3 {
+    margin-top: 0;
+  }
+
+  .where p {
+    max-width: var(--measure);
+  }
+
+  .where p:last-child {
+    margin-bottom: 0;
+  }
+</style>

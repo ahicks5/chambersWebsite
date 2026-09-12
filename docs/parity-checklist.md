@@ -14,7 +14,15 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       first name + role + industry the single highest-leverage social-proof
       change available. John emails nine clients. The rendering path already
       handles every case (ADR 0006), so this is a frontmatter edit per quote.
-- [ ] **Photos.** Two slots are reserved and sized (hero 4:5, Meet John 4:5) and
+- [ ] **John's full About story.** `src/content/bands/about-story.md` is
+      stitched together from the live page and is missing the middle. Audit §2.2
+      calls this the strongest differentiator on the site; it should read as he
+      wrote it, not as I reassembled it. The file carries a TODO.
+- [ ] **Journal links.** The three titles are on the About page (Bhavana, Rest
+      Regimen, Highlight of My Day) but the clean Amazon short links and cover
+      images are not in the repo.
+- [ ] **Photos.** Three slots now reserved and sized (hero 4:5, Meet John 4:5,
+      About 4:5) and
       render a dashed placeholder. Audit §10 wants the hero photo ~1500px wide,
       never lazy-loaded — it is the LCP element. Also needed: real alt text, not
       a filename (audit §7.6).
@@ -51,14 +59,18 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 
 ### Code, not yet done
 
-- [ ] Pages that exist only as links: `/coaching`, `/for-organizations`,
-      `/about`, `/blog`, `/testimonials`, `/resources`, `/contact`, `/privacy`.
-      The header, footer and homepage all link to them and they 404 today.
-      Milestones 2–4.
-- [ ] Blog posts pulled from Wix. Try `/blog-feed.xml` first; there are only
-      three posts, so hand-copying is fine. Slugs must be preserved —
+- [ ] Pages that exist only as links: `/blog`, `/resources`, `/privacy`. The
+      header, footer and homepage link to them and they 404 today. `/blog` is
+      its own milestone (ADR 0007); `/resources` and `/privacy` are Milestone 4.
+- [ ] **Blog: 65 posts, not three.** See ADR 0007 — the audit undercounted and
+      the blog is active (most recent post 4 Sep 2026). Migration is scripted,
+      not hand-copied: `scripts/migrate-wix-posts.mjs`. Slugs must be preserved —
       `/post/the-practice-that-saved-my-life` has LinkedIn backlinks, and
       `public/_redirects` already maps `/post/*` → `/blog/*`.
+- [ ] **John: category and accuracy review on migrated posts.** The script
+      guesses `category` from title keywords across five options and cannot
+      judge John's own content. Every migrated post needs a human read before
+      launch.
 - [ ] Images pulled at source resolution from `static.wixstatic.com` — strip the
       `/v1/fill/...` transform segment from the URL to get the original.
 - [ ] Journals (3), books (6) and talks (5) into `resources`. Fix
@@ -70,8 +82,9 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 - [ ] Sticky-header scroll state and the mobile bottom CTA strip (audit §9.1).
       The header is deliberately non-sticky below 640px until these exist.
 - [ ] A form border token. `--c-line` is decorative and fails the 3:1 non-text
-      contrast bar, so the lead-magnet input borrows `--c-text`. The Contact page
-      needs this resolved properly (`docs/brand/tokens.md`).
+      contrast bar, so the lead-magnet and contact inputs both borrow
+      `--c-text`. It works and it passes contrast, but a dedicated
+      `--c-line-strong` would say what it means (`docs/brand/tokens.md`).
 - [ ] Lead-magnet success page. The form has no `action`, so Netlify shows its
       generic success page.
 - [ ] Playwright suites in `tests/` — `smoke.spec.ts` (every route 200s, one H1,
@@ -99,7 +112,7 @@ The rebuild makes most of these structurally impossible rather than fixed.
 | 10 | 400-character Amazon URL | Open — with the Resources page. |
 | 11 | Zero-width-space spacer text boxes | **Gone** — spacing is margins in `Section.astro`. |
 | 12 | Stock photos on Testimonials and Contact | Open — those pages don't exist yet. |
-| 13 | Blog stale since May 26 | Needs John — two posts a month (audit §7.4). |
+| 13 | Blog stale since May 26 | **Withdrawn — the finding was wrong.** The blog is active; most recent post 4 Sep 2026, eight days before the audit. See ADR 0007. |
 | 14 | Certificate images inconsistently sized | **Fixed by construction** — the proof strip is text from `site.credentials`; logos can replace it. |
 | 15 | No privacy policy | Open — linked from the footer and the lead magnet, page is Milestone 4. |
 

@@ -1,0 +1,102 @@
+---
+/**
+ * Calendly inline embed — audit §9.2, translated off the Velo snippet.
+ *
+ * Three things the audit asks for and the reasons behind them:
+ *   - Lazy-mounted on intersection. Calendly's widget is ~100KB of third-party
+ *     JS; loading it on a page the visitor may never scroll costs INP for
+ *     nothing (§10).
+ *   - Explicit height reserved up front, so mounting the iframe shifts nothing
+ *     and CLS stays at 0 (§10).
+ *   - UTMs passed through, so a booking is attributable to the page (§11).
+ *
+ * This is one of only four pieces of client JS on the site (§9). It is inline
+ * rather than a framework island because it is nine lines and needs no
+ * framework.
+ */
+import { CALENDLY_WIDGET_SCRIPT, ctaEmbedUrl, type CtaKey } from '../../config/cta';
+
+interface Props {
+  /** Which event to book — `intro` for individuals, `consult` for teams. */
+  cta: CtaKey;
+  /** Page identifier for UTM attribution. */
+  page: string;
+  /** Reserved height. Must match what the widget renders or CLS returns. */
+  height?: number;
+}
+
+const { cta, page, height = 700 } = Astro.props;
+const url = ctaEmbedUrl(cta, page);
+---
+
+<div
+  class="calendly"
+  data-calendly-url={url}
+  data-calendly-script={CALENDLY_WIDGET_SCRIPT}
+  style={`min-height:${height}px`}
+>
+  {/*
+    Shown until the widget mounts, and the permanent fallback if third-party JS
+    is blocked — in which case the visitor still has a working link rather than
+    an empty box.
+  */}
+  <noscript>
+    <p><a href={url}>Open the scheduling page</a></p>
+  </noscript>
+</div>
+
+<script>
+  // Mount when the container is within a screen of the viewport.
+  const containers = document.querySelectorAll<HTMLElement>('.calendly[data-calendly-url]');
+
+  const mount = (el: HTMLElement) => {
+    const url = el.dataset.calendlyUrl;
+    if (!url || el.dataset.mounted) return;
+    el.dataset.mounted = 'true';
+
+    const widget = document.createElement('div');
+    widget.className = 'calendly-inline-widget';
+    widget.dataset.url = url;
+    widget.style.minWidth = '320px';
+    widget.style.height = '100%';
+    el.append(widget);
+
+    // One shared script tag however many embeds a page has. The src arrives
+    // via a data attribute so this file never names the vendor host.
+    const src = el.dataset.calendlyScript;
+    if (src && !document.querySelector('script[data-calendly-widget]')) {
+      const script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.dataset.calendlyWidget = 'true';
+      document.head.append(script);
+    }
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    containers.forEach(mount);
+  } else {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            mount(entry.target as HTMLElement);
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { rootMargin: '100% 0px' }
+    );
+    containers.forEach((el) => observer.observe(el));
+  }
+</script>
+
+<style>
+  .calendly {
+    /* Height is set inline so the box is reserved before CSS or JS runs. */
+    width: 100%;
+    background: var(--c-surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+</style>
