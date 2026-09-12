@@ -55,10 +55,15 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       `/about`, `/blog`, `/testimonials`, `/resources`, `/contact`, `/privacy`.
       The header, footer and homepage all link to them and they 404 today.
       Milestones 2–4.
-- [ ] Blog posts pulled from Wix. Try `/blog-feed.xml` first; there are only
-      three posts, so hand-copying is fine. Slugs must be preserved —
+- [ ] **Blog: 65 posts, not three.** See ADR 0007 — the audit undercounted and
+      the blog is active (most recent post 4 Sep 2026). Migration is scripted,
+      not hand-copied: `scripts/migrate-wix-posts.mjs`. Slugs must be preserved —
       `/post/the-practice-that-saved-my-life` has LinkedIn backlinks, and
       `public/_redirects` already maps `/post/*` → `/blog/*`.
+- [ ] **John: category and accuracy review on migrated posts.** The script
+      guesses `category` from title keywords across five options and cannot
+      judge John's own content. Every migrated post needs a human read before
+      launch.
 - [ ] Images pulled at source resolution from `static.wixstatic.com` — strip the
       `/v1/fill/...` transform segment from the URL to get the original.
 - [ ] Journals (3), books (6) and talks (5) into `resources`. Fix
@@ -99,7 +104,7 @@ The rebuild makes most of these structurally impossible rather than fixed.
 | 10 | 400-character Amazon URL | Open — with the Resources page. |
 | 11 | Zero-width-space spacer text boxes | **Gone** — spacing is margins in `Section.astro`. |
 | 12 | Stock photos on Testimonials and Contact | Open — those pages don't exist yet. |
-| 13 | Blog stale since May 26 | Needs John — two posts a month (audit §7.4). |
+| 13 | Blog stale since May 26 | **Withdrawn — the finding was wrong.** The blog is active; most recent post 4 Sep 2026, eight days before the audit. See ADR 0007. |
 | 14 | Certificate images inconsistently sized | **Fixed by construction** — the proof strip is text from `site.credentials`; logos can replace it. |
 | 15 | No privacy policy | Open — linked from the footer and the lead magnet, page is Milestone 4. |
 
