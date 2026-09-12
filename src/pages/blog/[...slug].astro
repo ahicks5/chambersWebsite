@@ -1,0 +1,22 @@
+---
+/**
+ * A blog post. Routes exist for drafts too, so a migrated post can be read on a
+ * deploy preview before it is published — Post.astro marks and noindexes them.
+ *
+ * Slugs match the file names, which match the old Wix slugs exactly, so the
+ * /post/* → /blog/* redirect in public/_redirects lands on the right page.
+ * Audit §7.6: the old URLs have LinkedIn backlinks.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import Post from '../../layouts/Post.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+type Props = { post: CollectionEntry<'posts'> };
+const { post } = Astro.props;
+---
+
+<Post {post} />

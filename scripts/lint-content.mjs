@@ -52,11 +52,23 @@ for (const file of walk(DIST, ['.html'])) {
   const h1s = (html.match(/<h1[\s>]/g) ?? []).length;
   if (h1s !== 1) fail('h1', rel, `expected exactly one <h1>, found ${h1s}`);
 
-  // 2. description present, bounded, unique
+  // 2. description present, bounded, unique.
+  //    Measured decoded: "&amp;" is one character to a search engine and five
+  //    in the attribute, and the schema bound is on the real string.
+  const decodeEntities = (v) =>
+    v
+      .replace(/&amp;/g, '&')
+      .replace(/&#39;|&apos;/g, "'")
+      .replace(/&quot;/g, '"')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&nbsp;/g, ' ');
   const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1];
   if (!desc) fail('description', rel, 'missing <meta name="description">');
   else {
-    if (desc.length < 50 || desc.length > 160) fail('description', rel, `description is ${desc.length} chars; needs 50–160`);
+    const plainDesc = decodeEntities(desc);
+    if (plainDesc.length < 50 || plainDesc.length > 160)
+      fail('description', rel, `description is ${plainDesc.length} chars; needs 50–160`);
     const dup = descriptions.get(desc);
     if (dup) fail('description', rel, `description duplicates ${dup} — audit §2.8 bug 3`);
     descriptions.set(desc, rel);
@@ -128,13 +140,17 @@ for (const file of walk(join(ROOT, 'src'), ['.astro', '.ts', '.tsx', '.css', '.m
 }
 
 // ---------- copy: rule 5 (warn) ----------
-// Testimonials are clients' words, not ours; the cut list does not apply.
+// The cut list governs copy we write for the site. Two collections are exempt:
+// testimonials are clients' words, and blog posts are John's already-published
+// writing — audit §3.3 holds the blog voice up as the model the homepage should
+// imitate, so flagging it would be backwards.
+const VOICE_EXEMPT = [join('content', 'testimonials'), join('content', 'posts')];
 const voice = readFileSync(join(ROOT, 'docs', 'brand', 'voice.md'), 'utf8');
 const cutList = (voice.split(/^## Cut list/m)[1]?.split(/^## /m)[0] ?? '')
   .split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2).trim().toLowerCase());
 for (const file of walk(join(ROOT, 'src', 'content'), ['.md'])) {
   const rel = relative(ROOT, file);
-  if (rel.includes(`${join('content', 'testimonials')}`)) continue;
+  if (VOICE_EXEMPT.some((dir) => rel.includes(dir))) continue;
   const body = readFileSync(file, 'utf8').toLowerCase();
   for (const word of cutList) {
     if (word && body.includes(word)) warn('voice', rel, `uses "${word}" — see docs/brand/voice.md cut list`);

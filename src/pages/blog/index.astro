@@ -1,0 +1,162 @@
+---
+/**
+ * Blog index — audit §7.4.
+ *
+ * Lists published posts only. All 65 migrated posts are drafts until John has
+ * read them (ADR 0007), so this is deliberately empty right now and says so
+ * rather than rendering a bare page that looks broken.
+ */
+import { getCollection, getEntry } from 'astro:content';
+
+import Base from '../../layouts/Base.astro';
+import Section from '../../components/layout/Section.astro';
+import { CATEGORY_LABELS, sortByDate } from '../../lib/posts';
+
+const page = await getEntry('pages', 'blog');
+if (!page) throw new Error('Missing src/content/pages/blog.md');
+const { title, description, h1, subhead } = page.data;
+
+const posts = sortByDate(await getCollection('posts', ({ data }) => !data.draft));
+
+const fmt = (date: Date) =>
+  date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Base {title} {description} page="blog">
+  <Section>
+    <h1>{h1}</h1>
+    {subhead && <p class="subhead">{subhead}</p>}
+  </Section>
+
+  {/* Five categories, down from fifteen — audit §2.5. */}
+  <Section alt aria-labelledby="categories">
+    <h2 id="categories">Browse by topic</h2>
+    <ul class="categories">
+      {
+        Object.entries(CATEGORY_LABELS).map(([slug, label]) => (
+          <li>
+            <a href={`/blog/category/${slug}`}>{label}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </Section>
+
+  <Section aria-labelledby="posts">
+    <h2 id="posts" class="visually-hidden">Posts</h2>
+
+    {
+      posts.length === 0 ? (
+        <p class="empty">
+          Posts are being migrated from the old site and are waiting on a read
+          before they go live. Nothing is lost — every old link still works.
+        </p>
+      ) : (
+        <ul class="posts">
+          {posts.map((post) => (
+            <li>
+              <p class="posts__meta">
+                <a href={`/blog/category/${post.data.category}`}>
+                  {CATEGORY_LABELS[post.data.category]}
+                </a>
+                <span> · </span>
+                <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+              </p>
+              <h3>
+                <a href={`/blog/${post.id}`}>{post.data.title}</a>
+              </h3>
+              <p class="posts__desc">{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </Section>
+</Base>
+
+<style>
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    color: var(--c-muted);
+    font-size: 1.25rem;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin: var(--s-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .categories a {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: 999px;
+    color: var(--c-text);
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+
+  .categories a:hover {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+  }
+
+  .posts {
+    display: grid;
+    gap: var(--s-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .posts__meta {
+    margin: 0 0 var(--s-1);
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .posts__meta a {
+    color: var(--c-accent);
+    font-weight: 600;
+  }
+
+  .posts h3 {
+    margin: 0 0 var(--s-1);
+  }
+
+  .posts h3 a {
+    color: var(--c-text);
+    text-decoration: none;
+  }
+
+  .posts h3 a:hover {
+    color: var(--c-accent);
+  }
+
+  .posts__desc {
+    max-width: var(--measure);
+    margin: 0;
+    color: var(--c-muted);
+  }
+
+  .empty {
+    max-width: var(--measure);
+    color: var(--c-muted);
+  }
+</style>
