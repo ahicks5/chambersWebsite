@@ -31,6 +31,7 @@ const { Content } = await render(band);
       class="magnet__form"
       name="burnout-check"
       method="POST"
+      action="/thanks/"
       data-netlify="true"
       data-netlify-honeypot="bot-field"
     >
@@ -116,9 +117,7 @@ const { Content } = await render(band);
     font: inherit;
     color: var(--c-text);
     background: var(--c-bg);
-    /* Deliberately not --c-line: that token is decorative and does not meet the
-       3:1 non-text contrast bar for a form control. See docs/brand/tokens.md. */
-    border: 2px solid var(--c-text);
+    border: 2px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
 

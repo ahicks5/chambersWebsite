@@ -43,19 +43,22 @@ const { page, cta = 'intro' } = Astro.props;
   }
 
   /**
-   * Sticky only where the header is one short row. At phone widths the nav
-   * wraps and the header runs ~360px tall, which would eat 40% of the viewport
-   * if pinned.
-   *
-   * The compact mobile header and the bottom-anchored CTA strip that audit §9.1
-   * asks for both belong to Milestone 1, when the real header is built. Until
-   * then this scrolls away rather than shipping a broken pin.
+   * Pinned only where the header is one short row. At phone widths the nav
+   * wraps and the header runs ~173px tall, which would eat a quarter of the
+   * viewport if fixed. Phones get the bottom CTA strip instead — see
+   * StickyCta.astro, which is audit §9.1's answer to exactly this.
    */
   @media (min-width: 640px) {
     .header {
       position: sticky;
       top: 0;
       z-index: 10;
+      transition: box-shadow 0.2s ease;
+    }
+
+    /* Set by the observer in StickyCta once the hero has scrolled past. */
+    .header.is-scrolled {
+      box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
     }
   }
 

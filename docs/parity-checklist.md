@@ -45,12 +45,13 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 
 ### Needs Andrew
 
-- [ ] **Connect the repo to Netlify** (ADR 0005). `netlify.toml` is committed and
-      runs check, build and `lint:content`. Needs a dashboard login.
-- [ ] **Enable form detection in Netlify.** Site configuration → Forms → Enable.
-      It is **off by default on new sites**, and with it off the lead-magnet form
-      accepts a submission and silently discards it. Nothing in the repo can
-      detect this; test a real submission after enabling.
+- [x] **Netlify connected** — famous-sorbet-282f6f.netlify.app. Deploy previews
+      run per pull request, so John gets a review link on every change.
+- [x] **Form detection enabled and verified.** Netlify injects a hidden
+      `form-name` field into both `contact` and `burnout-check` at build time
+      and strips our `data-netlify` attribute — checked on the live deploy.
+- [ ] **Submit each form once for real** and confirm it arrives. The only part
+      of the chain that cannot be verified from here.
 - [ ] **Self-host Bitter.** Subset woff2 into `public/fonts/`, `font-display:
       swap`, preload the H1 weight. Bitter is on Google Fonts; the tokens fall
       back to Georgia until then. Audit §10 caps this at two families, four
@@ -94,17 +95,20 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       written to audit §11 and the helpers no-op until a `gtag` exists, so this
       is adding the tag plus one delegated `cta_click` listener in `Base.astro` —
       not hunting event names through components.
-- [ ] Run `lighthouse-budget.json` in CI. It asserts the audit §10 targets but
-      needs a deployed URL, so it waits on Netlify. For reference the build
-      currently ships **0 KB of JS and ~40 KB total** against a 1 MB budget.
-- [ ] Sticky-header scroll state and the mobile bottom CTA strip (audit §9.1).
-      The header is deliberately non-sticky below 640px until these exist.
-- [ ] A form border token. `--c-line` is decorative and fails the 3:1 non-text
-      contrast bar, so the lead-magnet and contact inputs both borrow
-      `--c-text`. It works and it passes contrast, but a dedicated
-      `--c-line-strong` would say what it means (`docs/brand/tokens.md`).
-- [ ] Lead-magnet success page. The form has no `action`, so Netlify shows its
-      generic success page.
+- [ ] Run `lighthouse-budget.json` against the deployed site. Now unblocked —
+      Netlify is live. Best done as a scheduled job or a manual pass rather
+      than per-PR, since it needs a finished deploy. The build ships **0 KB of
+      JS bundles** against a 100 KB budget.
+- [x] **Sticky-header scroll state and the mobile bottom CTA** (audit §9.1).
+      Header gains a shadow once the hero scrolls past; phones get a bottom
+      CTA strip instead of a pinned 173px header, which hides again at the
+      footer. One island, two observers, still zero JS bundles.
+- [x] **Form border token.** `--c-line-strong` (#8b8b8b) — the lightest neutral
+      grey clearing WCAG 1.4.11's 3:1 on both the page background (3.41:1) and
+      the surface band (3.02:1). Inputs no longer borrow the body-text colour.
+- [x] **Form success page.** All four form locations post with
+      `action="/thanks/"`, so people land on a branded page that says what
+      happens next rather than Netlify's generic one.
 - [x] **Playwright suites** — `smoke.spec.ts` (every route 200s, one h1, a
       description, a CTA, one Calendly event per page, all 65 post routes, drafts
       noindex and out of the sitemap) and `a11y.spec.ts` (axe wcag2a/aa + 21a/aa,
@@ -134,6 +138,11 @@ The rebuild makes most of these structurally impossible rather than fixed.
 
 ## Cutover (audit §7)
 
+- [ ] **Confirm the live site is indexable after DNS moves.** Pages are
+      `noindex` unless the build's deploy URL matches the canonical domain in
+      `src/config/site.ts`, which keeps the staging copy out of search results
+      and competing with coachingwithjc.com. It clears itself at cutover — but
+      verify, because the failure mode is a launched site nobody can find.
 - [ ] Deploy preview; John reviews every page
 - [ ] Lighthouse mobile ≥ 90 performance, 100 a11y/SEO on all routes
 - [ ] Forms tested end to end — submission arrives in John's inbox

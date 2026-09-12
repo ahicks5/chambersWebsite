@@ -1,0 +1,104 @@
+---
+/**
+ * Sticky-header scroll state and the mobile bottom CTA — audit §9.1, translated
+ * off the Velo snippet rather than copied.
+ *
+ * Two behaviours, one observer each, no framework:
+ *
+ *   1. Once the hero has scrolled past, the header gets a shadow so it reads as
+ *      floating rather than welded to the page. Desktop and tablet only, since
+ *      the header is not pinned on phones.
+ *
+ *   2. On phones the header scrolls away — it runs ~173px tall, and pinning
+ *      that would eat a quarter of the viewport. The audit's answer is a
+ *      compact bottom-anchored CTA instead, which appears once the hero is gone
+ *      so the primary action is always one tap away.
+ *
+ * The strip hides again when the footer comes into view: down there the page
+ * already offers the same action, and a floating bar would just cover it.
+ *
+ * A sentinel element is used rather than a scroll listener because
+ * IntersectionObserver does the work off the main thread — audit §10 cares
+ * about INP.
+ */
+import Button from '../ui/Button.astro';
+import type { CtaKey } from '../../config/cta';
+
+interface Props {
+  /** Which CTA to offer. Organizations pages pass `consult` — audit §4.3. */
+  cta: Extract<CtaKey, 'intro' | 'consult'>;
+  page: string;
+}
+
+const { cta, page } = Astro.props;
+---
+
+{/* Zero-height marker just below the header; when it leaves, the hero has. */}
+<div data-sticky-sentinel aria-hidden="true"></div>
+
+<div class="sticky-cta" data-sticky-cta hidden>
+  <Button {cta} {page} position="sticky" />
+</div>
+
+<script>
+  const sentinel = document.querySelector('[data-sticky-sentinel]');
+  const strip = document.querySelector<HTMLElement>('[data-sticky-cta]');
+  const header = document.querySelector<HTMLElement>('.header');
+  const footer = document.querySelector('.footer');
+
+  if (sentinel && 'IntersectionObserver' in window) {
+    let pastHero = false;
+    let atFooter = false;
+
+    // `hidden` rather than a class, so it is hidden from assistive tech too
+    // rather than merely moved off screen.
+    const sync = () => {
+      header?.classList.toggle('is-scrolled', pastHero);
+      if (strip) strip.hidden = !pastHero || atFooter;
+    };
+
+    new IntersectionObserver(
+      ([entry]) => {
+        pastHero = !entry?.isIntersecting;
+        sync();
+      },
+      { threshold: 0 }
+    ).observe(sentinel);
+
+    if (footer) {
+      new IntersectionObserver(
+        ([entry]) => {
+          atFooter = !!entry?.isIntersecting;
+          sync();
+        },
+        { threshold: 0 }
+      ).observe(footer);
+    }
+  }
+</script>
+
+<style>
+  [data-sticky-sentinel] {
+    height: 0;
+  }
+
+  .sticky-cta {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 20;
+    padding: var(--s-2) var(--s-3);
+    /* Safe-area inset keeps it clear of the home indicator on modern phones. */
+    padding-bottom: calc(var(--s-2) + env(safe-area-inset-bottom, 0px));
+    background: var(--c-bg);
+    border-top: 1px solid var(--c-line);
+    box-shadow: var(--shadow);
+  }
+
+  /* Phones only: above this the header is pinned and already carries the CTA. */
+  @media (min-width: 640px) {
+    .sticky-cta {
+      display: none;
+    }
+  }
+</style>
