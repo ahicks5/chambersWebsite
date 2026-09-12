@@ -1,0 +1,159 @@
+---
+/**
+ * Burnout check landing page — audit appendix D, and the target of the `lead`
+ * CTA in src/config/cta.ts, which until now pointed at a 404.
+ *
+ * Audit §11 question 4: do not block launch on the PDF. The page collects the
+ * address today and the automation delivers the check when it exists, which is
+ * why the copy promises an email rather than an instant download.
+ */
+import { getEntry, render } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import Section from '../components/layout/Section.astro';
+import Prose from '../components/ui/Prose.astro';
+
+const page = await getEntry('pages', 'burnout-check');
+if (!page) throw new Error('Missing src/content/pages/burnout-check.md');
+const { title, description, h1, subhead } = page.data;
+const { Content } = await render(page);
+---
+
+<Base {title} {description} page="burnout-check">
+  <Section>
+    <h1>{h1}</h1>
+    {subhead && <p class="subhead">{subhead}</p>}
+  </Section>
+
+  <Section alt aria-labelledby="get-the-check">
+    <div class="check">
+      <Prose>
+        <Content />
+      </Prose>
+
+      <form
+        class="check__form"
+        name="burnout-check"
+        method="POST"
+        data-netlify="true"
+        data-netlify-honeypot="bot-field"
+      >
+        <h2 id="get-the-check">Send me the check</h2>
+
+        <p class="check__honeypot">
+          <label>
+            Leave this field empty
+            <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+          </label>
+        </p>
+
+        <div class="field">
+          <label for="check-email">Email address</label>
+          <input
+            id="check-email"
+            type="email"
+            name="email"
+            autocomplete="email"
+            required
+            placeholder="you@example.com"
+          />
+        </div>
+
+        <button type="submit" class="button button--primary">Send me the check</button>
+
+        <p class="check__privacy">
+          One email with the check, and the occasional note. Unsubscribe any time.
+          <a href="/privacy">Privacy</a>.
+        </p>
+      </form>
+    </div>
+  </Section>
+</Base>
+
+<style>
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    color: var(--c-muted);
+    font-size: 1.25rem;
+  }
+
+  .check {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 900px) {
+    .check {
+      grid-template-columns: 1fr 24rem;
+      gap: var(--s-8);
+      align-items: start;
+    }
+  }
+
+  .check__form {
+    padding: var(--s-4);
+    background: var(--c-bg);
+    border-radius: var(--radius);
+  }
+
+  .check__form h2 {
+    margin-top: 0;
+  }
+
+  .check__honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .field {
+    display: grid;
+    gap: var(--s-1);
+    margin-bottom: var(--s-3);
+  }
+
+  .field label {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .field input {
+    padding: 0.85rem 1rem;
+    font: inherit;
+    color: var(--c-text);
+    background: var(--c-bg);
+    /* Not --c-line: decorative, and short of the 3:1 non-text bar. */
+    border: 2px solid var(--c-text);
+    border-radius: var(--radius);
+  }
+
+  .button {
+    width: 100%;
+    padding: 0.9rem 1.6rem;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .button--primary {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+    border: 2px solid var(--c-accent);
+  }
+
+  .check__privacy {
+    margin: var(--s-3) 0 0;
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .check__privacy a {
+    color: inherit;
+  }
+</style>

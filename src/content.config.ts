@@ -173,4 +173,34 @@ const bands = defineCollection({
   }),
 });
 
-export const collections = { offers, testimonials, faqs, posts, pages, symptoms, steps, bands };
+/**
+ * Resources — audit §2.6. John's three journals, the books he recommends, and
+ * the talks. Body is the description.
+ *
+ * The journals are the reason this collection matters: audit §3.3 calls them a
+ * major authority signal that currently appears only on a page missing from the
+ * nav on six of seven pages.
+ */
+const resources = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/resources' }),
+  schema: z.object({
+    title: z.string(),
+    kind: z.enum(['journal', 'book', 'talk']),
+    /** Author or speaker. Omitted on John's own journals. */
+    author: z.string().optional(),
+    url: z.url().optional(),
+    order: z.number(),
+  }),
+});
+
+export const collections = {
+  offers,
+  testimonials,
+  faqs,
+  posts,
+  pages,
+  symptoms,
+  steps,
+  bands,
+  resources,
+};

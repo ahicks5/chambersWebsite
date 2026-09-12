@@ -1,0 +1,87 @@
+---
+/**
+ * A group of resources — audit §2.6. Titles link out where a link exists;
+ * talks carry the speaker and title as text, which the audit asks for because
+ * the live page shows descriptions with no titles at all.
+ */
+import { render, type CollectionEntry } from 'astro:content';
+import Section from '../layout/Section.astro';
+
+interface Props {
+  items: readonly CollectionEntry<'resources'>[];
+  heading: string;
+  id: string;
+  alt?: boolean;
+}
+
+const { items, heading, id, alt = false } = Astro.props;
+
+const rendered = await Promise.all(
+  items.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<Section {alt} aria-labelledby={id}>
+  <h2 {id}>{heading}</h2>
+
+  <ul class="resources">
+    {
+      rendered.map(({ entry, Content }) => (
+        <li>
+          <h3>
+            {entry.data.url ? (
+              <a href={entry.data.url} rel="noopener">
+                {entry.data.title}
+              </a>
+            ) : (
+              entry.data.title
+            )}
+          </h3>
+          {entry.data.author && <p class="resources__author">{entry.data.author}</p>}
+          <div class="resources__body">
+            <Content />
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .resources {
+    display: grid;
+    gap: var(--s-4);
+    margin: var(--s-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 700px) {
+    .resources {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--s-4) var(--s-6);
+    }
+  }
+
+  .resources h3 {
+    margin-bottom: var(--s-1);
+  }
+
+  .resources h3 a {
+    color: var(--c-accent);
+  }
+
+  .resources__author {
+    margin: 0 0 var(--s-1);
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .resources__body {
+    max-width: var(--measure);
+  }
+
+  .resources__body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>
