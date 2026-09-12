@@ -26,6 +26,9 @@
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
 
+  --font-weight-heading: var(--fw-heading);
+  --font-weight-body: var(--fw-body);
+
   --radius-card: var(--radius);
   --shadow-card: var(--shadow);
 
@@ -37,6 +40,7 @@
     background-color: var(--c-bg);
     color: var(--c-text);
     font-family: var(--font-body);
+    font-weight: var(--fw-body);
     font-size: var(--fs-body);
     line-height: var(--lh-body);
   }
@@ -45,6 +49,7 @@
   h2,
   h3 {
     font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
     text-wrap: balance;
   }
 

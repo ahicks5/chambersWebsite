@@ -45,9 +45,10 @@ testimonial consent).
 
 Two things are deliberately unfinished and tracked as decisions, not bugs:
 
-1. **Design tokens are placeholders.** `src/styles/tokens.css` holds neutral greys.
-   Extract the real palette from the live Wix site first — `docs/brand/tokens.md`
-   has the procedure.
+1. **Bitter is not self-hosted yet.** The palette and typeface are extracted from
+   the live site and live in `src/styles/tokens.css`, but the font falls back to
+   Georgia until subset woff2 files land in `public/fonts/` — `docs/brand/tokens.md`
+   has the detail.
 2. **John cannot edit this site.** He can edit Wix. See `docs/decisions/0002-cms.md`;
    this blocks cutover.
 
