@@ -37,7 +37,7 @@ const rendered = await Promise.all(
 <Section {alt} aria-labelledby="what-clients-say">
   <h2 id="what-clients-say">{heading}</h2>
 
-  <ul class="band">
+  <ul class="band stagger">
     {
       rendered.map(({ entry, Content }) => (
         <li>

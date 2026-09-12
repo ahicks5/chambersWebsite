@@ -138,6 +138,59 @@
   }
 }
 
+/* ---------- Motion — audit §9.4, translated ----------
+   Two movements, both calm: the hero rises on load, and everything below it
+   rises as it scrolls into view. One IntersectionObserver in Base.astro adds
+   `.is-in`; CSS does the rest. The hidden state is gated on `html[data-reveal]`,
+   set by a one-line inline script, so with JS off nothing is ever hidden. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-reveal] .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity var(--dur-slow) var(--ease),
+      transform var(--dur-slow) var(--ease);
+  }
+
+  html[data-reveal] .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Children of a `.stagger` list inside a revealed block arrive one after
+     another — cards, steps, quotes. */
+  html[data-reveal] .reveal .stagger > * {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--dur-slow) var(--ease),
+      transform var(--dur-slow) var(--ease);
+  }
+
+  html[data-reveal] .reveal.is-in .stagger > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(2) { transition-delay: 70ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(3) { transition-delay: 140ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(4) { transition-delay: 210ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(5) { transition-delay: 280ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(6) { transition-delay: 350ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(n + 7) { transition-delay: 420ms; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

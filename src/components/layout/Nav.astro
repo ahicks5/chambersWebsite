@@ -49,12 +49,16 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
   .nav a {
     color: var(--c-text);
     text-decoration: none;
+    padding-bottom: 0.15em;
+    /* A one-pixel rule in the text colour that grows from the left. */
+    background: linear-gradient(currentColor, currentColor) no-repeat left bottom / 0 1px;
+    transition: background-size var(--dur) var(--ease);
   }
 
   .nav a:hover,
+  .nav a:focus-visible,
   .nav a[aria-current='page'] {
-    text-decoration: underline;
-    text-underline-offset: 0.25em;
+    background-size: 100% 1px;
   }
 
   @media (max-width: 899px) {

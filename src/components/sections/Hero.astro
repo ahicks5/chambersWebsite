@@ -20,7 +20,7 @@ interface Props {
 const { h1, subhead } = Astro.props;
 ---
 
-<Section size="roomy" class="hero">
+<Section size="roomy" reveal={false} class="hero">
   <div class="hero__grid">
     <div class="hero__text">
       <h1>{h1}</h1>
@@ -112,9 +112,32 @@ const { h1, subhead } = Astro.props;
     display: grid;
     place-items: center;
     padding: var(--s-3);
-    background: var(--c-surface);
+    /* Opaque, or the frame behind shows through the tint on the green page. */
+    background: linear-gradient(var(--c-surface), var(--c-surface)), var(--c-bg);
     border: 1px dashed var(--c-line);
     border-radius: var(--radius);
+  }
+
+  /* The calm reveal: headline, line, button, then the photo, each rising a
+     little as it fades in. CSS only, so it costs nothing and starts before
+     any script runs. Reduced motion collapses it to an instant (global.css). */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__text > *,
+    .hero__figure {
+      animation: rise var(--dur-slow) var(--ease) both;
+    }
+
+    .hero__text > :nth-child(2) {
+      animation-delay: 0.12s;
+    }
+
+    .hero__text > :nth-child(3) {
+      animation-delay: 0.24s;
+    }
+
+    .hero__figure {
+      animation-delay: 0.18s;
+    }
   }
 
   .hero__photo-note {

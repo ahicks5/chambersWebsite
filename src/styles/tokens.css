@@ -1,35 +1,58 @@
 /**
- * Design tokens — audit §8.2.
+ * Design tokens — audit §8.2, ADR 0010.
  *
  * This is the ONLY file in the repo that may contain a colour value. A raw hex
  * anywhere else is a bug.
  *
- * Colours and fonts below are extracted from the live Wix site
- * (www.coachingwithjc.com, 2026-09-12) — they are John's palette, not invented.
- * The extraction method, the per-slot evidence and the two documented
- * deviations are recorded in docs/brand/tokens.md.
+ * Two layers:
  *
- * The audit's constraint is "no change to the colour vibe." Only one value is
- * adjusted from the live site, and only for lightness, to clear a contrast
- * failure: --c-muted. See docs/brand/tokens.md.
+ *   1. The palette — John's colours, extracted from the live Wix site
+ *      (www.coachingwithjc.com, 2026-09-12). The extraction method, the per-slot
+ *      evidence and the documented deviations are in docs/brand/tokens.md. No
+ *      hue in this file is invented; every value is a palette colour or white
+ *      at a stated opacity over one.
+ *
+ *   2. The roles — the `--c-*` names every component uses. They are set twice:
+ *      once for the light scheme (the audit's white page) and once for the
+ *      green scheme (ADR 0010: the deep green is the page). A `.scheme-*` class
+ *      on any element switches every descendant, which is how a white band can
+ *      sit inside a green page with no per-component colour work.
  */
 
 :root {
-  /* ---------- Colour ----------
+  /* ---------- Palette ----------
      Wix palette slot shown for each, so any value can be traced back. */
-  --c-bg: #ffffff;         /* color_11  — page background */
-  --c-surface: #f1f1f1;    /* color_44  — cards, alternate sections */
-  --c-text: #121212;       /* color_45  — body copy */
-  --c-muted: #6e6e6e;      /* color_40 #757575, darkened — see tokens.md */
-  --c-accent: #365347;     /* color_43  — the ONE CTA colour, deep green */
-  --c-accent-ink: #ffffff; /* color_36  — text on accent */
-  --c-line: #b8b8b8;       /* color_39  — borders, dividers. Decorative only. */
-  /* Interactive borders — form fields and anything whose edge carries meaning.
-     --c-line is 1.98:1 on white and misses the 3:1 WCAG 1.4.11 bar for non-text
-     contrast; this is the lightest neutral grey that clears it on both the page
-     background and the surface band (3.41:1 and 3.02:1). Same hue as the rest
-     of the greys, which is to say none. See docs/brand/tokens.md. */
-  --c-line-strong: #8b8b8b;
+  --palette-white: #ffffff; /* color_11 — page background; color_36 — text on accent */
+  --palette-grey: #f1f1f1; /* color_44 — cards, alternate sections */
+  --palette-ink: #121212; /* color_45 — body copy */
+  --palette-muted: #6e6e6e; /* color_40 #757575, darkened — see tokens.md */
+  --palette-green: #365347; /* color_43 — the ONE CTA colour, deep green */
+  --palette-line: #b8b8b8; /* color_39 — borders, dividers. Decorative only. */
+  /* Interactive borders — the lightest neutral grey clearing WCAG 1.4.11's 3:1
+     on both the page background and the grey band. See tokens.md. */
+  --palette-line-strong: #8b8b8b;
+
+  /* White at an opacity over the green. Not new colours: each resolves to a
+     tint of the green above. Ratios in tokens.md. */
+  --tint-8: rgb(255 255 255 / 0.08); /* the alternate band on green */
+  --tint-22: rgb(255 255 255 / 0.22); /* decorative lines on green */
+  --tint-55: rgb(255 255 255 / 0.55); /* interactive borders on green — 3.85:1 */
+  --tint-78: rgb(255 255 255 / 0.78); /* muted text on green — 5.91:1 base, 4.87:1 band */
+
+  /* ---------- Roles: light scheme (default) ---------- */
+  --c-bg: var(--palette-white);
+  --c-surface: var(--palette-grey);
+  --c-text: var(--palette-ink);
+  --c-muted: var(--palette-muted);
+  --c-accent: var(--palette-green);
+  --c-accent-ink: var(--palette-white);
+  --c-line: var(--palette-line);
+  --c-line-strong: var(--palette-line-strong);
+
+  /* Form fields stay white with dark text in both schemes — a field is a
+     field, and a green input on a green page is a guess. */
+  --c-field-bg: var(--palette-white);
+  --c-field-text: var(--palette-ink);
 
   /* ---------- Type scale (fluid, mobile-first) ----------
      Audit §8.2 gave the starting values; these are re-set against the real
@@ -73,4 +96,39 @@
   /* ---------- Shape ---------- */
   --radius: 14px;
   --shadow: 0 6px 24px rgb(0 0 0 / 0.06);
+  --shadow-lift: 0 12px 32px rgb(0 0 0 / 0.18);
+
+  /* ---------- Motion ----------
+     One easing, two durations. Anything slower than --dur-slow reads as the
+     site being slow, not as calm. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.35s;
+  --dur-slow: 0.7s;
+}
+
+/* ---------- Roles: green scheme (ADR 0010) ----------
+   The accent and its ink swap places: everything that was green on white is
+   white on green, and the one filled button is white with a green label. */
+.scheme-green {
+  --c-bg: var(--palette-green);
+  --c-surface: var(--tint-8);
+  --c-text: var(--palette-white);
+  --c-muted: var(--tint-78);
+  --c-accent: var(--palette-white);
+  --c-accent-ink: var(--palette-green);
+  --c-line: var(--tint-22);
+  --c-line-strong: var(--tint-55);
+}
+
+/* A light band inside the green page — the offer cards, where the pricing
+   decision is made, sit on the audit's white. */
+.scheme-light {
+  --c-bg: var(--palette-white);
+  --c-surface: var(--palette-grey);
+  --c-text: var(--palette-ink);
+  --c-muted: var(--palette-muted);
+  --c-accent: var(--palette-green);
+  --c-accent-ink: var(--palette-white);
+  --c-line: var(--palette-line);
+  --c-line-strong: var(--palette-line-strong);
 }

@@ -44,22 +44,52 @@ const isExternal = href.startsWith('http');
   class:list={['button', `button--${variant}`, size !== 'default' && `button--${size}`, className]}
   rel={isExternal ? 'noopener' : undefined}
 >
-  {label}
+  <span class="button__label">{label}</span>
+  {/* Decorative. The label carries the meaning; the arrow carries the hover. */}
+  <svg class="button__arrow" aria-hidden="true" viewBox="0 0 16 16" width="16" height="16">
+    <path d="M2 8h11M8.5 3.5 13 8l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
 </a>
 
 <style>
   .button {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
     border-radius: 999px;
-    padding: 0.9rem 1.6rem;
+    padding: 0.95rem 1.5rem 0.95rem 1.7rem;
     font-weight: var(--fw-heading);
     letter-spacing: 0.01em;
+    line-height: 1.2;
     text-align: center;
     text-decoration: none;
     transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease,
-      background 0.15s ease;
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease),
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+
+  .button__arrow {
+    flex: 0 0 auto;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .button:hover .button__arrow {
+    transform: translateX(3px);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  /* Press: back down, no lift. Feels like a button, not a sticker. */
+  .button:active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: none;
+    transition-duration: 0.08s;
   }
 
   /* Audit §4.3: one filled primary per screen, everything else outline. */
@@ -69,15 +99,14 @@ const isExternal = href.startsWith('http');
     border: 2px solid var(--c-accent);
   }
 
-  .button--primary:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow);
-  }
-
   .button--ghost {
     background: transparent;
     color: var(--c-accent);
     border: 2px solid var(--c-accent);
+  }
+
+  .button--ghost:hover {
+    background: var(--c-surface);
   }
 
   .button--inverse {
@@ -86,20 +115,21 @@ const isExternal = href.startsWith('http');
     border: 2px solid var(--c-accent-ink);
   }
 
-  .button--inverse:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow);
+  .button--compact {
+    gap: 0.45rem;
+    padding: 0.55rem 0.95rem 0.55rem 1.1rem;
+    font-size: 0.95rem;
   }
 
-  .button--compact {
-    padding: 0.55rem 1.1rem;
-    font-size: 0.95rem;
+  .button--compact .button__arrow {
+    width: 13px;
+    height: 13px;
   }
 
   /* Beside a wrapping brand on a phone, every pixel of width matters. */
   @media (max-width: 639px) {
     .button--compact {
-      padding: 0.5rem 0.9rem;
+      padding: 0.5rem 0.8rem 0.5rem 0.9rem;
       font-size: 0.875rem;
     }
   }
@@ -108,7 +138,7 @@ const isExternal = href.startsWith('http');
      beside the nav rather than in a content section, so it opts out. */
   @media (max-width: 639px) {
     .button:not(.button--compact) {
-      display: block;
+      display: flex;
       width: 100%;
     }
   }

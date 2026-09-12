@@ -40,6 +40,9 @@ const { page, cta = 'intro' } = Astro.props;
   .header {
     background: var(--c-bg);
     border-bottom: 1px solid var(--c-line);
+    transition:
+      box-shadow var(--dur) var(--ease),
+      background-color var(--dur) var(--ease);
   }
 
   /**
@@ -53,12 +56,15 @@ const { page, cta = 'intro' } = Astro.props;
       position: sticky;
       top: 0;
       z-index: 10;
-      transition: box-shadow 0.2s ease;
     }
 
-    /* Set by the observer in StickyCta once the hero has scrolled past. */
+    /* Set by the observer in StickyCta once the hero has scrolled past: the
+       bar goes a little translucent and blurs what passes under it. */
     .header.is-scrolled {
-      box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
+      background: color-mix(in srgb, var(--c-bg) 88%, transparent);
+      backdrop-filter: blur(12px) saturate(1.2);
+      -webkit-backdrop-filter: blur(12px) saturate(1.2);
+      box-shadow: var(--shadow-lift);
     }
   }
 

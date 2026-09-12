@@ -33,6 +33,22 @@ the check and update this table.
 | `--c-accent-ink` | text on accent | `#ffffff` | `color_36` | Button label colour (`--txt:var(--color_36)`). |
 | `--c-line` | borders, dividers | `#b8b8b8` | `color_39` | Neutral grey from the theme. See deviation 2. |
 
+## Schemes (ADR 0010)
+
+The palette above is unchanged, but since ADR 0010 the deep green is the page
+and white is the accent: `tokens.css` sets the `--c-*` roles once per scheme,
+`<body>` carries `.scheme-green`, and a `Section` with `tone="light"` carries
+`.scheme-light` for the offer cards. The green scheme's secondary colours are
+white at a fixed opacity over the green, not new values:
+
+| Role on green | Value | Ratio on green | Ratio on the 8% band |
+|---|---|---|---|
+| text | white | 8.45:1 | 6.76:1 |
+| muted | white at 78% | 5.91:1 | 4.87:1 |
+| surface (band, tiles) | white at 8% | — | — |
+| line (decorative) | white at 22% | — | — |
+| line-strong (fields) | white at 55% | 3.85:1 (non-text) | — |
+
 ## Contrast
 
 Computed with the WCAG 2.x relative-luminance formula. Text pairs are held to

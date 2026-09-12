@@ -42,7 +42,7 @@ const rendered = await Promise.all(
       <Section alt={index % 2 === 0} aria-labelledby={group.id}>
         <h2 id={group.id}>{group.heading}</h2>
 
-        <ul class="grid">
+        <ul class="grid stagger">
           {rendered
             .filter(({ entry }) => entry.data.segment === group.segment)
             .map(({ entry, Content }) => (

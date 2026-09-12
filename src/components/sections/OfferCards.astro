@@ -22,7 +22,6 @@ interface Props {
   heading?: string;
   /** The "which is right for me?" row — audit §4.4, individuals only. */
   decisionRow?: boolean;
-  alt?: boolean;
 }
 
 const {
@@ -30,7 +29,6 @@ const {
   page = 'home',
   heading = 'Coaching options',
   decisionRow = true,
-  alt = false,
 } = Astro.props;
 
 const offers = (await getCollection('offers', ({ data }) => data.segment === segment)).sort(
@@ -41,10 +39,11 @@ const rendered = await Promise.all(
 );
 ---
 
-<Section {alt} aria-labelledby="offer-cards">
+{/* The pricing decision sits on the light band — ADR 0010. */}
+<Section tone="light" aria-labelledby="offer-cards">
   <h2 id="offer-cards">{heading}</h2>
 
-  <ul class="offers">
+  <ul class="offers stagger">
     {
       rendered.map(({ entry, Content }) => {
         const { title, tagline, priceDisplay, priceValue, sessions, includes, badge, cta } = entry.data;
@@ -121,12 +120,22 @@ const rendered = await Promise.all(
     display: flex;
     flex-direction: column;
     height: 100%;
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .offers :global(.offer:hover) {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+    }
   }
 
   /* Child component roots do not carry this file's scope attribute, so the
      button inside a card is reached through the scoped list instead. */
   .offers :global(.offer .button) {
-    display: block;
+    display: flex;
     width: 100%;
   }
 

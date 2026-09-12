@@ -31,7 +31,7 @@ const rendered = await Promise.all(
   <h2 {id}>{heading}</h2>
 
   {/* An ordered list, so the sequence is in the markup and not only the design. */}
-  <ol class="steps">
+  <ol class="steps stagger">
     {
       rendered.map(({ entry, Content }) => (
         <li>

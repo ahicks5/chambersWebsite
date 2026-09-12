@@ -31,8 +31,13 @@ const { Content } = await render(page);
         <Content />
       </Prose>
 
+      {/*
+        A light card on the green band, like the offer cards: the one thing
+        to act on is the brightest thing on the page. (Also keeps the muted
+        note inside it clear of a double tint — ADR 0010.)
+      */}
       <form
-        class="check__form"
+        class="check__form scheme-light"
         name="burnout-check"
         method="POST"
         action="/thanks/"
@@ -88,7 +93,9 @@ const { Content } = await render(page);
   .check__form {
     padding: var(--s-4);
     background: var(--c-bg);
+    color: var(--c-text);
     border-radius: var(--radius);
+    box-shadow: var(--shadow-lift);
   }
 
   .check__form h2 {
@@ -122,8 +129,8 @@ const { Content } = await render(page);
     min-width: 0;
     padding: 0.85rem 1rem;
     font: inherit;
-    color: var(--c-text);
-    background: var(--c-bg);
+    color: var(--c-field-text);
+    background: var(--c-field-bg);
     border: 2px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
@@ -135,6 +142,20 @@ const { Content } = await render(page);
     font: inherit;
     font-weight: var(--fw-heading);
     cursor: pointer;
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .button:active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: none;
+    transition-duration: 0.08s;
   }
 
   .button--primary {

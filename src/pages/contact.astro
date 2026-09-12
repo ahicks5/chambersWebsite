@@ -156,8 +156,8 @@ const { Content: Alternatives } = await render(alternatives);
     min-width: 0;
     padding: 0.85rem 1rem;
     font: inherit;
-    color: var(--c-text);
-    background: var(--c-bg);
+    color: var(--c-field-text);
+    background: var(--c-field-bg);
     border: 2px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
@@ -172,6 +172,20 @@ const { Content: Alternatives } = await render(alternatives);
     font: inherit;
     font-weight: var(--fw-heading);
     cursor: pointer;
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .button:active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: none;
+    transition-duration: 0.08s;
   }
 
   .button--primary {

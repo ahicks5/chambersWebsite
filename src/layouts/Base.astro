@@ -72,6 +72,13 @@ const canonical = new URL(Astro.url.pathname, site.url);
       crossorigin
     />
 
+    {/*
+      Gates the scroll-reveal hidden state (global.css). Inline and first so
+      it runs before the first paint — nothing flashes visible then hides.
+      With JS off the attribute never lands and everything is simply visible.
+    */}
+    <script is:inline>document.documentElement.dataset.reveal = '';</script>
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />
@@ -88,7 +95,7 @@ const canonical = new URL(Astro.url.pathname, site.url);
     <slot name="head" />
   </head>
 
-  <body>
+  <body class="scheme-green">
     <a href="#main" class="skip-link">Skip to content</a>
     <Header page={page} cta={headerCta} />
     <StickyCta cta={headerCta} {page} />
@@ -98,6 +105,39 @@ const canonical = new URL(Astro.url.pathname, site.url);
     <Footer />
   </body>
 </html>
+
+<script>
+  // Scroll reveal — audit §9.4, translated off the Velo `onViewportEnter`.
+  // One observer, no framework; each block is revealed once and released.
+  const blocks = [...document.querySelectorAll<HTMLElement>('.reveal')];
+
+  const show = (el: Element) => el.classList.add('is-in');
+
+  if (blocks.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          show(entry.target);
+          io.unobserve(entry.target);
+        }
+        // Anything now above the viewport was jumped past — an anchor link,
+        // a fast fling, a restored scroll position — and never intersected.
+        // Reveal it too, or it stays hidden until the visitor scrolls back up.
+        for (const el of blocks) {
+          if (!el.classList.contains('is-in') && el.getBoundingClientRect().bottom < 0) {
+            show(el);
+            io.unobserve(el);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+    );
+    blocks.forEach((el) => io.observe(el));
+  } else {
+    blocks.forEach(show);
+  }
+</script>
 
 <style>
   .skip-link {

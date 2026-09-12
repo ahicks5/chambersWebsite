@@ -11,18 +11,31 @@
 interface Props {
   /** Alternate background — shorthand for `tone="surface"`. */
   alt?: boolean;
-  /** Background. `accent` inverts the text colour; use it once per page. */
-  tone?: 'bg' | 'surface' | 'accent';
+  /**
+   * Background. `accent` swaps text and background colours; use it once per
+   * page. `light` is the audit's white page as a band inside the green one
+   * (ADR 0010) — every colour role inside it is the light scheme's.
+   */
+  tone?: 'bg' | 'surface' | 'accent' | 'light';
   /** Vertical padding. `compact` for strips, `roomy` for the hero. */
   size?: 'compact' | 'default' | 'roomy';
+  /** Rise into view on scroll (global.css). The hero opts out; it has its own entrance. */
+  reveal?: boolean;
   id?: string;
   /** Set when the section is introduced by a heading, for the a11y tree. */
   'aria-labelledby'?: string;
   class?: string;
 }
 
-const { alt = false, tone = alt ? 'surface' : 'bg', size = 'default', id, class: className, ...rest } =
-  Astro.props;
+const {
+  alt = false,
+  tone = alt ? 'surface' : 'bg',
+  size = 'default',
+  reveal = true,
+  id,
+  class: className,
+  ...rest
+} = Astro.props;
 ---
 
 <section
@@ -30,12 +43,13 @@ const { alt = false, tone = alt ? 'surface' : 'bg', size = 'default', id, class:
   class:list={[
     'section',
     tone !== 'bg' && `section--${tone}`,
+    tone === 'light' && 'scheme-light',
     size !== 'default' && `section--${size}`,
     className,
   ]}
   {...rest}
 >
-  <div class="section__inner">
+  <div class:list={['section__inner', reveal && 'reveal']}>
     <slot />
   </div>
 </section>
@@ -69,6 +83,11 @@ const { alt = false, tone = alt ? 'surface' : 'bg', size = 'default', id, class:
 
   .section--surface {
     background: var(--c-surface);
+  }
+
+  .section--light {
+    background: var(--c-bg);
+    color: var(--c-text);
   }
 
   /* One accent band per page at most. Everything inside is set in the ink
