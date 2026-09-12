@@ -13,7 +13,10 @@
     "check": "astro check",
     "sync": "astro sync",
     "astro": "astro",
-    "lint:content": "node scripts/lint-content.mjs"
+    "lint:content": "node scripts/lint-content.mjs",
+    "test": "playwright test",
+    "test:smoke": "playwright test tests/smoke.spec.ts",
+    "test:a11y": "playwright test tests/a11y.spec.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",
@@ -23,6 +26,11 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.56.1",
     "typescript": "6.0.3"
+  },
+  "overrides": {
+    "playwright-core": "1.56.1"
   }
 }

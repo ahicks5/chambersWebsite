@@ -33,8 +33,15 @@ const { class: className } = Astro.props;
     margin-block: var(--s-4) var(--s-1);
   }
 
+  /**
+   * Underlined on purpose. Tailwind's preflight removes the browser default,
+   * which left prose links distinguishable by colour alone — an axe
+   * `link-in-text-block` failure, and WCAG 1.4.1. A link in running text needs
+   * a non-colour cue.
+   */
   .prose :global(a) {
     color: var(--c-accent);
+    text-decoration: underline;
     text-underline-offset: 0.15em;
   }
 

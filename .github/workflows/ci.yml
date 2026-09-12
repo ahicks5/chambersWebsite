@@ -34,3 +34,11 @@ jobs:
 
       # CLAUDE.md hard rules, mechanically — scripts/lint-content.mjs.
       - run: npm run lint:content
+
+      # Playwright needs its own browser; this environment pins the version in
+      # package.json so the download matches.
+      - run: npx playwright install --with-deps chromium
+
+      # Smoke (every route 200s, one h1, a CTA present) and axe on each route.
+      # Runs against the built output via astro preview, so it tests what ships.
+      - run: npm test
