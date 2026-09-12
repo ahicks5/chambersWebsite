@@ -15,12 +15,18 @@ import Card from '../ui/Card.astro';
 import Quote from '../ui/Quote.astro';
 import Section from '../layout/Section.astro';
 
-const featured = (
-  await getCollection(
-    'testimonials',
-    ({ data }) => data.segment === 'individual' && data.featured
-  )
-)
+interface Props {
+  segment?: 'individual' | 'organization';
+  heading?: string;
+  alt?: boolean;
+}
+
+const { segment = 'individual', heading = 'What clients say', alt = true } = Astro.props;
+
+const all = await getCollection('testimonials');
+
+const featured = all
+  .filter(({ data }) => data.segment === segment && data.featured)
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 3);
 
@@ -29,8 +35,8 @@ const rendered = await Promise.all(
 );
 ---
 
-<Section alt aria-labelledby="what-clients-say">
-  <h2 id="what-clients-say">What clients say</h2>
+<Section {alt} aria-labelledby="what-clients-say">
+  <h2 id="what-clients-say">{heading}</h2>
 
   <ul class="band">
     {
@@ -47,7 +53,7 @@ const rendered = await Promise.all(
   </ul>
 
   <p class="band__more">
-    <a href="/testimonials">Read all nine →</a>
+    <a href="/testimonials">Read all {all.length} →</a>
   </p>
 </Section>
 

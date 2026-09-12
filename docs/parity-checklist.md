@@ -33,7 +33,11 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 ### Needs Andrew
 
 - [ ] **Connect the repo to Netlify** (ADR 0005). `netlify.toml` is committed and
-      runs `npm run check && npm run build`. Needs a dashboard login.
+      runs check, build and `lint:content`. Needs a dashboard login.
+- [ ] **Enable form detection in Netlify.** Site configuration → Forms → Enable.
+      It is **off by default on new sites**, and with it off the lead-magnet form
+      accepts a submission and silently discards it. Nothing in the repo can
+      detect this; test a real submission after enabling.
 - [ ] **Self-host Bitter.** Subset woff2 into `public/fonts/`, `font-display:
       swap`, preload the H1 weight. Bitter is on Google Fonts; the tokens fall
       back to Georgia until then. Audit §10 caps this at two families, four
@@ -70,8 +74,10 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       needs this resolved properly (`docs/brand/tokens.md`).
 - [ ] Lead-magnet success page. The form has no `action`, so Netlify shows its
       generic success page.
-- [ ] `scripts/lint-content.mjs` and the Playwright suites in `tests/`
-      (`docs/02-project-structure.md` §8). CI runs `astro check` and `build` only.
+- [ ] Playwright suites in `tests/` — `smoke.spec.ts` (every route 200s, one H1,
+      CTA present) and `a11y.spec.ts` (axe, zero serious violations).
+      `docs/02-project-structure.md` §8. `scripts/lint-content.mjs` is done and
+      runs in CI and on Netlify.
 - [ ] `lighthouse-budget.json` asserting audit §10: LCP < 2500ms, CLS < 0.1,
       total JS < 100KB, page weight < 1MB mobile.
 
@@ -83,7 +89,7 @@ The rebuild makes most of these structurally impossible rather than fixed.
 |---|---|---|
 | 1 | Nav differs across pages | **Fixed by construction** — one `src/config/nav.ts`, read by header and footer. |
 | 2 | `© 2024 by JC Consulting & Consulting` | **Fixed by construction** — footer renders `© {year} {site.name}`. (Also already corrected on the live site.) |
-| 3 | Contact meta duplicates Resources | **Fixed by construction** — `description` is required, 50–160 chars, per page. Uniqueness still needs the lint script. |
+| 3 | Contact meta duplicates Resources | **Fixed by construction** — `description` is required, 50–160 chars, per page, and `lint:content` fails the build on a duplicate. |
 | 4 | No H1 on homepage | **Fixed** — the hook is the H1 and the first thing on the page. Verified: exactly one H1. |
 | 5 | Two H1s on Services | Open — Milestone 2 splits the page. |
 | 6 | H5/H6 as headings on Testimonials | Open — Milestone 2. |

@@ -1,29 +1,47 @@
 ---
 /**
- * Final CTA — audit §5.2 section 10, copy from §6.
+ * Closing CTA — audit §5.2 section 10.
  *
- * Same label as the hero and the header. Audit §4.3: repeating one CTA is fine,
- * offering different ones is not.
+ * Same CTA *label* as the hero and header on any given page; audit §4.3 says
+ * repeating one CTA is fine and offering different ones is not. The surrounding
+ * copy differs per page, which is why it comes from a band rather than being
+ * typed in here.
  */
+import { getEntry, render, type CollectionEntry } from 'astro:content';
 import Button from '../ui/Button.astro';
 import Section from '../layout/Section.astro';
+import type { CtaKey } from '../../config/cta';
+
+interface Props {
+  /** id of the entry in src/content/bands/, e.g. `final-cta-home`. */
+  band: CollectionEntry<'bands'>['id'];
+  cta?: CtaKey;
+  page: string;
+  alt?: boolean;
+}
+
+const { band: bandId, cta = 'intro', page, alt = true } = Astro.props;
+
+const band = await getEntry('bands', bandId);
+if (!band) throw new Error(`Missing src/content/bands/${bandId}.md`);
+const { Content } = await render(band);
 ---
 
-<Section alt aria-labelledby="final-cta">
+<Section {alt} aria-labelledby="final-cta">
   <div class="final">
-    <h2 id="final-cta">Ambition doesn't have to cost you yourself.</h2>
-    <p>Let's talk about what a different way forward looks like.</p>
-    <Button cta="intro" page="home" position="final" />
+    <h2 id="final-cta">{band.data.title}</h2>
+    <Content />
+    <Button {cta} {page} position="final" />
   </div>
 </Section>
 
 <style>
   .final h2,
-  .final p {
+  .final :global(p) {
     max-width: var(--measure);
   }
 
-  .final p {
+  .final :global(p) {
     margin-block: var(--s-2) var(--s-4);
     font-size: 1.15rem;
     color: var(--c-muted);

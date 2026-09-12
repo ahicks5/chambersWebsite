@@ -1,11 +1,17 @@
 ---
 /**
- * "Meet John" — audit §5.2 section 7, copy from §6.
+ * "Meet John" — audit §5.2 section 7.
  *
  * Faces build trust faster than words, and on the live site the photo comes
- * after twelve paragraphs of copy (audit §2.1).
+ * after twelve paragraphs of copy (audit §2.1). Copy comes from
+ * src/content/bands/meet-john.md.
  */
+import { getEntry, render } from 'astro:content';
 import Section from '../layout/Section.astro';
+
+const band = await getEntry('bands', 'meet-john');
+if (!band) throw new Error('Missing src/content/bands/meet-john.md');
+const { Content } = await render(band);
 ---
 
 <Section aria-labelledby="meet-john">
@@ -16,11 +22,8 @@ import Section from '../layout/Section.astro';
     </div>
 
     <div class="meet__text">
-      <h2 id="meet-john">Meet John</h2>
-      <p>
-        Burnout survivor turned resilience nerd. Twelve years in corporate HR, an
-        ICF credential, and a personal story that's the reason I do this.
-      </p>
+      <h2 id="meet-john">{band.data.title}</h2>
+      <Content />
       <p><a href="/about">Read more →</a></p>
     </div>
   </div>
@@ -58,7 +61,7 @@ import Section from '../layout/Section.astro';
     font-size: 0.95rem;
   }
 
-  .meet__text p {
+  .meet__text :global(p) {
     max-width: var(--measure);
   }
 

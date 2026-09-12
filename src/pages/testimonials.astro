@@ -1,0 +1,95 @@
+---
+/**
+ * Testimonials archive — audit §2.4.
+ *
+ * The audit keeps this page live but out of the nav, with the best quotes
+ * distributed to the pages where the decision is made. It also fixes §2.8
+ * bug 6: the live page uses H5 and H6 as its headings.
+ *
+ * All nine quotes, in both segments.
+ */
+import { getCollection, getEntry, render } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import Section from '../components/layout/Section.astro';
+import Card from '../components/ui/Card.astro';
+import Quote from '../components/ui/Quote.astro';
+import FinalCta from '../components/sections/FinalCta.astro';
+
+const page = await getEntry('pages', 'testimonials');
+if (!page) throw new Error('Missing src/content/pages/testimonials.md');
+const { title, description, h1, subhead } = page.data;
+
+const all = (await getCollection('testimonials')).sort((a, b) => a.data.order - b.data.order);
+
+const groups = [
+  { id: 'individual', heading: 'Individual coaching', segment: 'individual' as const },
+  { id: 'organizations', heading: 'Teams and organizations', segment: 'organization' as const },
+];
+
+const rendered = await Promise.all(
+  all.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<Base {title} {description} page="testimonials">
+  <Section>
+    <h1>{h1}</h1>
+    {subhead && <p class="subhead">{subhead}</p>}
+  </Section>
+
+  {
+    groups.map((group, index) => (
+      <Section alt={index % 2 === 0} aria-labelledby={group.id}>
+        <h2 id={group.id}>{group.heading}</h2>
+
+        <ul class="grid">
+          {rendered
+            .filter(({ entry }) => entry.data.segment === group.segment)
+            .map(({ entry, Content }) => (
+              <li>
+                <Card>
+                  <Quote testimonial={entry}>
+                    <Content />
+                  </Quote>
+                </Card>
+              </li>
+            ))}
+        </ul>
+      </Section>
+    ))
+  }
+
+  <FinalCta band="final-cta-home" cta="intro" page="testimonials" alt={false} />
+</Base>
+
+<style>
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    color: var(--c-muted);
+    font-size: 1.25rem;
+  }
+
+  .grid {
+    display: grid;
+    gap: var(--s-3);
+    margin: var(--s-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 700px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .grid li {
+    display: flex;
+  }
+
+  .grid :global(.card) {
+    width: 100%;
+  }
+</style>

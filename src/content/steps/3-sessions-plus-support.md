@@ -1,5 +1,6 @@
 ---
 title: Sessions plus support.
+scope: home
 order: 3
 ---
 

@@ -15,7 +15,25 @@ import Button from '../ui/Button.astro';
 import Card from '../ui/Card.astro';
 import Section from '../layout/Section.astro';
 
-const offers = (await getCollection('offers', ({ data }) => data.segment === 'individual')).sort(
+interface Props {
+  segment?: 'individual' | 'organization';
+  /** Page identifier for CTA attribution. */
+  page?: string;
+  heading?: string;
+  /** The "which is right for me?" row — audit §4.4, individuals only. */
+  decisionRow?: boolean;
+  alt?: boolean;
+}
+
+const {
+  segment = 'individual',
+  page = 'home',
+  heading = 'Coaching options',
+  decisionRow = true,
+  alt = false,
+} = Astro.props;
+
+const offers = (await getCollection('offers', ({ data }) => data.segment === segment)).sort(
   (a, b) => a.data.order - b.data.order
 );
 const rendered = await Promise.all(
@@ -23,8 +41,8 @@ const rendered = await Promise.all(
 );
 ---
 
-<Section aria-labelledby="coaching-options">
-  <h2 id="coaching-options">Coaching options</h2>
+<Section {alt} aria-labelledby="offer-cards">
+  <h2 id="offer-cards">{heading}</h2>
 
   <ul class="offers">
     {
@@ -51,7 +69,7 @@ const rendered = await Promise.all(
                 <Content />
               </div>
 
-              <Button {cta} page="home" position={`offer-${entry.id}`} />
+              <Button {cta} {page} position={`offer-${entry.id}`} />
             </Card>
           </li>
         );
@@ -60,7 +78,7 @@ const rendered = await Promise.all(
   </ul>
 
   {/* Audit §4.4 — "Which is right for me?" */}
-  <div class="decision">
+  <div class="decision" hidden={!decisionRow}>
     <h3>Not sure which one?</h3>
     <dl>
       {

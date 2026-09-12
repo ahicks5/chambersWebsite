@@ -11,20 +11,28 @@ import { site } from '../../config/site';
 import { primaryNav } from '../../config/nav';
 import Button from '../ui/Button.astro';
 import Nav from './Nav.astro';
+import type { CtaKey } from '../../config/cta';
 
 interface Props {
   /** Page identifier for CTA attribution, e.g. `home`. */
   page: string;
+  /**
+   * Which primary CTA the header shows. Audit §5.1 puts the intro call in the
+   * header site-wide, which is right for every page aimed at individuals. The
+   * organizations page passes `consult` instead, so that screen offers one
+   * action rather than two competing ones (audit §4.3).
+   */
+  cta?: Extract<CtaKey, 'intro' | 'consult'>;
 }
 
-const { page } = Astro.props;
+const { page, cta = 'intro' } = Astro.props;
 ---
 
 <header class="header">
   <div class="header__inner">
     <a href="/" class="header__brand">{site.name}</a>
     <Nav items={primaryNav} label="Primary" scrollable class="header__nav" />
-    <Button cta="intro" page={page} position="header" size="compact" class="header__cta" />
+    <Button {cta} page={page} position="header" size="compact" class="header__cta" />
   </div>
 </header>
 

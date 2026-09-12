@@ -1,0 +1,90 @@
+---
+/**
+ * Who this is for / who it is not — audit §3.1.
+ *
+ * The audit's reasoning: it raises intro-call quality, it signals confidence,
+ * and it lets a wrong-fit visitor leave quickly instead of booking and
+ * no-showing. Both lists come from the page's frontmatter.
+ */
+import Section from '../layout/Section.astro';
+
+interface Props {
+  forWho: readonly string[];
+  notForWho: readonly string[];
+  alt?: boolean;
+}
+
+const { forWho, notForWho, alt = true } = Astro.props;
+---
+
+{
+  (forWho.length > 0 || notForWho.length > 0) && (
+    <Section {alt} aria-labelledby="for-who">
+      <h2 id="for-who" class="visually-hidden">
+        Who this is for
+      </h2>
+
+      <div class="forwho">
+        {forWho.length > 0 && (
+          <div>
+            <h3>This is for you if</h3>
+            <ul>
+              {forWho.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {notForWho.length > 0 && (
+          <div>
+            <h3>This is not for you if</h3>
+            <ul class="forwho__not">
+              {notForWho.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </Section>
+  )
+}
+
+<style>
+  /* The section is introduced by its two h3s; the h2 is for the outline only. */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .forwho {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 700px) {
+    .forwho {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--s-8);
+    }
+  }
+
+  .forwho ul {
+    margin: var(--s-2) 0 0;
+    padding-left: 1.1rem;
+  }
+
+  .forwho li {
+    margin-bottom: var(--s-2);
+  }
+
+  .forwho__not {
+    color: var(--c-muted);
+  }
+</style>
