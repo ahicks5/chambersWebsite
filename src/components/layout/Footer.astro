@@ -22,9 +22,11 @@ const year = new Date().getFullYear();
 
     <p class="footer__credentials">{site.credentials.join(' · ')}</p>
 
+    {/* Single line on purpose: Astro 7 compresses whitespace by JSX rules, so a
+        newline between inline expressions is dropped rather than collapsed to a
+        space. See docs/decisions/0004-astro-7.md. */}
     <p class="footer__legal">
-      © {year} {site.name} · <a href={`mailto:${site.email}`}>{site.email}</a> ·
-      {site.locality}, {site.region}
+      © {year} {site.name} · <a href={`mailto:${site.email}`}>{site.email}</a> · {`${site.locality}, ${site.region}`}
     </p>
   </div>
 </footer>

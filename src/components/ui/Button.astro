@@ -17,10 +17,17 @@ interface Props {
   position: string;
   /** Override the CTA's default style. Use sparingly — see audit §4.3. */
   style?: 'primary' | 'ghost';
+  /**
+   * `compact` is for the sticky header, where the CTA sits beside the nav rather
+   * than in a content section. Size lives here because Astro's scoped styles do
+   * not cross component boundaries — a parent cannot restyle this button by
+   * passing a class.
+   */
+  size?: 'default' | 'compact';
   class?: string;
 }
 
-const { cta, page, position, style, class: className } = Astro.props;
+const { cta, page, position, style, size = 'default', class: className } = Astro.props;
 
 const { label } = CTA[cta];
 const href = ctaHref(cta, page, position);
@@ -30,7 +37,7 @@ const isExternal = href.startsWith('http');
 
 <a
   href={href}
-  class:list={['button', `button--${variant}`, className]}
+  class:list={['button', `button--${variant}`, size !== 'default' && `button--${size}`, className]}
   rel={isExternal ? 'noopener' : undefined}
 >
   {label}
@@ -69,9 +76,15 @@ const isExternal = href.startsWith('http');
     border: 2px solid var(--c-accent);
   }
 
-  /* Audit §8.4: full-width on mobile, auto on desktop. */
+  .button--compact {
+    padding: 0.55rem 1.1rem;
+    font-size: 0.95rem;
+  }
+
+  /* Audit §8.4: full-width on mobile, auto on desktop. The header CTA sits
+     beside the nav rather than in a content section, so it opts out. */
   @media (max-width: 639px) {
-    .button {
+    .button:not(.button--compact) {
       display: block;
       width: 100%;
     }

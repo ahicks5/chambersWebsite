@@ -24,17 +24,31 @@ const { page } = Astro.props;
   <div class="header__inner">
     <a href="/" class="header__brand">{site.name}</a>
     <Nav items={primaryNav} label="Primary" class="header__nav" />
-    <Button cta="intro" page={page} position="header" class="header__cta" />
+    <Button cta="intro" page={page} position="header" size="compact" />
   </div>
 </header>
 
 <style>
   .header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
     background: var(--c-bg);
     border-bottom: 1px solid var(--c-line);
+  }
+
+  /**
+   * Sticky only where the header is one short row. At phone widths the nav
+   * wraps and the header runs ~360px tall, which would eat 40% of the viewport
+   * if pinned.
+   *
+   * The compact mobile header and the bottom-anchored CTA strip that audit §9.1
+   * asks for both belong to Milestone 1, when the real header is built. Until
+   * then this scrolls away rather than shipping a broken pin.
+   */
+  @media (min-width: 640px) {
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
   }
 
   .header__inner {
@@ -56,14 +70,5 @@ const { page } = Astro.props;
 
   .header__nav {
     margin-right: auto;
-  }
-
-  /* The header CTA stays compact; Button's mobile full-width rule is for
-     in-page CTAs, not this one. */
-  .header__cta {
-    display: inline-block;
-    width: auto;
-    padding: 0.55rem 1.1rem;
-    font-size: 0.95rem;
   }
 </style>
