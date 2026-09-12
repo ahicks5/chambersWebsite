@@ -50,7 +50,7 @@ const rendered = await Promise.all(
         const { title, tagline, priceDisplay, sessions, includes, badge, cta } = entry.data;
         return (
           <li>
-            <Card variant="offer" class="offer">
+            <Card variant="offer" featured={Boolean(badge)} class="offer">
               {badge && <p class="offer__badge">{badge}</p>}
               <h3>{title}</h3>
               <p class="offer__tagline">{tagline}</p>
@@ -98,7 +98,7 @@ const rendered = await Promise.all(
   .offers {
     display: grid;
     gap: var(--s-3);
-    margin: var(--s-4) 0 0;
+    margin: var(--s-6) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -106,6 +106,7 @@ const rendered = await Promise.all(
   @media (min-width: 640px) {
     .offers {
       grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-4);
     }
   }
 
@@ -115,15 +116,26 @@ const rendered = await Promise.all(
     height: 100%;
   }
 
+  /* Child component roots do not carry this file's scope attribute, so the
+     button inside a card is reached through the scoped list instead. */
+  .offers :global(.offer .button) {
+    display: block;
+    width: 100%;
+  }
+
   .offer__badge {
     align-self: flex-start;
-    margin: 0 0 var(--s-2);
-    padding: 0.2rem 0.6rem;
+    margin: 0 0 var(--s-3);
+    padding: 0.3rem 0.75rem;
     background: var(--c-accent);
     color: var(--c-accent-ink);
     border-radius: 999px;
-    font-size: 0.75rem;
+    font-family: var(--font-heading);
     font-weight: var(--fw-heading);
+    font-size: 0.7rem;
+    letter-spacing: var(--ls-eyebrow);
+    text-transform: uppercase;
+    line-height: 1.3;
   }
 
   .offer__tagline {
@@ -131,33 +143,57 @@ const rendered = await Promise.all(
     color: var(--c-muted);
   }
 
+  /* The price is the decision, so it is set like a heading: Bitter Black in
+     the accent, the second-largest thing in the card after nothing. */
   .offer__price {
-    margin: var(--s-2) 0 0;
-    font-size: 1.5rem;
+    margin: var(--s-4) 0 0;
+    font-family: var(--font-heading);
     font-weight: var(--fw-heading);
+    font-size: var(--fs-h2);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--c-accent);
   }
 
   .offer__sessions {
     margin: var(--s-1) 0 0;
     color: var(--c-muted);
-    font-size: 0.95rem;
+    font-size: var(--fs-small);
   }
 
   .offer__includes {
-    margin: var(--s-3) 0 0;
-    padding-left: 1.1rem;
+    display: grid;
+    gap: var(--s-1);
+    margin: var(--s-4) 0 0;
+    padding: var(--s-3) 0 0;
+    border-top: 1px solid var(--c-line);
+    list-style: none;
   }
 
   .offer__includes li {
-    margin-bottom: var(--s-1);
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+  }
+
+  /* Accent dot, matching the proof-strip badges. */
+  .offer__includes li::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--c-accent);
+    transform: translateY(-0.15em);
   }
 
   /* Pushes the CTA to the bottom so buttons line up across cards. */
   .offer__body {
     margin-top: var(--s-3);
     margin-bottom: auto;
-    padding-bottom: var(--s-3);
+    padding-bottom: var(--s-4);
     color: var(--c-muted);
+    font-size: var(--fs-small);
   }
 
   .offer__body :global(p:last-child) {

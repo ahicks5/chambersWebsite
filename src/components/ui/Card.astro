@@ -1,18 +1,33 @@
 ---
 /**
- * Card shell for symptoms, offers, steps and testimonials — audit §8.3.
+ * Card shell — audit §8.3, with one treatment per job rather than one for all.
+ *
+ * The audit lists "symptoms, offers, steps, testimonials" under a single
+ * `.card`. Rendered that way the four read as the same thing, when only one
+ * of them carries a decision (the price). So:
+ *
+ *   - `quiet`: a filled tile, no border, no shadow. Recognition cards, where
+ *     the point is the words and the box is just grouping.
+ *   - `offer`: white, bordered, lifted. `featured` swaps the border for the
+ *     accent, which is how the recommended package is marked.
+ *   - `default`: the audit's card as written, for anything else.
+ *
+ * Testimonials no longer use a card at all — see Quote.astro.
  * Content comes from `src/content/`; this only provides the treatment.
  */
 interface Props {
-  /** Adds `.card--offer`, which styles a price and badge if present. */
-  variant?: 'default' | 'offer';
+  variant?: 'default' | 'quiet' | 'offer';
+  /** Offer cards only: the recommended one. */
+  featured?: boolean;
   class?: string;
 }
 
-const { variant = 'default', class: className } = Astro.props;
+const { variant = 'default', featured = false, class: className } = Astro.props;
 ---
 
-<div class:list={['card', variant !== 'default' && `card--${variant}`, className]}>
+<div
+  class:list={['card', variant !== 'default' && `card--${variant}`, featured && 'card--featured', className]}
+>
   <slot />
 </div>
 
@@ -23,5 +38,19 @@ const { variant = 'default', class: className } = Astro.props;
     border-radius: var(--radius);
     padding: var(--s-4);
     box-shadow: var(--shadow);
+  }
+
+  .card--quiet {
+    border: 0;
+    box-shadow: none;
+    padding: var(--s-3) var(--s-4);
+  }
+
+  .card--offer {
+    background: var(--c-bg);
+  }
+
+  .card--featured {
+    border: 2px solid var(--c-accent);
   }
 </style>

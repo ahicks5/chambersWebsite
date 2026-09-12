@@ -9,6 +9,10 @@
  * Attribution degrades to the most specific form the data supports — audit
  * appendix C, and docs/decisions/0006-testimonial-attribution.md for why role
  * and industry may be missing.
+ *
+ * Not boxed. A quote in a card with a border and a shadow looked like the
+ * offer cards, and a client's words are not a product. The opening mark in
+ * Bitter Black is the whole decoration.
  */
 import type { CollectionEntry } from 'astro:content';
 
@@ -31,27 +35,34 @@ const attribution = who ? `${who} (${engagement})` : engagement;
   <blockquote>
     <slot />
   </blockquote>
-  <figcaption class="quote__attrib">— {attribution}</figcaption>
+  <figcaption class="quote__attrib">{attribution}</figcaption>
 </figure>
 
 <style>
   .quote {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     margin: 0;
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--c-line);
   }
 
   .quote blockquote {
-    position: relative;
-    margin: 0;
-    font-size: 1.15rem;
-    line-height: 1.5;
+    margin: 0 0 var(--s-3);
+    font-size: 1.1rem;
+    line-height: 1.55;
   }
 
   .quote blockquote::before {
     content: '\201C';
-    position: absolute;
-    left: -0.55em;
-    font-size: 3rem;
-    line-height: 0.9;
+    display: block;
+    height: 0.55em;
+    margin-bottom: var(--s-2);
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: 3.5rem;
+    line-height: 1;
     color: var(--c-accent);
   }
 
@@ -64,8 +75,12 @@ const attribution = who ? `${who} (${engagement})` : engagement;
   }
 
   .quote__attrib {
-    margin-top: var(--s-2);
+    margin-top: auto;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     color: var(--c-muted);
-    font-size: 0.95rem;
   }
 </style>

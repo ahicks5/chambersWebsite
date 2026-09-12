@@ -22,7 +22,7 @@ const rendered = await Promise.all(
     {
       rendered.map(({ entry, Content }) => (
         <li>
-          <Card>
+          <Card variant="quiet">
             <h3>{entry.data.title}</h3>
             <Content />
           </Card>
@@ -62,6 +62,10 @@ const rendered = await Promise.all(
 
   .symptoms :global(.card) {
     width: 100%;
+  }
+
+  .symptoms h3 {
+    margin-bottom: var(--s-1);
   }
 
   .symptoms :global(p:last-child) {

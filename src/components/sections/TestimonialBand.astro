@@ -11,7 +11,6 @@
  * browser (audit §9.3); the behaviour is right, the API is not.
  */
 import { getCollection, render } from 'astro:content';
-import Card from '../ui/Card.astro';
 import Quote from '../ui/Quote.astro';
 import Section from '../layout/Section.astro';
 
@@ -42,11 +41,9 @@ const rendered = await Promise.all(
     {
       rendered.map(({ entry, Content }) => (
         <li>
-          <Card>
-            <Quote testimonial={entry}>
-              <Content />
-            </Quote>
-          </Card>
+          <Quote testimonial={entry}>
+            <Content />
+          </Quote>
         </li>
       ))
     }
@@ -60,8 +57,8 @@ const rendered = await Promise.all(
 <style>
   .band {
     display: grid;
-    gap: var(--s-3);
-    margin: var(--s-4) 0 0;
+    gap: var(--s-6);
+    margin: var(--s-6) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -69,16 +66,8 @@ const rendered = await Promise.all(
   @media (min-width: 900px) {
     .band {
       grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-8);
     }
-  }
-
-  /* As in SymptomGrid: let the card fill the stretched grid item. */
-  .band li {
-    display: flex;
-  }
-
-  .band :global(.card) {
-    width: 100%;
   }
 
   .band__more {
