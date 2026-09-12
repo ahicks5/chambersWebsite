@@ -14,7 +14,15 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       first name + role + industry the single highest-leverage social-proof
       change available. John emails nine clients. The rendering path already
       handles every case (ADR 0006), so this is a frontmatter edit per quote.
-- [ ] **Photos.** Two slots are reserved and sized (hero 4:5, Meet John 4:5) and
+- [ ] **John's full About story.** `src/content/bands/about-story.md` is
+      stitched together from the live page and is missing the middle. Audit §2.2
+      calls this the strongest differentiator on the site; it should read as he
+      wrote it, not as I reassembled it. The file carries a TODO.
+- [ ] **Journal links.** The three titles are on the About page (Bhavana, Rest
+      Regimen, Highlight of My Day) but the clean Amazon short links and cover
+      images are not in the repo.
+- [ ] **Photos.** Three slots now reserved and sized (hero 4:5, Meet John 4:5,
+      About 4:5) and
       render a dashed placeholder. Audit §10 wants the hero photo ~1500px wide,
       never lazy-loaded — it is the LCP element. Also needed: real alt text, not
       a filename (audit §7.6).
@@ -51,10 +59,9 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 
 ### Code, not yet done
 
-- [ ] Pages that exist only as links: `/coaching`, `/for-organizations`,
-      `/about`, `/blog`, `/testimonials`, `/resources`, `/contact`, `/privacy`.
-      The header, footer and homepage all link to them and they 404 today.
-      Milestones 2–4.
+- [ ] Pages that exist only as links: `/blog`, `/resources`, `/privacy`. The
+      header, footer and homepage link to them and they 404 today. `/blog` is
+      its own milestone (ADR 0007); `/resources` and `/privacy` are Milestone 4.
 - [ ] **Blog: 65 posts, not three.** See ADR 0007 — the audit undercounted and
       the blog is active (most recent post 4 Sep 2026). Migration is scripted,
       not hand-copied: `scripts/migrate-wix-posts.mjs`. Slugs must be preserved —
@@ -75,8 +82,9 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 - [ ] Sticky-header scroll state and the mobile bottom CTA strip (audit §9.1).
       The header is deliberately non-sticky below 640px until these exist.
 - [ ] A form border token. `--c-line` is decorative and fails the 3:1 non-text
-      contrast bar, so the lead-magnet input borrows `--c-text`. The Contact page
-      needs this resolved properly (`docs/brand/tokens.md`).
+      contrast bar, so the lead-magnet and contact inputs both borrow
+      `--c-text`. It works and it passes contrast, but a dedicated
+      `--c-line-strong` would say what it means (`docs/brand/tokens.md`).
 - [ ] Lead-magnet success page. The form has no `action`, so Netlify shows its
       generic success page.
 - [ ] Playwright suites in `tests/` — `smoke.spec.ts` (every route 200s, one H1,

@@ -13,6 +13,13 @@ import { site } from './site';
 
 const CALENDLY = 'https://calendly.com/johnchambers-coachingwithjc';
 
+/**
+ * Calendly's embed widget script (audit §9.2). Here rather than in the island
+ * so that this file is the only one in the repo naming the vendor's host —
+ * which is the whole point of the rule `lint:content` enforces.
+ */
+export const CALENDLY_WIDGET_SCRIPT = 'https://assets.calendly.com/assets/external/widget.js';
+
 export interface Cta {
   readonly label: string;
   readonly href: string;
@@ -58,4 +65,23 @@ export function ctaHref(key: CtaKey, page: string, position: string): string {
 
   // Internal targets stay relative; only external links need the origin.
   return href.startsWith('/') ? `${url.pathname}${url.search}` : url.toString();
+}
+
+/**
+ * URL for an inline scheduling embed (audit §9.2). Same event as the button,
+ * tagged `embed` rather than `cta` so John can tell a page embed apart from a
+ * click-through in Calendly's UTM report.
+ *
+ * Lives here for the same reason every other URL does: the host name appears in
+ * exactly one file.
+ */
+export function ctaEmbedUrl(key: CtaKey, page: string): string {
+  const url = new URL(CTA[key].href, site.url);
+
+  url.searchParams.set('hide_gdpr_banner', '1');
+  url.searchParams.set('utm_source', 'site');
+  url.searchParams.set('utm_medium', 'embed');
+  url.searchParams.set('utm_campaign', `${page}-embed`);
+
+  return url.toString();
 }
