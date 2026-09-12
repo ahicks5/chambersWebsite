@@ -18,9 +18,17 @@ export default defineConfig({
   },
 
   /**
-   * No `webServer` block on purpose. Astro 7's preview server daemonises and
-   * returns, so Playwright sees the command "exit early" and gives up. The
-   * server is started and stopped around the run instead — see the `test`
-   * script in package.json and the CI workflow.
+   * A foreground server Playwright owns, rather than `astro preview`. Astro 7's
+   * preview daemonises, which Playwright reads as the command exiting early —
+   * and on GitHub Actions the surviving process inherits the step's stdout and
+   * hangs the job after the tests pass. See scripts/serve-dist.mjs.
    */
+  webServer: {
+    command: 'node scripts/serve-dist.mjs',
+    url: 'http://127.0.0.1:4321',
+    reuseExistingServer: !process.env.CI,
+    timeout: 30_000,
+    stdout: 'ignore',
+    stderr: 'pipe',
+  },
 });
