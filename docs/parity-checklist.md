@@ -26,11 +26,11 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       and deliberately says nothing about analytics because none are wired. It is
       not legal advice and no lawyer has seen it. It also needs updating the day
       GA4 goes in.
-- [ ] **Photos.** Three slots now reserved and sized (hero 4:5, Meet John 4:5,
-      About 4:5) and
-      render a dashed placeholder. Audit §10 wants the hero photo ~1500px wide,
-      never lazy-loaded — it is the LCP element. Also needed: real alt text, not
-      a filename (audit §7.6).
+- [ ] **Photos.** Three slots are reserved and sized at 4:5 — hero, Meet John,
+      and About — each rendering a dashed placeholder, so dropping the real
+      images in shifts no layout. Audit §10 wants the hero photo ~1500px wide and
+      never lazy-loaded, since it is the LCP element. Real alt text too, not a
+      filename (audit §7.6).
 - [ ] **Pricing decision, Option A or B** (audit §4.4, §11 question 2). The
       3-month package currently costs *more* per session than a single session
       (~$167 vs $145), so there is no economic reason to commit. The homepage
@@ -59,13 +59,11 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       collects the address; something has to send the PDF.
 - [ ] **Who owns the domain and DNS?** (§11 question 7.) Find out before cutover
       day, not during it.
-- [ ] **GA4 + Search Console.** Audit §11 event names go in `src/lib/analytics.ts`,
-      which does not exist yet.
+- [ ] **GA4 + Search Console.** `src/lib/analytics.ts` already carries the audit
+      §11 event names; this is creating the properties and pasting the tag.
 
 ### Code, not yet done
 
-- [ ] `/blog` is the only route still 404ing. It is its own milestone — 65
-      posts, see ADR 0007.
 - [x] **Blog migrated.** All 65 posts, zero failures — `scripts/migrate-wix-posts.mjs`.
       Median 1,163 words, structure preserved (263 subheadings, lists, emphasis,
       links). Every old slug resolves: all 65 `/post/<slug>` map to `/blog/<slug>`
@@ -87,8 +85,6 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 - [ ] **Pillar and cluster links** (audit §7.4). The `pillar` reference field
       exists on the posts schema and is unset on all 65. Needs one pillar per
       category and internal links from its cluster.
-- [ ] Images pulled at source resolution from `static.wixstatic.com` — strip the
-      `/v1/fill/...` transform segment from the URL to get the original.
 - [ ] **John: confirm the five talk titles on `/resources`.** The live page
       shows descriptions with no titles (audit §2.6 asks for speaker + title as
       text). The speakers are from his copy; the titles are the well-known talks
@@ -109,12 +105,10 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       `--c-line-strong` would say what it means (`docs/brand/tokens.md`).
 - [ ] Lead-magnet success page. The form has no `action`, so Netlify shows its
       generic success page.
-- [ ] Playwright suites in `tests/` — `smoke.spec.ts` (every route 200s, one H1,
-      CTA present) and `a11y.spec.ts` (axe, zero serious violations).
-      `docs/02-project-structure.md` §8. `scripts/lint-content.mjs` is done and
-      runs in CI and on Netlify.
-- [ ] `lighthouse-budget.json` asserting audit §10: LCP < 2500ms, CLS < 0.1,
-      total JS < 100KB, page weight < 1MB mobile.
+- [x] **Playwright suites** — `smoke.spec.ts` (every route 200s, one h1, a
+      description, a CTA, one Calendly event per page, all 65 post routes, drafts
+      noindex and out of the sitemap) and `a11y.spec.ts` (axe wcag2a/aa + 21a/aa,
+      zero serious or critical). 32 tests, running in CI against the built site.
 
 ## Audit §2.8 bug table
 
