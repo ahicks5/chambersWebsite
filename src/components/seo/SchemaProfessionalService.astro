@@ -1,0 +1,34 @@
+---
+/**
+ * Homepage structured data — audit §7.5.
+ *
+ * Offers come from the content collection, so the prices in the schema are the
+ * prices on the page by construction.
+ */
+import { getCollection } from 'astro:content';
+import { site } from '../../config/site';
+import { professionalServiceSchema } from '../../lib/schema';
+
+interface Props {
+  /** Usually the page's own meta description. */
+  description: string;
+}
+
+const { description } = Astro.props;
+
+const offers = (await getCollection('offers', ({ data }) => data.segment === 'individual')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+const json = professionalServiceSchema({
+  site,
+  description,
+  offers: offers.map((offer) => ({
+    name: offer.data.title,
+    price: offer.data.priceValue,
+    url: new URL('/coaching', site.url).href,
+  })),
+});
+---
+
+<script type="application/ld+json" set:html={json} is:inline />

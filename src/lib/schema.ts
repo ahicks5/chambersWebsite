@@ -39,3 +39,75 @@ export function markdownToPlainText(md: string): string {
     .filter(Boolean)
     .join(' ');
 }
+
+export interface OfferSchemaItem {
+  name: string;
+  price?: number;
+  url: string;
+}
+
+/**
+ * ProfessionalService + Person for the homepage — audit §7.5.
+ *
+ * Everything here is read from src/config/site.ts and the offers collection, so
+ * the structured data cannot drift from the prices and credentials the page
+ * actually shows. That drift is exactly what §7.5 warns about.
+ */
+export function professionalServiceSchema(input: {
+  site: {
+    name: string;
+    url: string;
+    person: string;
+    locality: string;
+    region: string;
+    country: string;
+    social: Readonly<Record<string, string>>;
+  };
+  description: string;
+  offers: readonly OfferSchemaItem[];
+}): string {
+  const { site, description, offers } = input;
+
+  // TODO strings in site.social are placeholders, not URLs — omit them rather
+  // than emit invalid sameAs entries that a validator will flag.
+  const sameAs = Object.values(site.social).filter((value) => value.startsWith('http'));
+
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: site.name,
+    url: site.url,
+    description,
+    areaServed: ['United States'],
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.locality,
+      addressRegion: site.region,
+      addressCountry: site.country,
+    },
+    founder: {
+      '@type': 'Person',
+      name: site.person,
+      jobTitle: 'Professional Coach, ICF ACC',
+      url: `${site.url}/about`,
+      ...(sameAs.length > 0 ? { sameAs } : {}),
+      alumniOf: 'Cornell University',
+      hasCredential: {
+        '@type': 'EducationalOccupationalCredential',
+        name: 'Associate Certified Coach (ACC)',
+        recognizedBy: {
+          '@type': 'Organization',
+          name: 'International Coaching Federation',
+        },
+      },
+    },
+    makesOffer: offers.map((offer) => ({
+      '@type': 'Offer',
+      name: offer.name,
+      ...(offer.price !== undefined
+        ? { price: String(offer.price), priceCurrency: 'USD' }
+        : {}),
+      url: offer.url,
+    })),
+  });
+}

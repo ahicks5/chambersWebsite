@@ -22,6 +22,7 @@ import MeetJohn from '../components/sections/MeetJohn.astro';
 import OrgBand from '../components/sections/OrgBand.astro';
 import LeadMagnet from '../components/sections/LeadMagnet.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
+import SchemaProfessionalService from '../components/seo/SchemaProfessionalService.astro';
 
 const home = await getEntry('pages', 'home');
 if (!home) throw new Error('Missing src/content/pages/home.md');
@@ -32,6 +33,8 @@ const { title, description, h1, subhead } = home.data;
 ---
 
 <Base {title} {description} page="home">
+  <SchemaProfessionalService {description} slot="head" />
+
   <Hero {h1} subhead={subhead ?? ''} />
   <ProofStrip />
   <SymptomGrid />

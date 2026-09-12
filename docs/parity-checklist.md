@@ -18,9 +18,14 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       stitched together from the live page and is missing the middle. Audit §2.2
       calls this the strongest differentiator on the site; it should read as he
       wrote it, not as I reassembled it. The file carries a TODO.
-- [ ] **Journal links.** The three titles are on the About page (Bhavana, Rest
-      Regimen, Highlight of My Day) but the clean Amazon short links and cover
-      images are not in the repo.
+- [ ] **Journal cover images.** The three journals now carry their real Amazon
+      links on `/resources`; the cover images are still missing, and the About
+      page's books band lists titles only.
+- [ ] **Read the privacy page.** `src/content/pages/privacy.md` describes what
+      the site actually does today — two forms, the Calendly embed, server logs —
+      and deliberately says nothing about analytics because none are wired. It is
+      not legal advice and no lawyer has seen it. It also needs updating the day
+      GA4 goes in.
 - [ ] **Photos.** Three slots now reserved and sized (hero 4:5, Meet John 4:5,
       About 4:5) and
       render a dashed placeholder. Audit §10 wants the hero photo ~1500px wide,
@@ -59,9 +64,8 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 
 ### Code, not yet done
 
-- [ ] Pages that exist only as links: `/blog`, `/resources`, `/privacy`. The
-      header, footer and homepage link to them and they 404 today. `/blog` is
-      its own milestone (ADR 0007); `/resources` and `/privacy` are Milestone 4.
+- [ ] `/blog` is the only route still 404ing. It is its own milestone — 65
+      posts, see ADR 0007.
 - [ ] **Blog: 65 posts, not three.** See ADR 0007 — the audit undercounted and
       the blog is active (most recent post 4 Sep 2026). Migration is scripted,
       not hand-copied: `scripts/migrate-wix-posts.mjs`. Slugs must be preserved —
@@ -73,12 +77,18 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       launch.
 - [ ] Images pulled at source resolution from `static.wixstatic.com` — strip the
       `/v1/fill/...` transform segment from the URL to get the original.
-- [ ] Journals (3), books (6) and talks (5) into `resources`. Fix
-      "Marta Beck" → Martha Beck and "Autl Gawande" → Atul Gawande (audit §2.6).
-      Replace the 400-character Amazon search URL with a clean short link.
-- [ ] FAQ, 10 questions, plus `FAQPage` JSON-LD whose answer text matches the
-      rendered answer character for character (audit §4.5, §7.5).
-- [ ] `ProfessionalService` + `Person` JSON-LD on the homepage (audit §7.5).
+- [ ] **John: confirm the five talk titles on `/resources`.** The live page
+      shows descriptions with no titles (audit §2.6 asks for speaker + title as
+      text). The speakers are from his copy; the titles are the well-known talks
+      those descriptions match, and no embed URLs were recoverable. Worth thirty
+      seconds of his eyes.
+- [ ] Wire GA4 to `src/lib/analytics.ts`. The event names and parameters are
+      written to audit §11 and the helpers no-op until a `gtag` exists, so this
+      is adding the tag plus one delegated `cta_click` listener in `Base.astro` —
+      not hunting event names through components.
+- [ ] Run `lighthouse-budget.json` in CI. It asserts the audit §10 targets but
+      needs a deployed URL, so it waits on Netlify. For reference the build
+      currently ships **0 KB of JS and ~40 KB total** against a 1 MB budget.
 - [ ] Sticky-header scroll state and the mobile bottom CTA strip (audit §9.1).
       The header is deliberately non-sticky below 640px until these exist.
 - [ ] A form border token. `--c-line` is decorative and fails the 3:1 non-text
@@ -108,13 +118,13 @@ The rebuild makes most of these structurally impossible rather than fixed.
 | 6 | H5/H6 as headings on Testimonials | Open — Milestone 2. |
 | 7 | Five Calendly events across six CTA labels | **Fixed** — `src/config/cta.ts` has three CTAs; the homepage emits two event types and one repeated primary label. |
 | 8 | Social icons at top of page | **Fixed by construction** — footer only, and not rendered until the URLs in `site.ts` are confirmed. |
-| 9 | "Marta Beck", "Autl Gawande" | Open — with the Resources page. |
-| 10 | 400-character Amazon URL | Open — with the Resources page. |
+| 9 | "Marta Beck", "Autl Gawande" | **Fixed** — Martha Beck and Atul Gawande on `/resources`. |
+| 10 | 400-character Amazon URL | **Fixed** — the 483-char Book of Joy URL is trimmed to its product path. Longest outbound URL on the page is now a Calendly CTA. |
 | 11 | Zero-width-space spacer text boxes | **Gone** — spacing is margins in `Section.astro`. |
-| 12 | Stock photos on Testimonials and Contact | Open — those pages don't exist yet. |
+| 12 | Stock photos on Testimonials and Contact | **Gone** — neither page uses stock imagery. Contact has John's photo slot reserved. |
 | 13 | Blog stale since May 26 | **Withdrawn — the finding was wrong.** The blog is active; most recent post 4 Sep 2026, eight days before the audit. See ADR 0007. |
 | 14 | Certificate images inconsistently sized | **Fixed by construction** — the proof strip is text from `site.credentials`; logos can replace it. |
-| 15 | No privacy policy | Open — linked from the footer and the lead magnet, page is Milestone 4. |
+| 15 | No privacy policy | **Page exists** at `/privacy`, linked from the footer and both forms. Needs a human read — see Needs John above. |
 
 ## Cutover (audit §7)
 

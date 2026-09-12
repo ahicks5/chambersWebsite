@@ -1,0 +1,48 @@
+---
+/**
+ * Resources — audit §2.6.
+ *
+ * Kept live, linked from the footer and About rather than the main nav. On the
+ * live site this page is reachable only from the blog header, which is why the
+ * three journals — a major authority signal per §3.3 — are effectively hidden.
+ *
+ * Two corrections to the live copy, both audit §2.8: "Marta Beck" is Martha
+ * Beck (bug 9, with "Autl Gawande" → Atul Gawande), and The Book of Joy's
+ * 483-character Amazon URL is trimmed to its product path (bug 10).
+ */
+import { getCollection, getEntry } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import Section from '../components/layout/Section.astro';
+import ResourceList from '../components/sections/ResourceList.astro';
+import FinalCta from '../components/sections/FinalCta.astro';
+
+const page = await getEntry('pages', 'resources');
+if (!page) throw new Error('Missing src/content/pages/resources.md');
+const { title, description, h1, subhead } = page.data;
+
+const all = (await getCollection('resources')).sort((a, b) => a.data.order - b.data.order);
+const of = (kind: 'journal' | 'book' | 'talk') => all.filter((r) => r.data.kind === kind);
+---
+
+<Base {title} {description} page="resources">
+  <Section>
+    <h1>{h1}</h1>
+    {subhead && <p class="subhead">{subhead}</p>}
+  </Section>
+
+  <ResourceList items={of('journal')} heading="Journals I wrote" id="journals" alt />
+  <ResourceList items={of('book')} heading="Books I recommend" id="books" />
+  <ResourceList items={of('talk')} heading="Talks worth your time" id="talks" alt />
+
+  <FinalCta band="final-cta-home" cta="intro" page="resources" alt={false} />
+</Base>
+
+<style>
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    color: var(--c-muted);
+    font-size: 1.25rem;
+  }
+</style>
