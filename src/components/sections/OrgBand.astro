@@ -20,7 +20,7 @@ const { Content } = await render(band);
     <div class="org__text">
       <h2 id="for-organizations">{band.data.title}</h2>
       <Content />
-      <p><a href="/for-organizations">See how I work with teams →</a></p>
+      <p><a href="/for-organizations" class="more">See how I work with teams →</a></p>
     </div>
 
     <Button cta="consult" page="home" position="org-band" style="ghost" />
@@ -43,10 +43,5 @@ const { Content } = await render(band);
 
   .org__text :global(p) {
     max-width: var(--measure);
-  }
-
-  .org__text a {
-    color: var(--c-accent);
-    font-weight: 600;
   }
 </style>

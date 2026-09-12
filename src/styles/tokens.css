@@ -31,11 +31,19 @@
      of the greys, which is to say none. See docs/brand/tokens.md. */
   --c-line-strong: #8b8b8b;
 
-  /* ---------- Type scale (fluid, mobile-first) ---------- */
-  --fs-h1: clamp(2rem, 1.2rem + 3.2vw, 3.25rem);
-  --fs-h2: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
-  --fs-h3: clamp(1.15rem, 1rem + 0.6vw, 1.4rem);
+  /* ---------- Type scale (fluid, mobile-first) ----------
+     Audit §8.2 gave the starting values; these are re-set against the real
+     face. Bitter Black is a heavy slab, so the H1 gets more room at the top of
+     the range and a tighter line, and the H2 sits further below it so the two
+     levels do not read as one. See docs/decisions/0008-type-against-bitter.md. */
+  --fs-h1: clamp(2.25rem, 1.3rem + 3.6vw, 3.9rem);
+  --fs-h2: clamp(1.6rem, 1.15rem + 1.8vw, 2.4rem);
+  --fs-h3: clamp(1.15rem, 1.05rem + 0.5vw, 1.35rem);
   --fs-body: 1.125rem; /* 18px — matches the live site */
+  --fs-lede: 1.25rem; /* subheads under an h1 */
+  --fs-small: 0.95rem; /* captions, meta, attribution */
+  --fs-eyebrow: 0.8rem; /* uppercase labels — see .eyebrow in global.css */
+  --ls-eyebrow: 0.1em;
 
   /* Live site runs 1.4. The audit §8.2 specifies 1.6 for readability, and the
      audit is the spec. */

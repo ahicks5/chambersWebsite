@@ -53,7 +53,7 @@ const rendered = await Promise.all(
   </ul>
 
   <p class="band__more">
-    <a href="/testimonials">Read all {all.length} →</a>
+    <a href="/testimonials" class="more">Read all {all.length} →</a>
   </p>
 </Section>
 
@@ -83,10 +83,5 @@ const rendered = await Promise.all(
 
   .band__more {
     margin: var(--s-4) 0 0;
-  }
-
-  .band__more a {
-    color: var(--c-accent);
-    font-weight: 600;
   }
 </style>

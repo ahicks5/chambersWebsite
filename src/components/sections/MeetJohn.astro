@@ -24,7 +24,7 @@ const { Content } = await render(band);
     <div class="meet__text">
       <h2 id="meet-john">{band.data.title}</h2>
       <Content />
-      <p><a href="/about">Read more →</a></p>
+      <p><a href="/about" class="more">Read more →</a></p>
     </div>
   </div>
 </Section>
@@ -63,10 +63,5 @@ const { Content } = await render(band);
 
   .meet__text :global(p) {
     max-width: var(--measure);
-  }
-
-  .meet__text a {
-    color: var(--c-accent);
-    font-weight: 600;
   }
 </style>
