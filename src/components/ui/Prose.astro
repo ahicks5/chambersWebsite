@@ -1,0 +1,47 @@
+---
+/**
+ * Wraps rendered markdown body content. Holds the measure (audit §8.4: 60–75
+ * characters) so long-form copy never runs the full width of a desktop screen.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['prose', className]}>
+  <slot />
+</div>
+
+<style>
+  .prose {
+    max-width: var(--measure);
+  }
+
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-block: 0 var(--s-3);
+  }
+
+  .prose :global(h2) {
+    margin-block: var(--s-6) var(--s-2);
+  }
+
+  .prose :global(h3) {
+    margin-block: var(--s-4) var(--s-1);
+  }
+
+  .prose :global(a) {
+    color: var(--c-accent);
+    text-underline-offset: 0.15em;
+  }
+
+  .prose :global(blockquote) {
+    margin-block: var(--s-4);
+    padding-left: var(--s-3);
+    border-left: 3px solid var(--c-accent);
+    color: var(--c-muted);
+  }
+</style>

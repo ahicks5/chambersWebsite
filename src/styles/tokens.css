@@ -1,0 +1,61 @@
+/**
+ * Design tokens — audit §8.2.
+ *
+ * This is the ONLY file in the repo that may contain a colour value. A raw hex
+ * anywhere else is a bug.
+ *
+ * Colours and fonts below are extracted from the live Wix site
+ * (www.coachingwithjc.com, 2026-09-12) — they are John's palette, not invented.
+ * The extraction method, the per-slot evidence and the two documented
+ * deviations are recorded in docs/brand/tokens.md.
+ *
+ * The audit's constraint is "no change to the colour vibe." Only one value is
+ * adjusted from the live site, and only for lightness, to clear a contrast
+ * failure: --c-muted. See docs/brand/tokens.md.
+ */
+
+:root {
+  /* ---------- Colour ----------
+     Wix palette slot shown for each, so any value can be traced back. */
+  --c-bg: #ffffff;         /* color_11  — page background */
+  --c-surface: #f1f1f1;    /* color_44  — cards, alternate sections */
+  --c-text: #121212;       /* color_45  — body copy */
+  --c-muted: #6e6e6e;      /* color_40 #757575, darkened — see tokens.md */
+  --c-accent: #365347;     /* color_43  — the ONE CTA colour, deep green */
+  --c-accent-ink: #ffffff; /* color_36  — text on accent */
+  --c-line: #b8b8b8;       /* color_39  — borders, dividers. Decorative only. */
+
+  /* ---------- Type scale (fluid, mobile-first) ---------- */
+  --fs-h1: clamp(2rem, 1.2rem + 3.2vw, 3.25rem);
+  --fs-h2: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  --fs-h3: clamp(1.15rem, 1rem + 0.6vw, 1.4rem);
+  --fs-body: 1.125rem; /* 18px — matches the live site */
+
+  /* Live site runs 1.4. The audit §8.2 specifies 1.6 for readability, and the
+     audit is the spec. */
+  --lh-body: 1.6;
+  --measure: 68ch; /* max line length — audit §8.4 wants 60–75 characters */
+
+  /* ---------- Fonts ----------
+     The live site uses Bitter throughout (regular 400, black 900 for headings).
+     One family, two weights, comfortably inside the audit §10 budget.
+     TODO: self-host as subset woff2 in public/fonts/ with font-display: swap
+     and preload the weight used in the H1. Until then these fall back. */
+  --font-heading: 'Bitter', Georgia, 'Times New Roman', serif;
+  --font-body: 'Bitter', Georgia, 'Times New Roman', serif;
+  --fw-heading: 900;
+  --fw-body: 400;
+
+  /* ---------- Spacing (8pt) ---------- */
+  --s-1: 0.5rem;
+  --s-2: 1rem;
+  --s-3: 1.5rem;
+  --s-4: 2rem;
+  --s-6: 3rem;
+  --s-8: 4rem;
+  --s-12: 6rem;
+
+  /* ---------- Shape ---------- */
+  --radius: 14px;
+  --shadow: 0 6px 24px rgb(0 0 0 / 0.06);
+}

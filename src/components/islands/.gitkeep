@@ -1,0 +1,7 @@
+The only four pieces of client JS that earn their place (audit §9), translated
+off Velo per docs/02-project-structure.md §3 Rule 3:
+  - sticky-header scroll state (IntersectionObserver on a hero sentinel)
+  - Calendly inline embed, lazy-mounted, explicit height
+  - scroll reveal (one IntersectionObserver, CSS does the rest)
+  - mobile sticky CTA
+The FAQ accordion is native <details>/<summary> and needs no JS at all.

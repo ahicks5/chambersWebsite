@@ -1,0 +1,27 @@
+---
+/**
+ * Card shell for symptoms, offers, steps and testimonials — audit §8.3.
+ * Content comes from `src/content/`; this only provides the treatment.
+ */
+interface Props {
+  /** Adds `.card--offer`, which styles a price and badge if present. */
+  variant?: 'default' | 'offer';
+  class?: string;
+}
+
+const { variant = 'default', class: className } = Astro.props;
+---
+
+<div class:list={['card', variant !== 'default' && `card--${variant}`, className]}>
+  <slot />
+</div>
+
+<style>
+  .card {
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    padding: var(--s-4);
+    box-shadow: var(--shadow);
+  }
+</style>

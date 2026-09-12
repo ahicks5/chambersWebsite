@@ -1,0 +1,88 @@
+/**
+ * Global styles.
+ *
+ * Translated off the Wix-specific selectors in audit §8.3 — the tokens, type
+ * scale, spacing rhythm, focus states and reduced-motion handling are portable
+ * and carry over; the `.button__label` / `customClassList` selectors do not.
+ * See docs/decisions/0003-tailwind-v4.md for the Tailwind wiring.
+ */
+@import 'tailwindcss';
+@import './tokens.css';
+
+/**
+ * Token → utility mapping. `inline` so utilities resolve to the token variable
+ * rather than adding a second indirection. This block is the only alias layer:
+ * token names exist here and in tokens.css, nowhere else.
+ */
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-ink: var(--c-text);
+  --color-muted: var(--c-muted);
+  --color-accent: var(--c-accent);
+  --color-accent-ink: var(--c-accent-ink);
+  --color-line: var(--c-line);
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+
+  --font-weight-heading: var(--fw-heading);
+  --font-weight-body: var(--fw-body);
+
+  --radius-card: var(--radius);
+  --shadow-card: var(--shadow);
+
+  --container-measure: var(--measure);
+}
+
+@layer base {
+  body {
+    background-color: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--font-body);
+    font-weight: var(--fw-body);
+    font-size: var(--fs-body);
+    line-height: var(--lh-body);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: var(--fs-h1);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    font-size: var(--fs-h2);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: var(--fs-h3);
+    line-height: 1.3;
+  }
+
+  /* Audit §10: visible focus on every interactive element. */
+  :focus-visible {
+    outline: 3px solid var(--c-accent);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
