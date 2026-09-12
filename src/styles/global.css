@@ -8,6 +8,7 @@
  */
 @import 'tailwindcss';
 @import './tokens.css';
+@import './fonts.css';
 
 /**
  * Token → utility mapping. `inline` so utilities resolve to the token variable

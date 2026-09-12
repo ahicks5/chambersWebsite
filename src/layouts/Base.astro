@@ -59,6 +59,19 @@ const canonical = new URL(Astro.url.pathname, site.url);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+    {/*
+      The H1 weight only. It is the largest text on every page and paints
+      first, so it is the one file worth spending a preload on (audit §10).
+      The 400 file follows as soon as the stylesheet parses.
+    */}
+    <link
+      rel="preload"
+      href="/fonts/bitter-black-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.href} />

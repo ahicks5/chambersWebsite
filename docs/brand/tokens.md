@@ -98,7 +98,11 @@ Body copy runs 18px on the live site, which matches `--fs-body`. Line height run
 1.4 there; the tokens use 1.6 because audit §8.2 specifies it and the audit is the
 spec.
 
-**Still TODO:** Bitter is not self-hosted yet. The tokens fall back to Georgia
-until subset woff2 files land in `public/fonts/` with `font-display: swap` and a
-`<link rel="preload">` for the weight used in the H1 (audit §10). Bitter is on
-Google Fonts, so this is a download-and-subset job, not a licensing one.
+Bitter is self-hosted from `public/fonts/` as two Latin-subset woff2 files, one
+per weight, about 23 KB each — instanced from the variable `Bitter[wght].ttf`
+in google/fonts and subset to the same unicode-range Google Fonts serves as
+"latin". `src/styles/fonts.css` declares them with `font-display: swap`;
+`Base.astro` preloads the 900 file, which is the H1 weight (audit §10). Two
+static instances rather than the one variable file, because the H1 preload then
+costs a single 23 KB request instead of pulling the whole axis before first
+paint. The OFL licence ships beside the files.

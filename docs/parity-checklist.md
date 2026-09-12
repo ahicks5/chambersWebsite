@@ -52,10 +52,10 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       and strips our `data-netlify` attribute — checked on the live deploy.
 - [ ] **Submit each form once for real** and confirm it arrives. The only part
       of the chain that cannot be verified from here.
-- [ ] **Self-host Bitter.** Subset woff2 into `public/fonts/`, `font-display:
-      swap`, preload the H1 weight. Bitter is on Google Fonts; the tokens fall
-      back to Georgia until then. Audit §10 caps this at two families, four
-      weights — Bitter is one family, two weights.
+- [x] **Self-host Bitter.** Latin-subset woff2 for 400 and 900 in
+      `public/fonts/`, `font-display: swap`, the H1 weight preloaded. One
+      family, two weights, inside the audit §10 cap of two and four. Until this
+      landed every page rendered in Georgia — see `docs/brand/tokens.md`.
 - [ ] **ESP for the lead magnet** (ConvertKit or Buttondown). Netlify Forms
       collects the address; something has to send the PDF.
 - [ ] **Who owns the domain and DNS?** (§11 question 7.) Find out before cutover

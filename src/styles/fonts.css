@@ -1,0 +1,37 @@
+/**
+ * Bitter — John's typeface, confirmed off the live site (docs/brand/tokens.md).
+ *
+ * Self-hosted, one family, two weights, well inside the audit §10 budget of two
+ * families and four weights. Each file is the Latin subset of Google Fonts'
+ * variable Bitter, instanced to a single static weight — about 23 KB each.
+ * Regenerate from `Bitter[wght].ttf` in google/fonts with fontTools:
+ * `instancer` at wght 400 / 900, then `pyftsubset` to the Google "latin"
+ * unicode-range, flavor woff2, layout features kept.
+ *
+ * `font-display: swap` so text is never invisible while the file loads; the
+ * fallback stack in tokens.css is Georgia, which is close enough in x-height
+ * that the swap is a flicker, not a reflow. Base.astro preloads the 900 file,
+ * since the H1 is the largest text on every page and is the first thing to
+ * paint (audit §10).
+ *
+ * Licence: SIL OFL 1.1 — public/fonts/OFL.txt ships beside the files.
+ */
+@font-face {
+  font-family: 'Bitter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/bitter-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Bitter';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url('/fonts/bitter-black-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

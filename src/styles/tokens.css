@@ -45,8 +45,8 @@
   /* ---------- Fonts ----------
      The live site uses Bitter throughout (regular 400, black 900 for headings).
      One family, two weights, comfortably inside the audit §10 budget.
-     TODO: self-host as subset woff2 in public/fonts/ with font-display: swap
-     and preload the weight used in the H1. Until then these fall back. */
+     Self-hosted from public/fonts/ — see fonts.css. Georgia is the swap
+     fallback: a serif with a similar x-height, so the swap barely reflows. */
   --font-heading: 'Bitter', Georgia, 'Times New Roman', serif;
   --font-body: 'Bitter', Georgia, 'Times New Roman', serif;
   --fw-heading: 900;
