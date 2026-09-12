@@ -31,5 +31,8 @@
     "@axe-core/playwright": "4.13.0",
     "@playwright/test": "1.56.1",
     "typescript": "6.0.3"
+  },
+  "overrides": {
+    "playwright-core": "1.56.1"
   }
 }

@@ -56,14 +56,19 @@ test('every old Wix post URL has a page at its new address', async ({ page }) =>
   const posts = postRoutes();
   expect(posts.length).toBe(65);
 
-  const response = await page.goto(posts[0]);
+  const [first] = posts;
+  if (!first) throw new Error('no post routes were built');
+
+  const response = await page.goto(first);
   expect(response?.status()).toBe(200);
 });
 
 test('migrated posts are drafts: noindex and out of the sitemap', async ({ page, request }) => {
   const posts = postRoutes();
+  const [first] = posts;
+  if (!first) throw new Error('no post routes were built');
 
-  await page.goto(posts[0]);
+  await page.goto(first);
   await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
 
   const sitemap = await (await request.get('/sitemap-0.xml')).text();
