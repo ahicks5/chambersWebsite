@@ -24,6 +24,12 @@
   --c-accent: #365347;     /* color_43  — the ONE CTA colour, deep green */
   --c-accent-ink: #ffffff; /* color_36  — text on accent */
   --c-line: #b8b8b8;       /* color_39  — borders, dividers. Decorative only. */
+  /* Interactive borders — form fields and anything whose edge carries meaning.
+     --c-line is 1.98:1 on white and misses the 3:1 WCAG 1.4.11 bar for non-text
+     contrast; this is the lightest neutral grey that clears it on both the page
+     background and the surface band (3.41:1 and 3.02:1). Same hue as the rest
+     of the greys, which is to say none. See docs/brand/tokens.md. */
+  --c-line-strong: #8b8b8b;
 
   /* ---------- Type scale (fluid, mobile-first) ---------- */
   --fs-h1: clamp(2rem, 1.2rem + 3.2vw, 3.25rem);

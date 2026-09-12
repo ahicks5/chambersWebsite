@@ -35,6 +35,7 @@ const { Content } = await render(page);
         class="check__form"
         name="burnout-check"
         method="POST"
+        action="/thanks/"
         data-netlify="true"
         data-netlify-honeypot="bot-field"
       >
@@ -127,8 +128,7 @@ const { Content } = await render(page);
     font: inherit;
     color: var(--c-text);
     background: var(--c-bg);
-    /* Not --c-line: decorative, and short of the 3:1 non-text bar. */
-    border: 2px solid var(--c-text);
+    border: 2px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
 

@@ -48,6 +48,7 @@ const { Content: Alternatives } = await render(alternatives);
           class="contact__form"
           name="contact"
           method="POST"
+          action="/thanks/"
           data-netlify="true"
           data-netlify-honeypot="bot-field"
         >
@@ -159,9 +160,7 @@ const { Content: Alternatives } = await render(alternatives);
     font: inherit;
     color: var(--c-text);
     background: var(--c-bg);
-    /* Not --c-line: that token is decorative and misses the 3:1 non-text
-       contrast bar for a form control. See docs/brand/tokens.md. */
-    border: 2px solid var(--c-text);
+    border: 2px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
 
