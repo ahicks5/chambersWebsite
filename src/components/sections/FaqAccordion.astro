@@ -1,0 +1,104 @@
+---
+/**
+ * FAQ — audit §4.5, §9.5.
+ *
+ * Native <details>/<summary>. Zero client JS; the live site's accordion is a Wix
+ * element, and audit §9.5 says this one needs no script at all.
+ *
+ * Answers come from src/content/faqs. The same entries feed SchemaFaq, so the
+ * JSON-LD and the visible text cannot diverge.
+ */
+import { render, type CollectionEntry } from 'astro:content';
+import Section from '../layout/Section.astro';
+
+interface Props {
+  faqs: readonly CollectionEntry<'faqs'>[];
+  heading?: string;
+  alt?: boolean;
+}
+
+const { faqs, heading = 'Questions people ask', alt = false } = Astro.props;
+
+const rendered = await Promise.all(
+  faqs.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<Section {alt} aria-labelledby="faq">
+  <h2 id="faq">{heading}</h2>
+
+  <div class="faq">
+    {
+      rendered.map(({ entry, Content }) => (
+        <details>
+          {/*
+            <summary> must be the FIRST CHILD of <details> or the browser
+            ignores it and renders its own "Details" label. The heading goes
+            inside the summary, not around it — the spec allows a single
+            heading element there, which keeps the questions in the document
+            outline as audit §7.3 wants.
+          */}
+          <summary>
+            <h3>{entry.data.question}</h3>
+          </summary>
+          <div class="faq__answer">
+            <Content />
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .faq {
+    margin-top: var(--s-4);
+    border-top: 1px solid var(--c-line);
+    max-width: var(--measure);
+  }
+
+  details {
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  summary h3 {
+    margin: 0;
+    font-size: var(--fs-h3);
+  }
+
+  summary {
+    padding-block: var(--s-3);
+    cursor: pointer;
+    /* Both lines are needed to drop the default disclosure triangle. */
+    list-style: none;
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-2);
+  }
+
+  /* Remove the default marker in WebKit, then draw our own so it can rotate. */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    content: '+';
+    margin-left: auto;
+    color: var(--c-accent);
+    font-weight: 700;
+    /* No transition: the element is replaced, not animated, on toggle. */
+  }
+
+  details[open] summary::after {
+    content: '–';
+  }
+
+  .faq__answer {
+    padding-bottom: var(--s-3);
+    color: var(--c-muted);
+  }
+
+  .faq__answer :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

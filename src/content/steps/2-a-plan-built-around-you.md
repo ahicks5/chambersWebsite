@@ -1,5 +1,6 @@
 ---
 title: A plan built around you.
+scope: both
 order: 2
 ---
 

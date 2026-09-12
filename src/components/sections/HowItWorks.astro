@@ -9,14 +9,26 @@
 import { getCollection, render } from 'astro:content';
 import Section from '../layout/Section.astro';
 
-const steps = (await getCollection('steps')).sort((a, b) => a.data.order - b.data.order);
+interface Props {
+  /** Which version to render — see the `scope` field in src/content.config.ts. */
+  scope?: 'home' | 'coaching' | 'org';
+  heading?: string;
+  id?: string;
+  alt?: boolean;
+}
+
+const { scope = 'home', heading = 'How it works', id = 'how-it-works', alt = true } = Astro.props;
+
+const steps = (
+  await getCollection('steps', ({ data }) => data.scope === scope || data.scope === 'both')
+).sort((a, b) => a.data.order - b.data.order);
 const rendered = await Promise.all(
   steps.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
 );
 ---
 
-<Section alt aria-labelledby="how-it-works">
-  <h2 id="how-it-works">How it works</h2>
+<Section {alt} aria-labelledby={id}>
+  <h2 {id}>{heading}</h2>
 
   {/* An ordered list, so the sequence is in the markup and not only the design. */}
   <ol class="steps">

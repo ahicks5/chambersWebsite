@@ -1,0 +1,85 @@
+---
+/**
+ * For Organizations — implements the audit §5.4 blueprint.
+ *
+ * The other half of the /current-services split. Audit §5.4 step 2: this is the
+ * page where the 12-years-of-HR background is the headline, not a footnote.
+ *
+ * Every CTA here is `consult`, never `intro` — audit §4.3 keeps the two
+ * audiences on separate Calendly events.
+ */
+import { getEntry } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import Section from '../components/layout/Section.astro';
+import OfferCards from '../components/sections/OfferCards.astro';
+import TestimonialBand from '../components/sections/TestimonialBand.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import FinalCta from '../components/sections/FinalCta.astro';
+
+const page = await getEntry('pages', 'for-organizations');
+if (!page) throw new Error('Missing src/content/pages/for-organizations.md');
+const { title, description, h1, subhead } = page.data;
+---
+
+<Base {title} {description} page="organizations" headerCta="consult">
+  <Section>
+    <h1>{h1}</h1>
+    {subhead && <p class="subhead">{subhead}</p>}
+  </Section>
+
+  <OfferCards
+    segment="organization"
+    page="organizations"
+    heading="How I work with teams"
+    decisionRow={false}
+    alt
+  />
+
+  <TestimonialBand segment="organization" heading="What teams say" alt={false} />
+
+  <HowItWorks scope="org" heading="How to bring me in" id="bring-me-in" alt />
+
+  {/*
+    Audit §5.4 step 4 wants a format-facts table (group sizes, durations,
+    pricing model) and step 6 a capabilities PDF. Both need facts and a file
+    from John — see docs/parity-checklist.md. Reserved rather than invented.
+  */}
+  <Section>
+    <div class="pending" role="note">
+      <h2>Formats, group sizes and pricing</h2>
+      <p>
+        Needs John: group size ranges, typical durations, and the pricing model,
+        plus the one-page capabilities PDF.
+      </p>
+    </div>
+  </Section>
+
+  <FinalCta band="final-cta-orgs" cta="consult" page="organizations" alt />
+</Base>
+
+<style>
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    color: var(--c-muted);
+    font-size: 1.25rem;
+  }
+
+  .pending {
+    max-width: var(--measure);
+    padding: var(--s-4);
+    background: var(--c-surface);
+    border: 1px dashed var(--c-line);
+    border-radius: var(--radius);
+    color: var(--c-muted);
+  }
+
+  .pending h2 {
+    margin-top: 0;
+  }
+
+  .pending p {
+    margin-bottom: 0;
+  }
+</style>

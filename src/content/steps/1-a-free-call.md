@@ -1,5 +1,6 @@
 ---
 title: A free 30-minute call.
+scope: both
 order: 1
 ---
 

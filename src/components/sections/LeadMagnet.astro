@@ -14,16 +14,18 @@
  * collect in the Netlify dashboard, which is why the button says "Send me the
  * check" and the copy promises no instant download.
  */
+import { getEntry, render } from 'astro:content';
 import Section from '../layout/Section.astro';
+
+const band = await getEntry('bands', 'lead-magnet');
+if (!band) throw new Error('Missing src/content/bands/lead-magnet.md');
+const { Content } = await render(band);
 ---
 
 <Section aria-labelledby="burnout-check">
   <div class="magnet">
-    <h2 id="burnout-check">Not sure if it's burnout or just a hard season?</h2>
-    <p>
-      Take the 2-minute check and get a short, honest read plus one practice to
-      try this week.
-    </p>
+    <h2 id="burnout-check">{band.data.title}</h2>
+    <Content />
 
     <form
       class="magnet__form"
@@ -54,16 +56,20 @@ import Section from '../layout/Section.astro';
       </div>
     </form>
 
-    <p class="magnet__privacy">
-      One email with the check, and the occasional note. Unsubscribe any time.
-      <a href="/privacy">Privacy</a>.
-    </p>
+    {
+      band.data.note && (
+        <p class="magnet__privacy">
+          {band.data.note} <a href="/privacy">Privacy</a>.
+        </p>
+      )
+    }
   </div>
 </Section>
 
 <style>
   .magnet h2,
-  .magnet p {
+  .magnet p,
+  .magnet :global(p) {
     max-width: var(--measure);
   }
 

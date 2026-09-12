@@ -81,6 +81,12 @@ const faqs = defineCollection({
     question: z.string(),
     order: z.number(),
     page: z.enum(['coaching', 'organizations']).default('coaching'),
+    /**
+     * False until John has confirmed the answer is accurate. Drafted answers
+     * still render — an unanswered question helps nobody — but this makes the
+     * unconfirmed ones greppable rather than forgotten.
+     */
+    reviewed: z.boolean().default(false),
   }),
 });
 
@@ -140,7 +146,31 @@ const steps = defineCollection({
   schema: z.object({
     title: z.string(),
     order: z.number(),
+    /**
+     * Which version of "how it works" this step belongs to. The homepage shows
+     * the three-step summary; the coaching page shows the five-stage version
+     * from audit §5.3 step 5; `org` is the "how to bring me in" sequence from
+     * §5.4 step 8. `both` covers the two steps the first two versions share.
+     */
+    scope: z.enum(['both', 'home', 'coaching', 'org']).default('both'),
   }),
 });
 
-export const collections = { offers, testimonials, faqs, posts, pages, symptoms, steps };
+/**
+ * Short section copy — the headings and one-or-two-paragraph bodies of bands
+ * like "Meet John" and the final CTA.
+ *
+ * This exists because CLAUDE.md says page copy is a content file, not a
+ * component, and because the final CTA has to say something different on each
+ * page. Both point the same way: the words are data.
+ */
+const bands = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/bands' }),
+  schema: z.object({
+    title: z.string(),
+    /** Small print under the band, e.g. the lead magnet's privacy line. */
+    note: z.string().optional(),
+  }),
+});
+
+export const collections = { offers, testimonials, faqs, posts, pages, symptoms, steps, bands };

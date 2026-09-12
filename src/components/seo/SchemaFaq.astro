@@ -1,0 +1,25 @@
+---
+/**
+ * FAQPage JSON-LD — audit §7.5.
+ *
+ * Takes the same entries FaqAccordion renders. Keeping both on one source is
+ * what makes the answers match character for character.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { faqPageSchema, markdownToPlainText } from '../../lib/schema';
+
+interface Props {
+  faqs: readonly CollectionEntry<'faqs'>[];
+}
+
+const { faqs } = Astro.props;
+
+const json = faqPageSchema(
+  faqs.map((faq) => ({
+    question: faq.data.question,
+    answer: markdownToPlainText(faq.body ?? ''),
+  }))
+);
+---
+
+<script type="application/ld+json" set:html={json} is:inline />

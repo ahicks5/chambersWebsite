@@ -69,7 +69,25 @@ for (const file of walk(DIST, ['.html'])) {
     else if (/\.(png|jpe?g|webp|avif|gif|svg)$/i.test(alt) || /^[\w-]+_\d+/.test(alt)) fail('alt', rel, `alt looks like a filename: "${alt}"`);
   }
 
-  // 7. FAQPage JSON-LD text === rendered answer text
+  // 7. FAQPage JSON-LD text === rendered answer text.
+  //    A page that renders an FAQ but emits no FAQPage schema fails: the
+  //    comparison below would otherwise pass by having nothing to compare.
+  // <summary> must be the first element child of <details>, or the browser
+  // ignores it and renders its own "Details" label. Valid HTML either way, so
+  // nothing else catches this.
+  for (const m of html.matchAll(/<details\b[^>]*>\s*<([a-z0-9]+)/gi)) {
+    const firstTag = m[1].toLowerCase();
+    if (firstTag !== 'summary') {
+      fail('faq-markup', rel, `<details> opens with <${firstTag}>; <summary> must be its first child or the question will not render`);
+    }
+  }
+
+  const renderedFaqCount = (html.match(/<details[\s>]/g) ?? []).length;
+  const hasFaqSchema = /"@type"\s*:\s*"FAQPage"/.test(html);
+  if (renderedFaqCount > 0 && !hasFaqSchema) {
+    fail('faq-schema', rel, `renders ${renderedFaqCount} <details> FAQ item(s) but emits no FAQPage JSON-LD — audit §7.5`);
+  }
+
   for (const block of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
     let data;
     try { data = JSON.parse(block[1]); } catch { fail('faq-schema', rel, 'JSON-LD does not parse'); continue; }
