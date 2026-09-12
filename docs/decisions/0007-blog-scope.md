@@ -1,6 +1,6 @@
 # 0007 — The blog is active, and there are 65 posts
 
-Status: accepted
+Status: accepted — migration complete, see Outcome
 Date: 2026-09-12
 Corrects: audit §2.5, §2.8 bug 13, and the blog-strategy premise in §7.4
 
@@ -64,3 +64,34 @@ Every slug is preserved. `public/_redirects` already maps `/post/*` → `/blog/*
   real review task, and it belongs to John.
 - The feed returns only the 20 most recent items, so the remaining 45 slugs come
   from the sitemap and their dates from each post page.
+
+## Outcome
+
+All 65 migrated, zero failures. `scripts/migrate-wix-posts.mjs` reads the
+sitemap for slugs, each post's `BlogPosting` JSON-LD for title, dates and
+description, and `section[data-hook="post-description"]` for the body.
+
+Structure survived, which was the point: 263 subheadings, lists in 50 posts,
+emphasis in all 65, links in 50. Median post is 1,163 words and the shortest is
+501, so nothing was truncated.
+
+Three things the migration surfaced that the plan did not anticipate:
+
+1. **Wix posts use `<h4>` for their only subheading.** Rendered under our `h1`
+   that leaves the page jumping h1 → h4. The script now normalises the
+   shallowest heading in each post to `h2` and keeps the relative nesting.
+2. **John uses a line of asterisks as a visual divider** before his closing
+   note, in 42 of the 65 posts. Carried across literally it is broken Markdown
+   and renders as a stray `**`. It becomes a real thematic break.
+3. **43 posts carry inline Calendly links** in the original copy, bypassing
+   `src/config/cta.ts` and carrying no UTMs. Left intact — they are his
+   published words — and recorded on the checklist.
+
+Per-post categories turned out not to be machine-readable anywhere: they are not
+in the feed, not in the JSON-LD, and the `/categories/*` links on a post page
+are the site nav rather than that post's own. The nav does confirm the audit's
+count exactly — fifteen categories. So the script guesses from keywords, flags
+its confidence, and writes every post as `draft: true`.
+
+Drafts have routes but are `noindex` and excluded from the sitemap, so John can
+read each post on a deploy preview before anything is publishable.

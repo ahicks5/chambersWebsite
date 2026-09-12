@@ -66,15 +66,27 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
 
 - [ ] `/blog` is the only route still 404ing. It is its own milestone — 65
       posts, see ADR 0007.
-- [ ] **Blog: 65 posts, not three.** See ADR 0007 — the audit undercounted and
-      the blog is active (most recent post 4 Sep 2026). Migration is scripted,
-      not hand-copied: `scripts/migrate-wix-posts.mjs`. Slugs must be preserved —
-      `/post/the-practice-that-saved-my-life` has LinkedIn backlinks, and
-      `public/_redirects` already maps `/post/*` → `/blog/*`.
-- [ ] **John: category and accuracy review on migrated posts.** The script
-      guesses `category` from title keywords across five options and cannot
-      judge John's own content. Every migrated post needs a human read before
-      launch.
+- [x] **Blog migrated.** All 65 posts, zero failures — `scripts/migrate-wix-posts.mjs`.
+      Median 1,163 words, structure preserved (263 subheadings, lists, emphasis,
+      links). Every old slug resolves: all 65 `/post/<slug>` map to `/blog/<slug>`
+      via `public/_redirects`, verified against the live sitemap.
+- [ ] **John: read all 65 and set the category.** Every post is `draft: true`
+      and stays out of the listings and the sitemap until he flips it. Routes
+      exist and are `noindex`, so he can read each one on a deploy preview. The
+      script guessed the category from keywords — 21 of the 65 with low
+      confidence — and that guess is not a judgment about his own writing.
+- [ ] **43 migrated posts contain inline Calendly links** written into the
+      original copy. They bypass `src/config/cta.ts`, carry no UTMs, and some
+      point at the bare profile rather than one of the two event types (audit
+      §4.3). They work, so nothing is broken; they are just invisible to the
+      attribution in §11. Rewriting John's published words is his call, not mine.
+- [ ] **Blog post images.** Hero images exist in each post's `BlogPosting`
+      JSON-LD but are not migrated; the bodies carry no inline images. Pull them
+      at source resolution from `static.wixstatic.com` with the `/v1/fill/...`
+      segment stripped, then set `heroImage` in frontmatter.
+- [ ] **Pillar and cluster links** (audit §7.4). The `pillar` reference field
+      exists on the posts schema and is unset on all 65. Needs one pillar per
+      category and internal links from its cluster.
 - [ ] Images pulled at source resolution from `static.wixstatic.com` — strip the
       `/v1/fill/...` transform segment from the URL to get the original.
 - [ ] **John: confirm the five talk titles on `/resources`.** The live page

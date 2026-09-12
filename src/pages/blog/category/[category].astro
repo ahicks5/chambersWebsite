@@ -1,0 +1,114 @@
+---
+/**
+ * Category listing — audit §2.5 collapses fifteen categories to five.
+ *
+ * A page is generated for every category even when empty, so the links on the
+ * blog index never 404 while the migrated posts are still in review.
+ */
+import { getCollection } from 'astro:content';
+
+import Base from '../../../layouts/Base.astro';
+import Section from '../../../components/layout/Section.astro';
+import { CATEGORY_LABELS, sortByDate, type Category } from '../../../lib/posts';
+
+export async function getStaticPaths() {
+  return (Object.keys(CATEGORY_LABELS) as Category[]).map((category) => ({
+    params: { category },
+    props: { category },
+  }));
+}
+
+type Props = { category: Category };
+const { category } = Astro.props;
+
+const posts = sortByDate(
+  await getCollection('posts', ({ data }) => !data.draft && data.category === category)
+);
+
+const label = CATEGORY_LABELS[category];
+const fmt = (date: Date) =>
+  date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Base
+  title={`${label} | Rooted Reflections`}
+  description={`Writing on ${label.toLowerCase()} from John Chambers — an ICF-credentialed coach working with ambitious people on burnout, rest and sustainable success.`}
+  page="blog"
+>
+  <Section>
+    <p class="crumb"><a href="/blog">Rooted Reflections</a></p>
+    <h1>{label}</h1>
+  </Section>
+
+  <Section alt>
+    {
+      posts.length === 0 ? (
+        <p class="empty">
+          Nothing published here yet. Posts are being migrated from the old site
+          and are waiting on a read.
+        </p>
+      ) : (
+        <ul class="posts">
+          {posts.map((post) => (
+            <li>
+              <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+              <h2>
+                <a href={`/blog/${post.id}`}>{post.data.title}</a>
+              </h2>
+              <p>{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </Section>
+</Base>
+
+<style>
+  .crumb {
+    margin: 0 0 var(--s-2);
+    font-size: 0.95rem;
+  }
+
+  .crumb a {
+    color: var(--c-accent);
+    font-weight: 600;
+  }
+
+  .posts {
+    display: grid;
+    gap: var(--s-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .posts time {
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .posts h2 {
+    margin: var(--s-1) 0;
+  }
+
+  .posts h2 a {
+    color: var(--c-text);
+    text-decoration: none;
+  }
+
+  .posts h2 a:hover {
+    color: var(--c-accent);
+  }
+
+  .posts p {
+    max-width: var(--measure);
+    margin: 0;
+    color: var(--c-muted);
+  }
+
+  .empty {
+    max-width: var(--measure);
+    color: var(--c-muted);
+  }
+</style>
