@@ -9,10 +9,10 @@
 # Fail the deploy on a type or content-schema error rather than shipping it.
 # Matches what CI runs — see .github/workflows/ci.yml.
 [context.production]
-  command = "npm run check && npm run build"
+  command = "npm run check && npm run build && npm run lint:content"
 
 [context.deploy-preview]
-  command = "npm run check && npm run build"
+  command = "npm run check && npm run build && npm run lint:content"
 
 [[headers]]
   for = "/*"
