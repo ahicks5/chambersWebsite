@@ -56,8 +56,15 @@ const testimonials = defineCollection({
   schema: z.object({
     /** Omit entirely if the client declined naming. */
     firstName: z.string().optional(),
-    role: z.string(),
-    industry: z.string(),
+    /**
+     * Optional because none of the nine migrated testimonials has either.
+     * Audit appendix C wants role + industry as the minimum attribution, and
+     * audit §2.4 calls getting them the highest-leverage social-proof change
+     * available. Until John collects them the band renders engagement only.
+     * See docs/decisions/0006-testimonial-attribution.md.
+     */
+    role: z.string().optional(),
+    industry: z.string().optional(),
     /** e.g. "3-month partnership" */
     engagement: z.string(),
     segment: z.enum(['individual', 'organization']),
@@ -117,4 +124,23 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { offers, testimonials, faqs, posts, pages };
+/** "Sound familiar?" recognition cards — audit §5.2 section 3, copy from §6. */
+const symptoms = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/symptoms' }),
+  schema: z.object({
+    /** The bold lead-in, e.g. "Burned out." */
+    title: z.string(),
+    order: z.number(),
+  }),
+});
+
+/** "How it works" steps — audit §5.2 section 4. Body is the description. */
+const steps = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/steps' }),
+  schema: z.object({
+    title: z.string(),
+    order: z.number(),
+  }),
+});
+
+export const collections = { offers, testimonials, faqs, posts, pages, symptoms, steps };

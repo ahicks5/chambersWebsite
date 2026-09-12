@@ -1,5 +1,5 @@
 ---
-title: 3-Month Coaching Partnership
+title: 3-Month Partnership
 segment: individual
 tagline: For changing how you work and live.
 forWho: I'm burned out and want to change how I work and live.
@@ -16,9 +16,4 @@ order: 1
 featured: true
 ---
 
-**Example entry.** Shape is real, copy is not approved — it is the audit §6 draft,
-kept here so the schema has something to validate against.
-
-Note that `includes` is doing the work audit §4.4 Option B asks for: the
-between-session support is a listed inclusion rather than a sentence buried in
-paragraph three. The pricing decision itself is still open.
+Most people start here.

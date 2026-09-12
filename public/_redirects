@@ -1,0 +1,7 @@
+# Audit appendix A — keep every old Wix URL alive. The blog has LinkedIn
+# backlinks, so /post/* matters most.
+
+/about-me              /about                  301
+/current-services      /coaching               301
+/post/*                /blog/:splat            301
+/blog/categories/*     /blog/category/:splat   301

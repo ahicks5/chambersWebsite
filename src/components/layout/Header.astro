@@ -23,8 +23,8 @@ const { page } = Astro.props;
 <header class="header">
   <div class="header__inner">
     <a href="/" class="header__brand">{site.name}</a>
-    <Nav items={primaryNav} label="Primary" class="header__nav" />
-    <Button cta="intro" page={page} position="header" size="compact" />
+    <Nav items={primaryNav} label="Primary" scrollable class="header__nav" />
+    <Button cta="intro" page={page} position="header" size="compact" class="header__cta" />
   </div>
 </header>
 
@@ -70,5 +70,28 @@ const { page } = Astro.props;
 
   .header__nav {
     margin-right: auto;
+  }
+
+  /**
+   * On phones the nav would wrap to two rows and push the h1 below the fold.
+   * Brand and CTA share the first row; the nav sits under them on its own row
+   * and scrolls sideways if it needs to.
+   */
+  @media (max-width: 639px) {
+    .header__brand {
+      flex: 1 1 auto;
+    }
+
+    .header__cta {
+      order: 2;
+    }
+
+    .header__nav {
+      order: 3;
+      flex: 1 0 100%;
+      margin-right: 0;
+      /* Cancel the wrapper's row gap; the ul carries its own padding. */
+      min-width: 0;
+    }
   }
 </style>

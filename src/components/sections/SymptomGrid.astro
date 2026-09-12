@@ -1,0 +1,70 @@
+---
+/**
+ * "Sound familiar?" — audit §5.2 section 3.
+ *
+ * The four symptoms are already written on the live homepage, buried in twelve
+ * paragraphs of prose. As cards they do the recognition work in one screen.
+ */
+import { getCollection, render } from 'astro:content';
+import Card from '../ui/Card.astro';
+import Section from '../layout/Section.astro';
+
+const symptoms = (await getCollection('symptoms')).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(
+  symptoms.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<Section aria-labelledby="sound-familiar">
+  <h2 id="sound-familiar">Sound familiar?</h2>
+
+  <ul class="symptoms">
+    {
+      rendered.map(({ entry, Content }) => (
+        <li>
+          <Card>
+            <h3>{entry.data.title}</h3>
+            <Content />
+          </Card>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .symptoms {
+    display: grid;
+    gap: var(--s-3);
+    margin: var(--s-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Audit §8.4: 1 column mobile, 2 at 640px, never five. */
+  @media (min-width: 640px) {
+    .symptoms {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .symptoms {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  /* Grid stretches the <li>; the card inside has to fill it or the row
+     bottoms do not line up. */
+  .symptoms li {
+    display: flex;
+  }
+
+  .symptoms :global(.card) {
+    width: 100%;
+  }
+
+  .symptoms :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

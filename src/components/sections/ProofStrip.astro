@@ -1,0 +1,48 @@
+---
+/**
+ * Proof strip — audit §5.2 section 2, §3.2 step 3.
+ *
+ * The audit's finding 6: these signals exist but are buried. "ICF-certified"
+ * sits mid-paragraph on the live homepage, "12 years HR" only on Services, and
+ * the three journals only on a Resources page missing from the nav.
+ *
+ * Rendered from site.credentials so the list has one home (CLAUDE.md: site
+ * facts come from config). Logos replace the text when John supplies them —
+ * audit §3.3 wants a logo strip.
+ */
+import { site } from '../../config/site';
+import Section from '../layout/Section.astro';
+---
+
+<Section alt class="proof-section">
+  <ul class="proof">
+    {site.credentials.map((credential) => <li>{credential}</li>)}
+  </ul>
+</Section>
+
+<style>
+  .proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-3);
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+  }
+
+  .proof li {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  /* Middot separators between items, not after the last one. */
+  .proof li:not(:last-child)::after {
+    content: '·';
+    margin-left: var(--s-3);
+    color: var(--c-muted);
+    font-weight: 400;
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+/**
+ * Final CTA — audit §5.2 section 10, copy from §6.
+ *
+ * Same label as the hero and the header. Audit §4.3: repeating one CTA is fine,
+ * offering different ones is not.
+ */
+import Button from '../ui/Button.astro';
+import Section from '../layout/Section.astro';
+---
+
+<Section alt aria-labelledby="final-cta">
+  <div class="final">
+    <h2 id="final-cta">Ambition doesn't have to cost you yourself.</h2>
+    <p>Let's talk about what a different way forward looks like.</p>
+    <Button cta="intro" page="home" position="final" />
+  </div>
+</Section>
+
+<style>
+  .final h2,
+  .final p {
+    max-width: var(--measure);
+  }
+
+  .final p {
+    margin-block: var(--s-2) var(--s-4);
+    font-size: 1.15rem;
+    color: var(--c-muted);
+  }
+</style>

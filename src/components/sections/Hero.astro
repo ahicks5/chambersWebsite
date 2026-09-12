@@ -1,0 +1,85 @@
+---
+/**
+ * Hero — audit §5.2 section 1, copy from §6.
+ *
+ * Fixes the audit's top finding: the live homepage opens with "Welcome!" as an
+ * H2 and has no H1 at all. The hook is the H1 here, and it is the first thing
+ * on the page.
+ *
+ * The h1 is rendered by this section rather than by Page.astro, because the hero
+ * is a two-column layout and the heading belongs inside its text column.
+ */
+import Button from '../ui/Button.astro';
+import Section from '../layout/Section.astro';
+
+interface Props {
+  h1: string;
+  subhead: string;
+}
+
+const { h1, subhead } = Astro.props;
+---
+
+<Section class="hero">
+  <div class="hero__grid">
+    <div class="hero__text">
+      <h1>{h1}</h1>
+      <p class="hero__subhead">{subhead}</p>
+      <Button cta="intro" page="home" position="hero" />
+    </div>
+
+    {/*
+      Audit §5.2 wants John's photo beside the headline, and §10 makes it the LCP
+      element: upload ~1500px wide, never lazy-load it, fixed 4:5 ratio to stop
+      layout shift (§8.4).
+
+      No photo is in the repo yet, so this reserves the exact box the image will
+      occupy. Swapping in <Image> later changes no layout. Tracked in
+      docs/parity-checklist.md.
+    */}
+    <div class="hero__photo" role="presentation">
+      <p class="hero__photo-note">Photo of John goes here — 4:5, ~1500px wide.</p>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .hero__grid {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 900px) {
+    .hero__grid {
+      grid-template-columns: 1.15fr 1fr;
+      align-items: center;
+      gap: var(--s-8);
+    }
+  }
+
+  .hero__subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) var(--s-4);
+    font-size: 1.25rem;
+    color: var(--c-muted);
+  }
+
+  .hero__photo {
+    aspect-ratio: 4 / 5;
+    max-width: 100%;
+    display: grid;
+    place-items: center;
+    padding: var(--s-3);
+    background: var(--c-surface);
+    border: 1px dashed var(--c-line);
+    border-radius: var(--radius);
+  }
+
+  .hero__photo-note {
+    margin: 0;
+    max-width: 22ch;
+    text-align: center;
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+/**
+ * "Meet John" — audit §5.2 section 7, copy from §6.
+ *
+ * Faces build trust faster than words, and on the live site the photo comes
+ * after twelve paragraphs of copy (audit §2.1).
+ */
+import Section from '../layout/Section.astro';
+---
+
+<Section aria-labelledby="meet-john">
+  <div class="meet">
+    {/* Second photo slot — see the note in Hero.astro. */}
+    <div class="meet__photo" role="presentation">
+      <p class="meet__photo-note">Photo of John goes here.</p>
+    </div>
+
+    <div class="meet__text">
+      <h2 id="meet-john">Meet John</h2>
+      <p>
+        Burnout survivor turned resilience nerd. Twelve years in corporate HR, an
+        ICF credential, and a personal story that's the reason I do this.
+      </p>
+      <p><a href="/about">Read more →</a></p>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .meet {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 700px) {
+    .meet {
+      grid-template-columns: 14rem 1fr;
+      gap: var(--s-6);
+      align-items: center;
+    }
+  }
+
+  .meet__photo {
+    aspect-ratio: 4 / 5;
+    max-width: 100%;
+    display: grid;
+    place-items: center;
+    padding: var(--s-3);
+    background: var(--c-surface);
+    border: 1px dashed var(--c-line);
+    border-radius: var(--radius);
+  }
+
+  .meet__photo-note {
+    margin: 0;
+    text-align: center;
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .meet__text p {
+    max-width: var(--measure);
+  }
+
+  .meet__text a {
+    color: var(--c-accent);
+    font-weight: 600;
+  }
+</style>

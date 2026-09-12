@@ -1,0 +1,50 @@
+---
+/**
+ * Organizations band — audit §5.2 section 8.
+ *
+ * Audit finding 4: individuals and organizations share one funnel on the live
+ * site. The homepage is the individual's page, so the org pitch is one band with
+ * the secondary CTA, and the real pitch lives on its own page (§5.4).
+ */
+import Button from '../ui/Button.astro';
+import Section from '../layout/Section.astro';
+---
+
+<Section alt aria-labelledby="for-organizations">
+  <div class="org">
+    <div>
+      <h2 id="for-organizations">I also work with teams</h2>
+      <p>
+        I design workshops and coaching partnerships for teams working through
+        burnout, change, and resilient leadership.
+      </p>
+      <p><a href="/for-organizations">See how I work with teams →</a></p>
+    </div>
+
+    <Button cta="consult" page="home" position="org-band" style="ghost" />
+  </div>
+</Section>
+
+<style>
+  .org {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 900px) {
+    .org {
+      grid-template-columns: 1fr auto;
+      gap: var(--s-8);
+      align-items: center;
+    }
+  }
+
+  .org p {
+    max-width: var(--measure);
+  }
+
+  .org a {
+    color: var(--c-accent);
+    font-weight: 600;
+  }
+</style>
