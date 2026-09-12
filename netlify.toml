@@ -1,0 +1,28 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Astro 7 requires Node >= 22.12. Netlify reads this, not package.json engines.
+  NODE_VERSION = "22.12.0"
+
+# Fail the deploy on a type or content-schema error rather than shipping it.
+# Matches what CI runs — see .github/workflows/ci.yml.
+[context.production]
+  command = "npm run check && npm run build && npm run lint:content"
+
+[context.deploy-preview]
+  command = "npm run check && npm run build && npm run lint:content"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+
+# Hashed assets are immutable.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

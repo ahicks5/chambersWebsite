@@ -1,0 +1,145 @@
+---
+/**
+ * Burnout check — audit §5.2 section 9, appendix D.
+ *
+ * Audit finding 9: there is no lead capture on the live homepage at all. The
+ * newsletter form exists only on the blog, the least-visited page, so the 90%+
+ * of visitors who are not ready to spend $145 today leave with nothing.
+ *
+ * Posts to Netlify Forms (ADR 0005) — an attribute on the form, no backend, no
+ * client JS. Netlify picks the form up from the built HTML at deploy time.
+ *
+ * Two pieces are still missing and are tracked in docs/parity-checklist.md: the
+ * PDF itself, and the ESP automation that emails it. Until then submissions
+ * collect in the Netlify dashboard, which is why the button says "Send me the
+ * check" and the copy promises no instant download.
+ */
+import Section from '../layout/Section.astro';
+---
+
+<Section aria-labelledby="burnout-check">
+  <div class="magnet">
+    <h2 id="burnout-check">Not sure if it's burnout or just a hard season?</h2>
+    <p>
+      Take the 2-minute check and get a short, honest read plus one practice to
+      try this week.
+    </p>
+
+    <form
+      class="magnet__form"
+      name="burnout-check"
+      method="POST"
+      data-netlify="true"
+      data-netlify-honeypot="bot-field"
+    >
+      {/* Spam trap. Real people never fill this in; bots do. */}
+      <p class="magnet__honeypot">
+        <label>
+          Leave this field empty
+          <input type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+        </label>
+      </p>
+
+      <div class="magnet__row">
+        <label class="magnet__label" for="magnet-email">Email address</label>
+        <input
+          id="magnet-email"
+          type="email"
+          name="email"
+          autocomplete="email"
+          required
+          placeholder="you@example.com"
+        />
+        <button type="submit" class="button button--primary">Send me the check</button>
+      </div>
+    </form>
+
+    <p class="magnet__privacy">
+      One email with the check, and the occasional note. Unsubscribe any time.
+      <a href="/privacy">Privacy</a>.
+    </p>
+  </div>
+</Section>
+
+<style>
+  .magnet h2,
+  .magnet p {
+    max-width: var(--measure);
+  }
+
+  .magnet__form {
+    margin-top: var(--s-4);
+  }
+
+  /* Visually hidden but still reachable, so a bot filling everything trips it. */
+  .magnet__honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .magnet__row {
+    display: grid;
+    gap: var(--s-2);
+    max-width: 34rem;
+  }
+
+  @media (min-width: 640px) {
+    .magnet__row {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+
+    .magnet__label {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .magnet__label {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .magnet__row input {
+    padding: 0.85rem 1rem;
+    font: inherit;
+    color: var(--c-text);
+    background: var(--c-bg);
+    /* Deliberately not --c-line: that token is decorative and does not meet the
+       3:1 non-text contrast bar for a form control. See docs/brand/tokens.md. */
+    border: 2px solid var(--c-text);
+    border-radius: var(--radius);
+  }
+
+  /* Button styling is duplicated from Button.astro because this is a <button>
+     inside a form, not a CTA link. Button.astro takes a cta key by design and
+     has no submit mode — audit §4.3 keeps those two things separate. */
+  .magnet__row .button {
+    padding: 0.9rem 1.6rem;
+    border-radius: 999px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .magnet__row .button--primary {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+    border: 2px solid var(--c-accent);
+  }
+
+  .magnet__privacy {
+    margin-top: var(--s-3);
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .magnet__privacy a {
+    color: inherit;
+  }
+</style>

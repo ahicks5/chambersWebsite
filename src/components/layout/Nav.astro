@@ -9,14 +9,20 @@ interface Props {
   items: readonly NavItem[];
   /** Accessible name, since a page has more than one nav landmark. */
   label: string;
+  /**
+   * Keep the items on one row and scroll horizontally instead of wrapping.
+   * Used by the header on phones, where a wrapped nav pushes the hero hook
+   * off the first screen — the exact problem audit finding 1 is about.
+   */
+  scrollable?: boolean;
   class?: string;
 }
 
-const { items, label, class: className } = Astro.props;
+const { items, label, scrollable = false, class: className } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
-<nav aria-label={label} class:list={['nav', className]}>
+<nav aria-label={label} class:list={['nav', scrollable && 'nav--scrollable', className]}>
   <ul>
     {
       items.map((item) => (
@@ -49,5 +55,28 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
   .nav a[aria-current='page'] {
     text-decoration: underline;
     text-underline-offset: 0.25em;
+  }
+
+  @media (max-width: 639px) {
+    .nav--scrollable ul {
+      flex-wrap: nowrap;
+      gap: var(--s-2);
+      overflow-x: auto;
+      /* Room for a focus ring on the first and last item while scrolled. */
+      padding-block: 2px;
+      scrollbar-width: none;
+    }
+
+    .nav--scrollable ul::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav--scrollable li {
+      flex: 0 0 auto;
+    }
+
+    .nav--scrollable a {
+      font-size: 0.95rem;
+    }
   }
 </style>

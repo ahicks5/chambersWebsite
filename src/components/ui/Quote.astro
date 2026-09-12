@@ -1,0 +1,71 @@
+---
+/**
+ * A testimonial quote and its attribution.
+ *
+ * This component owns the consent rule: `firstName` renders only when
+ * `consent === 'named'`. That is a promise made to real clients, so the check
+ * lives here rather than at each call site where it could be forgotten.
+ *
+ * Attribution degrades to the most specific form the data supports — audit
+ * appendix C, and docs/decisions/0006-testimonial-attribution.md for why role
+ * and industry may be missing.
+ */
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  testimonial: CollectionEntry<'testimonials'>;
+}
+
+const { testimonial } = Astro.props;
+const { firstName, role, industry, engagement, consent } = testimonial.data;
+
+const named = consent === 'named' && firstName;
+const who = [named ? firstName : null, role, industry].filter(Boolean).join(', ');
+
+// "Priya, Engineering Manager · SaaS (3-month partnership)" down to
+// "3-month partnership" when nothing else is cleared for publication.
+const attribution = who ? `${who} (${engagement})` : engagement;
+---
+
+<figure class="quote">
+  <blockquote>
+    <slot />
+  </blockquote>
+  <figcaption class="quote__attrib">— {attribution}</figcaption>
+</figure>
+
+<style>
+  .quote {
+    margin: 0;
+  }
+
+  .quote blockquote {
+    position: relative;
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.5;
+  }
+
+  .quote blockquote::before {
+    content: '\201C';
+    position: absolute;
+    left: -0.55em;
+    font-size: 3rem;
+    line-height: 0.9;
+    color: var(--c-accent);
+  }
+
+  .quote blockquote :global(p) {
+    margin: 0 0 var(--s-2);
+  }
+
+  .quote blockquote :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .quote__attrib {
+    margin-top: var(--s-2);
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+</style>

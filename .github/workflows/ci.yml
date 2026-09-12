@@ -23,8 +23,14 @@ jobs:
 
       - run: npm ci
 
+      # Would have caught the Astro 5 advisories — see ADR 0004.
+      - run: npm audit --audit-level=high
+
       # Types plus content-collection schema validation. Audit §7.2 length
       # bounds and the category enum are enforced here, not by review.
       - run: npm run check
 
       - run: npm run build
+
+      # CLAUDE.md hard rules, mechanically — scripts/lint-content.mjs.
+      - run: npm run lint:content

@@ -1,0 +1,86 @@
+---
+/**
+ * Three testimonials — audit §5.2 section 6.
+ *
+ * Audit §2.4: testimonials convert when they sit next to the CTA on the page
+ * where the decision is made, not on a separate archive page. These are the real
+ * quotes migrated from the live site.
+ *
+ * Build-time only — getCollection runs during the build, so this ships zero
+ * client JS. The live site does the same job with a wixData query in the
+ * browser (audit §9.3); the behaviour is right, the API is not.
+ */
+import { getCollection, render } from 'astro:content';
+import Card from '../ui/Card.astro';
+import Quote from '../ui/Quote.astro';
+import Section from '../layout/Section.astro';
+
+const featured = (
+  await getCollection(
+    'testimonials',
+    ({ data }) => data.segment === 'individual' && data.featured
+  )
+)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+const rendered = await Promise.all(
+  featured.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<Section alt aria-labelledby="what-clients-say">
+  <h2 id="what-clients-say">What clients say</h2>
+
+  <ul class="band">
+    {
+      rendered.map(({ entry, Content }) => (
+        <li>
+          <Card>
+            <Quote testimonial={entry}>
+              <Content />
+            </Quote>
+          </Card>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="band__more">
+    <a href="/testimonials">Read all nine →</a>
+  </p>
+</Section>
+
+<style>
+  .band {
+    display: grid;
+    gap: var(--s-3);
+    margin: var(--s-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 900px) {
+    .band {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* As in SymptomGrid: let the card fill the stretched grid item. */
+  .band li {
+    display: flex;
+  }
+
+  .band :global(.card) {
+    width: 100%;
+  }
+
+  .band__more {
+    margin: var(--s-4) 0 0;
+  }
+
+  .band__more a {
+    color: var(--c-accent);
+    font-weight: 600;
+  }
+</style>

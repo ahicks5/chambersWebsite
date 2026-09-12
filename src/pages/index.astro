@@ -1,24 +1,45 @@
 ---
 /**
- * Homepage — STUB.
+ * Homepage — implements the audit §5.2 blueprint in order, with copy from §6.
  *
- * The real thing is audit §5.2 (ten sections, in order) with copy from §6. None
- * of that exists yet; this page only proves the shell, the tokens and the CTA
- * wiring render.
+ * The blueprint table is the page composition, so the sections below read in the
+ * same sequence as the audit's rows. Copy and prices come from src/content/;
+ * nothing user-facing is typed into this file except the section order.
+ *
+ * Uses Base rather than Page, because the hero renders its own h1 inside a
+ * two-column layout. There is still exactly one h1 on the page.
  */
-import Page from '../layouts/Page.astro';
-import Section from '../components/layout/Section.astro';
-import Button from '../components/ui/Button.astro';
+import { getEntry } from 'astro:content';
+
+import Base from '../layouts/Base.astro';
+import Hero from '../components/sections/Hero.astro';
+import ProofStrip from '../components/sections/ProofStrip.astro';
+import SymptomGrid from '../components/sections/SymptomGrid.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import OfferCards from '../components/sections/OfferCards.astro';
+import TestimonialBand from '../components/sections/TestimonialBand.astro';
+import MeetJohn from '../components/sections/MeetJohn.astro';
+import OrgBand from '../components/sections/OrgBand.astro';
+import LeadMagnet from '../components/sections/LeadMagnet.astro';
+import FinalCta from '../components/sections/FinalCta.astro';
+
+const home = await getEntry('pages', 'home');
+if (!home) throw new Error('Missing src/content/pages/home.md');
+
+// Title and description are schema-validated for length and uniqueness, so a
+// page cannot ship with a missing or borrowed meta description (audit §2.8 bug 3).
+const { title, description, h1, subhead } = home.data;
 ---
 
-<Page
-  page="home"
-  title="Burnout & Resilience Coach for High-Achievers | John Chambers"
-  description="ICF-certified coaching for ambitious professionals recovering from burnout. Free 30-minute intro call. Virtual, based in Austin, TX."
-  h1="You can be ambitious without abandoning yourself."
-  subhead="Scaffold only — the homepage blueprint in audit §5.2 has not been built yet."
->
-  <Section alt>
-    <Button cta="intro" page="home" position="hero" />
-  </Section>
-</Page>
+<Base {title} {description} page="home">
+  <Hero {h1} subhead={subhead ?? ''} />
+  <ProofStrip />
+  <SymptomGrid />
+  <HowItWorks />
+  <OfferCards />
+  <TestimonialBand />
+  <MeetJohn />
+  <OrgBand />
+  <LeadMagnet />
+  <FinalCta />
+</Base>

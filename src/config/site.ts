@@ -18,6 +18,7 @@ export const site = {
   credentials: [
     'ICF ACC',
     '12 years corporate HR',
+    'Author of 3 journals',
     'Cornell',
     'Korn Ferry',
     'UPenn',

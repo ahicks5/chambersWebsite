@@ -1,0 +1,186 @@
+---
+/**
+ * Coaching options plus the decision row — audit §5.2 section 5, §4.4.
+ *
+ * Two audit findings drive this. Prices come from content files, never markup
+ * (§4.4: "prices are content, not markup"). And the decision row exists because
+ * five undifferentiated offers with no decision aid is where people stall.
+ *
+ * The per-session arithmetic the audit flags in finding 3 is a pricing decision
+ * that is still open — see docs/parity-checklist.md. This renders John's current
+ * prices as they stand.
+ */
+import { getCollection, render } from 'astro:content';
+import Button from '../ui/Button.astro';
+import Card from '../ui/Card.astro';
+import Section from '../layout/Section.astro';
+
+const offers = (await getCollection('offers', ({ data }) => data.segment === 'individual')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const rendered = await Promise.all(
+  offers.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<Section aria-labelledby="coaching-options">
+  <h2 id="coaching-options">Coaching options</h2>
+
+  <ul class="offers">
+    {
+      rendered.map(({ entry, Content }) => {
+        const { title, tagline, priceDisplay, sessions, includes, badge, cta } = entry.data;
+        return (
+          <li>
+            <Card variant="offer" class="offer">
+              {badge && <p class="offer__badge">{badge}</p>}
+              <h3>{title}</h3>
+              <p class="offer__tagline">{tagline}</p>
+              <p class="offer__price">{priceDisplay}</p>
+              {sessions && <p class="offer__sessions">{sessions}</p>}
+
+              {includes.length > 0 && (
+                <ul class="offer__includes">
+                  {includes.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              )}
+
+              <div class="offer__body">
+                <Content />
+              </div>
+
+              <Button {cta} page="home" position={`offer-${entry.id}`} />
+            </Card>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  {/* Audit §4.4 — "Which is right for me?" */}
+  <div class="decision">
+    <h3>Not sure which one?</h3>
+    <dl>
+      {
+        rendered.map(({ entry }) => (
+          <div class="decision__row">
+            <dt>{entry.data.forWho}</dt>
+            <dd>{entry.data.title}</dd>
+          </div>
+        ))
+      }
+    </dl>
+    <p class="decision__note">Most people start with the intro call.</p>
+  </div>
+</Section>
+
+<style>
+  .offers {
+    display: grid;
+    gap: var(--s-3);
+    margin: var(--s-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .offers {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .offers :global(.offer) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .offer__badge {
+    align-self: flex-start;
+    margin: 0 0 var(--s-2);
+    padding: 0.2rem 0.6rem;
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .offer__tagline {
+    margin: var(--s-1) 0 0;
+    color: var(--c-muted);
+  }
+
+  .offer__price {
+    margin: var(--s-2) 0 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .offer__sessions {
+    margin: var(--s-1) 0 0;
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .offer__includes {
+    margin: var(--s-3) 0 0;
+    padding-left: 1.1rem;
+  }
+
+  .offer__includes li {
+    margin-bottom: var(--s-1);
+  }
+
+  /* Pushes the CTA to the bottom so buttons line up across cards. */
+  .offer__body {
+    margin-top: var(--s-3);
+    margin-bottom: auto;
+    padding-bottom: var(--s-3);
+    color: var(--c-muted);
+  }
+
+  .offer__body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .decision {
+    margin-top: var(--s-8);
+  }
+
+  .decision dl {
+    margin: var(--s-3) 0 0;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .decision__row {
+    display: grid;
+    gap: var(--s-1);
+    padding-block: var(--s-3);
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  @media (min-width: 700px) {
+    .decision__row {
+      grid-template-columns: 1fr auto;
+      gap: var(--s-4);
+      align-items: baseline;
+    }
+  }
+
+  .decision dt {
+    color: var(--c-text);
+  }
+
+  .decision dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .decision__note {
+    margin: var(--s-3) 0 0;
+    color: var(--c-muted);
+  }
+</style>

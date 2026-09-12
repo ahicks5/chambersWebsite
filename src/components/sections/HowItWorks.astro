@@ -1,0 +1,75 @@
+---
+/**
+ * "How it works" — audit §5.2 section 4.
+ *
+ * Answers the audit's finding 8: nothing on the live site explains what
+ * coaching actually is, which is the biggest unanswered question for a
+ * first-time buyer.
+ */
+import { getCollection, render } from 'astro:content';
+import Section from '../layout/Section.astro';
+
+const steps = (await getCollection('steps')).sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(
+  steps.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<Section alt aria-labelledby="how-it-works">
+  <h2 id="how-it-works">How it works</h2>
+
+  {/* An ordered list, so the sequence is in the markup and not only the design. */}
+  <ol class="steps">
+    {
+      rendered.map(({ entry, Content }) => (
+        <li>
+          <h3>{entry.data.title}</h3>
+          <Content />
+        </li>
+      ))
+    }
+  </ol>
+</Section>
+
+<style>
+  .steps {
+    display: grid;
+    gap: var(--s-4);
+    margin: var(--s-4) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  @media (min-width: 900px) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-6);
+    }
+  }
+
+  .steps li {
+    counter-increment: step;
+  }
+
+  .steps li::before {
+    content: counter(step);
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-bottom: var(--s-2);
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+    border-radius: 999px;
+    font-weight: 700;
+  }
+
+  .steps :global(p) {
+    max-width: var(--measure);
+  }
+
+  .steps :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>
