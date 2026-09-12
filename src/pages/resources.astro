@@ -35,7 +35,7 @@ const of = (kind: 'journal' | 'book' | 'talk') => all.filter((r) => r.data.kind 
   <ResourceList items={of('book')} heading="Books I recommend" id="books" />
   <ResourceList items={of('talk')} heading="Talks worth your time" id="talks" alt />
 
-  <FinalCta band="final-cta-home" cta="intro" page="resources" alt={false} />
+  <FinalCta band="final-cta-home" cta="intro" page="resources" />
 </Base>
 
 <style>

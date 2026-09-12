@@ -17,33 +17,42 @@ interface Props {
   band: CollectionEntry<'bands'>['id'];
   cta?: CtaKey;
   page: string;
-  alt?: boolean;
 }
 
-const { band: bandId, cta = 'intro', page, alt = true } = Astro.props;
+const { band: bandId, cta = 'intro', page } = Astro.props;
 
 const band = await getEntry('bands', bandId);
 if (!band) throw new Error(`Missing src/content/bands/${bandId}.md`);
 const { Content } = await render(band);
 ---
 
-<Section {alt} aria-labelledby="final-cta">
+{/*
+  The one accent band on the page (ADR 0009). It closes every page that has a
+  closing CTA, so the hero and this band bracket the page: quiet and large at
+  the top, saturated at the bottom.
+*/}
+<Section tone="accent" aria-labelledby="final-cta">
   <div class="final">
     <h2 id="final-cta">{band.data.title}</h2>
     <Content />
-    <Button {cta} {page} position="final" />
+    <Button {cta} {page} position="final" style="inverse" />
   </div>
 </Section>
 
 <style>
-  .final h2,
-  .final :global(p) {
+  .final {
+    display: grid;
+    justify-items: start;
     max-width: var(--measure);
   }
 
+  .final h2 {
+    max-width: 20ch;
+  }
+
   .final :global(p) {
-    margin-block: var(--s-2) var(--s-4);
-    font-size: 1.15rem;
-    color: var(--c-muted);
+    margin-block: var(--s-3) var(--s-6);
+    font-size: var(--fs-lede);
+    line-height: 1.5;
   }
 </style>

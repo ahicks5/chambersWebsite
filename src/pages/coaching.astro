@@ -39,7 +39,7 @@ const faqs = (await getCollection('faqs', ({ data }) => data.page === 'coaching'
   <HowItWorks scope="coaching" heading="How the work goes" />
   <TestimonialBand segment="individual" alt={false} />
   <FaqAccordion {faqs} alt />
-  <FinalCta band="final-cta-coaching" cta="intro" page="coaching" alt={false} />
+  <FinalCta band="final-cta-coaching" cta="intro" page="coaching" />
 </Base>
 
 <style>

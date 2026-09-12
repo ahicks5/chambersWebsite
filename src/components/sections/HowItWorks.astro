@@ -46,8 +46,8 @@ const rendered = await Promise.all(
 <style>
   .steps {
     display: grid;
-    gap: var(--s-4);
-    margin: var(--s-4) 0 0;
+    gap: var(--s-6);
+    margin: var(--s-6) 0 0;
     padding: 0;
     list-style: none;
     counter-reset: step;
@@ -56,25 +56,40 @@ const rendered = await Promise.all(
   @media (min-width: 900px) {
     .steps {
       grid-template-columns: repeat(3, 1fr);
-      gap: var(--s-6);
+      gap: var(--s-8);
+    }
+
+    /* Five steps on the coaching page: two rows of three, not five across
+       (audit §8.4: never five). The grid handles it; this keeps the rows
+       from stretching to the tallest step. */
+    .steps li {
+      align-self: start;
     }
   }
 
   .steps li {
     counter-increment: step;
+    padding-top: var(--s-3);
+    border-top: 2px solid var(--c-accent);
   }
 
+  /* The number is the design: a two-digit numeral in Bitter Black, the size
+     of a heading, in the accent. It replaces the small filled circle, which
+     read as a bullet. */
   .steps li::before {
-    content: counter(step);
-    display: grid;
-    place-items: center;
-    width: 2.25rem;
-    height: 2.25rem;
+    content: counter(step, decimal-leading-zero);
+    display: block;
     margin-bottom: var(--s-2);
-    background: var(--c-accent);
-    color: var(--c-accent-ink);
-    border-radius: 999px;
+    font-family: var(--font-heading);
     font-weight: var(--fw-heading);
+    font-size: var(--fs-h2);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--c-accent);
+  }
+
+  .steps h3 {
+    margin-bottom: var(--s-1);
   }
 
   .steps :global(p) {

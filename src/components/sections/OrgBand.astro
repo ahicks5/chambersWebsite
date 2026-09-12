@@ -15,7 +15,7 @@ if (!band) throw new Error('Missing src/content/bands/org-band.md');
 const { Content } = await render(band);
 ---
 
-<Section alt aria-labelledby="for-organizations">
+<Section alt size="compact" class="org-section" aria-labelledby="for-organizations">
   <div class="org">
     <div class="org__text">
       <h2 id="for-organizations">{band.data.title}</h2>
@@ -28,9 +28,18 @@ const { Content } = await render(band);
 </Section>
 
 <style>
+  /* Sits under another surface band (Meet John), so a rule marks the edge. */
+  :global(.org-section) {
+    border-top: 1px solid var(--c-line);
+  }
+
   .org {
     display: grid;
     gap: var(--s-4);
+  }
+
+  .org h2 {
+    font-size: var(--fs-h3);
   }
 
   @media (min-width: 900px) {

@@ -15,8 +15,12 @@ interface Props {
   page: string;
   /** Position on that page, for UTM attribution: `hero`, `mid`, `footer`, … */
   position: string;
-  /** Override the CTA's default style. Use sparingly — see audit §4.3. */
-  style?: 'primary' | 'ghost';
+  /**
+   * Override the CTA's default style. Use sparingly — see audit §4.3.
+   * `inverse` is the primary as it appears on an accent band (ADR 0009): same
+   * label, same URL, fill and label colours swapped so it stays visible.
+   */
+  style?: 'primary' | 'ghost' | 'inverse';
   /**
    * `compact` is for the sticky header, where the CTA sits beside the nav rather
    * than in a content section. Size lives here because Astro's scoped styles do
@@ -74,6 +78,17 @@ const isExternal = href.startsWith('http');
     background: transparent;
     color: var(--c-accent);
     border: 2px solid var(--c-accent);
+  }
+
+  .button--inverse {
+    background: var(--c-accent-ink);
+    color: var(--c-accent);
+    border: 2px solid var(--c-accent-ink);
+  }
+
+  .button--inverse:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
   }
 
   .button--compact {
