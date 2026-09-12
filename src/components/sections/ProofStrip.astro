@@ -1,48 +1,104 @@
 ---
 /**
- * Proof strip — audit §5.2 section 2, §3.2 step 3.
+ * Proof strip — audit §5.2 section 2, §3.2 step 3, §3.3.
  *
  * The audit's finding 6: these signals exist but are buried. "ICF-certified"
  * sits mid-paragraph on the live homepage, "12 years HR" only on Services, and
  * the three journals only on a Resources page missing from the nav.
  *
- * Rendered from site.credentials so the list has one home (CLAUDE.md: site
- * facts come from config). Logos replace the text when John supplies them —
- * audit §3.3 wants a logo strip.
+ * §3.3 asks for badges and a logo strip. There are no logo files yet, so the
+ * two kinds of claim get two typographic treatments instead: credentials as
+ * badges, institutions as a tracked wordmark row — the way a logo strip reads
+ * when the logos are text. Both lists come from src/config/site.ts.
  */
 import { site } from '../../config/site';
 import Section from '../layout/Section.astro';
 ---
 
-<Section alt class="proof-section">
-  <ul class="proof">
-    {site.credentials.map((credential) => <li>{credential}</li>)}
-  </ul>
+<Section alt size="compact" class="proof-section" aria-label="Credentials">
+  <div class="proof">
+    <div class="proof__group">
+      <span class="eyebrow">Credentials</span>
+      <ul class="proof__badges">
+        {site.credentials.map((credential) => <li>{credential}</li>)}
+      </ul>
+    </div>
+
+    <div class="proof__group">
+      <span class="eyebrow">Trained at</span>
+      <ul class="proof__marks">
+        {site.trainedAt.map((place) => <li>{place}</li>)}
+      </ul>
+    </div>
+  </div>
 </Section>
 
 <style>
   .proof {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 900px) {
+    .proof {
+      grid-template-columns: auto auto;
+      justify-content: space-between;
+      align-items: start;
+      gap: var(--s-8);
+    }
+  }
+
+  .proof__group {
+    display: grid;
+    gap: var(--s-2);
+  }
+
+  .proof ul {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--s-2) var(--s-3);
-    justify-content: center;
-    align-items: center;
     margin: 0;
     padding: 0;
     list-style: none;
-    text-align: center;
   }
 
-  .proof li {
+  .proof__badges {
+    gap: var(--s-1) var(--s-2);
+  }
+
+  .proof__badges li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem 0.35rem 0.75rem;
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: 999px;
+    font-family: var(--font-heading);
     font-weight: var(--fw-heading);
-    font-size: 0.95rem;
+    font-size: var(--fs-small);
+    line-height: 1.3;
   }
 
-  /* Middot separators between items, not after the last one. */
-  .proof li:not(:last-child)::after {
-    content: '·';
-    margin-left: var(--s-3);
-    color: var(--c-muted);
-    font-weight: 400;
+  /* A filled dot in the accent stands in for the badge icon. */
+  .proof__badges li::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--c-accent);
+  }
+
+  .proof__marks {
+    gap: var(--s-2) var(--s-4);
+    align-items: baseline;
+  }
+
+  .proof__marks li {
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.3;
   }
 </style>

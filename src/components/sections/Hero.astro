@@ -20,7 +20,7 @@ interface Props {
 const { h1, subhead } = Astro.props;
 ---
 
-<Section class="hero">
+<Section size="roomy" class="hero">
   <div class="hero__grid">
     <div class="hero__text">
       <h1>{h1}</h1>
@@ -36,9 +36,15 @@ const { h1, subhead } = Astro.props;
       No photo is in the repo yet, so this reserves the exact box the image will
       occupy. Swapping in <Image> later changes no layout. Tracked in
       docs/parity-checklist.md.
+
+      The offset frame behind the box is the one decorative element in the
+      hero. It is drawn by a pseudo-element on the wrapper, so it costs no
+      markup and survives the photo swap unchanged.
     */}
-    <div class="hero__photo" role="presentation">
-      <p class="hero__photo-note">Photo of John goes here — 4:5, ~1500px wide.</p>
+    <div class="hero__figure">
+      <div class="hero__photo" role="presentation">
+        <p class="hero__photo-note">Photo of John goes here — 4:5, ~1500px wide.</p>
+      </div>
     </div>
   </div>
 </Section>
@@ -46,27 +52,63 @@ const { h1, subhead } = Astro.props;
 <style>
   .hero__grid {
     display: grid;
-    gap: var(--s-6);
+    gap: var(--s-8);
   }
 
   @media (min-width: 900px) {
     .hero__grid {
-      grid-template-columns: 1.15fr 1fr;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
       align-items: center;
-      gap: var(--s-8);
+      gap: var(--s-12);
     }
   }
 
+  .hero__text h1 {
+    /* Six to eight words a line keeps the hook from running the column. */
+    max-width: 16ch;
+  }
+
+  /* The subhead is the positioning line (audit §3.2 step 2), not a caption.
+     Ink, not muted, and a touch larger than body. */
   .hero__subhead {
-    max-width: var(--measure);
-    margin-block: var(--s-3) var(--s-4);
-    font-size: 1.25rem;
-    color: var(--c-muted);
+    max-width: 38ch;
+    margin-block: var(--s-3) var(--s-6);
+    font-size: var(--fs-lede);
+    line-height: 1.5;
+  }
+
+  .hero__figure {
+    --frame: 0.75rem;
+    position: relative;
+    /* Explicit, because `justify-self: end` below would otherwise shrink the
+       box to the width of the placeholder note. */
+    width: 100%;
+    /* Room for the frame, which sits down and to the right. Margin rather
+       than overflow, so a phone never gains a horizontal scrollbar. */
+    margin-inline-end: var(--frame);
+    margin-bottom: var(--frame);
+    max-width: 24rem;
+  }
+
+  @media (min-width: 900px) {
+    .hero__figure {
+      --frame: 1rem;
+      max-width: 30rem;
+      justify-self: end;
+    }
+  }
+
+  .hero__figure::before {
+    content: '';
+    position: absolute;
+    inset: var(--frame) calc(-1 * var(--frame)) calc(-1 * var(--frame)) var(--frame);
+    background: var(--c-accent);
+    border-radius: var(--radius);
   }
 
   .hero__photo {
+    position: relative;
     aspect-ratio: 4 / 5;
-    max-width: 100%;
     display: grid;
     place-items: center;
     padding: var(--s-3);
@@ -80,6 +122,6 @@ const { h1, subhead } = Astro.props;
     max-width: 22ch;
     text-align: center;
     color: var(--c-muted);
-    font-size: 0.95rem;
+    font-size: var(--fs-small);
   }
 </style>

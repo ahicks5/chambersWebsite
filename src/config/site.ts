@@ -14,16 +14,14 @@ export const site = {
   region: 'TX',
   country: 'US',
 
-  /** Audit §3.3 — these belong in the hero proof strip, not buried in prose. */
-  credentials: [
-    'ICF ACC',
-    '12 years corporate HR',
-    'Author of 3 journals',
-    'Cornell',
-    'Korn Ferry',
-    'UPenn',
-    'CaPP Institute',
-  ],
+  /**
+   * Audit §3.3 — these belong in the hero proof strip, not buried in prose.
+   * Two lists because they are two kinds of claim: things John holds or did,
+   * and places he trained. The proof strip renders them differently (badges
+   * versus a wordmark row) and the blog author box shows only the first.
+   */
+  credentials: ['ICF ACC', '12 years corporate HR', 'Author of 3 journals'],
+  trainedAt: ['Cornell', 'Korn Ferry', 'UPenn', 'CaPP Institute'],
 
   social: {
     linkedin: 'TODO: confirm LinkedIn profile URL',

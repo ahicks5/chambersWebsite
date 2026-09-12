@@ -2,20 +2,39 @@
 /**
  * Vertical rhythm and the alternating background band from audit §8.4, so the
  * eye can tell where one idea ends.
+ *
+ * Two knobs beyond the audit's single `.section--alt`: a size, because a proof
+ * strip at "¼ screen" (§5.2) and a hero at "1 screen" cannot share one
+ * padding; and a tone, because a page where every band is the same height and
+ * the background merely toggles reads as flat. See ADR 0009.
  */
 interface Props {
-  /** Alternate background — `--c-surface` instead of `--c-bg`. */
+  /** Alternate background — shorthand for `tone="surface"`. */
   alt?: boolean;
+  /** Background. `accent` inverts the text colour; use it once per page. */
+  tone?: 'bg' | 'surface' | 'accent';
+  /** Vertical padding. `compact` for strips, `roomy` for the hero. */
+  size?: 'compact' | 'default' | 'roomy';
   id?: string;
   /** Set when the section is introduced by a heading, for the a11y tree. */
   'aria-labelledby'?: string;
   class?: string;
 }
 
-const { alt = false, id, class: className, ...rest } = Astro.props;
+const { alt = false, tone = alt ? 'surface' : 'bg', size = 'default', id, class: className, ...rest } =
+  Astro.props;
 ---
 
-<section id={id} class:list={['section', alt && 'section--alt', className]} {...rest}>
+<section
+  id={id}
+  class:list={[
+    'section',
+    tone !== 'bg' && `section--${tone}`,
+    size !== 'default' && `section--${size}`,
+    className,
+  ]}
+  {...rest}
+>
   <div class="section__inner">
     <slot />
   </div>
@@ -26,14 +45,44 @@ const { alt = false, id, class: className, ...rest } = Astro.props;
     padding-block: var(--s-8);
   }
 
+  .section--compact {
+    padding-block: var(--s-4);
+  }
+
+  .section--roomy {
+    padding-block: var(--s-8);
+  }
+
   @media (min-width: 900px) {
     .section {
       padding-block: var(--s-12);
     }
+
+    .section--compact {
+      padding-block: var(--s-6);
+    }
+
+    .section--roomy {
+      padding-block: var(--s-16);
+    }
   }
 
-  .section--alt {
+  .section--surface {
     background: var(--c-surface);
+  }
+
+  /* One accent band per page at most. Everything inside is set in the ink
+     colour, including headings, which are otherwise accent-on-accent. */
+  .section--accent {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+  }
+
+  .section--accent :global(h1),
+  .section--accent :global(h2),
+  .section--accent :global(h3),
+  .section--accent :global(a) {
+    color: inherit;
   }
 
   .section__inner {
