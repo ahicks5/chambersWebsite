@@ -1,0 +1,53 @@
+---
+/**
+ * Renders a nav list from `src/config/nav.ts`. Both the header and the footer use
+ * this, so the two can't drift apart — audit §2.8 bug 1.
+ */
+import type { NavItem } from '../../config/nav';
+
+interface Props {
+  items: readonly NavItem[];
+  /** Accessible name, since a page has more than one nav landmark. */
+  label: string;
+  class?: string;
+}
+
+const { items, label, class: className } = Astro.props;
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<nav aria-label={label} class:list={['nav', className]}>
+  <ul>
+    {
+      items.map((item) => (
+        <li>
+          <a href={item.href} aria-current={currentPath === item.href ? 'page' : undefined}>
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav a {
+    color: var(--c-text);
+    text-decoration: none;
+  }
+
+  .nav a:hover,
+  .nav a[aria-current='page'] {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+</style>

@@ -1,0 +1,44 @@
+---
+/**
+ * Vertical rhythm and the alternating background band from audit §8.4, so the
+ * eye can tell where one idea ends.
+ */
+interface Props {
+  /** Alternate background — `--c-surface` instead of `--c-bg`. */
+  alt?: boolean;
+  id?: string;
+  /** Set when the section is introduced by a heading, for the a11y tree. */
+  'aria-labelledby'?: string;
+  class?: string;
+}
+
+const { alt = false, id, class: className, ...rest } = Astro.props;
+---
+
+<section id={id} class:list={['section', alt && 'section--alt', className]} {...rest}>
+  <div class="section__inner">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    padding-block: var(--s-8);
+  }
+
+  @media (min-width: 900px) {
+    .section {
+      padding-block: var(--s-12);
+    }
+  }
+
+  .section--alt {
+    background: var(--c-surface);
+  }
+
+  .section__inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: var(--s-3);
+  }
+</style>

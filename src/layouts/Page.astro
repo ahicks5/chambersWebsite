@@ -1,0 +1,40 @@
+---
+/**
+ * Standard content page: the shell, plus the page's single h1.
+ *
+ * Every page that uses this gets exactly one h1 (audit §7.3) without having to
+ * remember to write one.
+ */
+import Base from './Base.astro';
+import Section from '../components/layout/Section.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  page: string;
+  /** The visible h1. Often differs from the <title> — audit §7.2. */
+  h1: string;
+  subhead?: string;
+  noindex?: boolean;
+}
+
+const { title, description, page, h1, subhead, noindex } = Astro.props;
+---
+
+<Base {title} {description} {page} {noindex}>
+  <Section>
+    <h1>{h1}</h1>
+    {subhead && <p class="subhead">{subhead}</p>}
+  </Section>
+
+  <slot />
+</Base>
+
+<style>
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    color: var(--c-muted);
+    font-size: 1.25rem;
+  }
+</style>

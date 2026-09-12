@@ -1,0 +1,53 @@
+/**
+ * Design tokens — audit §8.2.
+ *
+ * This is the ONLY file in the repo that may contain a colour value. A raw hex
+ * anywhere else is a bug.
+ *
+ * ┌──────────────────────────────────────────────────────────────────────────┐
+ * │ THE COLOURS BELOW ARE PLACEHOLDERS, NOT THE BRAND PALETTE.               │
+ * │ They are neutral greys chosen so the project builds and renders while    │
+ * │ the real palette is still on the live Wix site.                          │
+ * │ Extract the real values before any visual work — docs/brand/tokens.md    │
+ * │ has the procedure. Do not invent a hue; copy John's.                     │
+ * └──────────────────────────────────────────────────────────────────────────┘
+ */
+
+:root {
+  /* ---------- Colour ---------- */
+  --c-bg: #ffffff;          /* TODO: extract from live site — page background */
+  --c-surface: #f4f4f5;     /* TODO: extract from live site — cards, alt sections */
+  --c-text: #18181b;        /* TODO: extract from live site — body copy */
+  --c-muted: #52525b;       /* TODO: extract from live site — captions, meta */
+  --c-accent: #27272a;      /* TODO: extract from live site — the ONE CTA colour */
+  --c-accent-ink: #ffffff;  /* TODO: extract from live site — text on accent */
+  --c-line: #d4d4d8;        /* TODO: extract from live site — borders, dividers */
+
+  /* ---------- Type scale (fluid, mobile-first) ---------- */
+  --fs-h1: clamp(2rem, 1.2rem + 3.2vw, 3.25rem);
+  --fs-h2: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
+  --fs-h3: clamp(1.15rem, 1rem + 0.6vw, 1.4rem);
+  --fs-body: 1.125rem; /* 18px */
+
+  --lh-body: 1.6;
+  --measure: 68ch; /* max line length — audit §8.4 wants 60–75 characters */
+
+  /* ---------- Fonts ---------- */
+  /* TODO: self-host John's two families as subset woff2 in public/fonts/
+     (audit §10: two families, four weights maximum). */
+  --font-heading: ui-sans-serif, system-ui, sans-serif;
+  --font-body: ui-sans-serif, system-ui, sans-serif;
+
+  /* ---------- Spacing (8pt) ---------- */
+  --s-1: 0.5rem;
+  --s-2: 1rem;
+  --s-3: 1.5rem;
+  --s-4: 2rem;
+  --s-6: 3rem;
+  --s-8: 4rem;
+  --s-12: 6rem;
+
+  /* ---------- Shape ---------- */
+  --radius: 14px;
+  --shadow: 0 6px 24px rgb(0 0 0 / 0.06);
+}

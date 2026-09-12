@@ -1,0 +1,79 @@
+---
+/**
+ * The only way a CTA reaches the page.
+ *
+ * Takes a key from `src/config/cta.ts` — never a label. Audit §4.3: six CTA
+ * labels across five Calendly events is the bug this component exists to
+ * prevent. There is no `label` prop, by design.
+ */
+import { CTA, ctaHref, type CtaKey } from '../../config/cta';
+
+interface Props {
+  /** Which CTA — `intro` and `consult` are the two primaries, `lead` is soft. */
+  cta: CtaKey;
+  /** Page the button sits on, for UTM attribution: `home`, `coaching`, … */
+  page: string;
+  /** Position on that page, for UTM attribution: `hero`, `mid`, `footer`, … */
+  position: string;
+  /** Override the CTA's default style. Use sparingly — see audit §4.3. */
+  style?: 'primary' | 'ghost';
+  class?: string;
+}
+
+const { cta, page, position, style, class: className } = Astro.props;
+
+const { label } = CTA[cta];
+const href = ctaHref(cta, page, position);
+const variant = style ?? CTA[cta].style;
+const isExternal = href.startsWith('http');
+---
+
+<a
+  href={href}
+  class:list={['button', `button--${variant}`, className]}
+  rel={isExternal ? 'noopener' : undefined}
+>
+  {label}
+</a>
+
+<style>
+  .button {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.9rem 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      background 0.15s ease;
+  }
+
+  /* Audit §4.3: one filled primary per screen, everything else outline. */
+  .button--primary {
+    background: var(--c-accent);
+    color: var(--c-accent-ink);
+    border: 2px solid var(--c-accent);
+  }
+
+  .button--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+  }
+
+  .button--ghost {
+    background: transparent;
+    color: var(--c-accent);
+    border: 2px solid var(--c-accent);
+  }
+
+  /* Audit §8.4: full-width on mobile, auto on desktop. */
+  @media (max-width: 639px) {
+    .button {
+      display: block;
+      width: 100%;
+    }
+  }
+</style>

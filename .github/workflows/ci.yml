@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.12
+          cache: npm
+
+      - run: npm ci
+
+      # Types plus content-collection schema validation. Audit §7.2 length
+      # bounds and the category enum are enforced here, not by review.
+      - run: npm run check
+
+      - run: npm run build

@@ -1,0 +1,2 @@
+Source images, processed by Astro. Pull originals from static.wixstatic.com at
+source resolution — strip the /v1/fill/... transform segment from the URL.

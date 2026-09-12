@@ -1,0 +1,18 @@
+---
+import Page from '../layouts/Page.astro';
+import Section from '../components/layout/Section.astro';
+import Button from '../components/ui/Button.astro';
+---
+
+<Page
+  page="404"
+  title="Page not found | JC Coaching & Consulting"
+  description="That page doesn't exist. Head back to the homepage, or book a free intro call to talk about burnout, career change, and sustainable success."
+  h1="That page doesn't exist."
+  subhead="It may have moved. Try the homepage, or book a call and ask."
+  noindex
+>
+  <Section alt>
+    <Button cta="intro" page="404" position="body" />
+  </Section>
+</Page>

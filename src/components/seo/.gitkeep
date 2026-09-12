@@ -1,0 +1,3 @@
+SEO components — Meta.astro, SchemaProfessionalService.astro, SchemaFaq.astro,
+SchemaArticle.astro. Audit §7.5. Built from content so the JSON-LD cannot drift
+from the visible text.

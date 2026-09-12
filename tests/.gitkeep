@@ -1,0 +1,4 @@
+Playwright suites (docs/02-project-structure.md §8):
+  smoke.spec.ts — every route 200s, exactly one H1, CTA present
+  a11y.spec.ts  — axe on each route, zero serious violations
+Not wired into CI yet; CI currently runs astro check and build only.
