@@ -135,6 +135,39 @@ const { h1, subhead } = Astro.props;
     border-radius: var(--radius);
   }
 
+  /* Below the two-column breakpoint the portrait goes first, top right, at a
+     little over half the width, and the headline block rides up over its
+     faded lower edge. The face is in the first screen with the hook instead
+     of parked under the button. The text stacks above the figure, and the
+     overlap is confined to the part the mask has already faded, so it never
+     covers a word. After the base figure rules on purpose: same specificity,
+     so source order decides. */
+  @media (max-width: 899px) {
+    .hero__grid {
+      gap: 0;
+    }
+
+    .hero__figure {
+      order: -1;
+      justify-self: end;
+      width: 58%;
+      max-width: 20rem;
+      /* The bottom 22% of the figure, in the container-width terms that
+         percentage margins use: 0.58 wide × 1.25 tall × 0.22. */
+      margin-bottom: -16%;
+    }
+
+    /* The frame stops where the headline begins. */
+    .hero__figure::before {
+      bottom: 24%;
+    }
+
+    .hero__text {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
   /* A child component's root element, so :global() — see Header.astro.
      The bottom fifth fades to transparent so the crop across his chest
      dissolves into the page rather than ending on a hard line. */
