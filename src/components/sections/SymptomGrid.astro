@@ -3,7 +3,10 @@
  * "Sound familiar?" — audit §5.2 section 3.
  *
  * The four symptoms are already written on the live homepage, buried in twelve
- * paragraphs of prose. As cards they do the recognition work in one screen.
+ * paragraphs of prose. Here they are a checklist: four statements, each with
+ * a box in front of it, and as the block scrolls into view the boxes tick
+ * one after another — the reader watching their own answers land. With no
+ * JS, or with reduced motion, the list simply renders ticked.
  */
 import { getCollection, render } from 'astro:content';
 import Section from '../layout/Section.astro';
@@ -21,6 +24,8 @@ const rendered = await Promise.all(
     {
       rendered.map(({ entry, Content }) => (
         <li>
+          {/* Decorative: the words carry the meaning, the tick carries the mood. */}
+          <span class="tick" aria-hidden="true"></span>
           <h3>{entry.data.title}</h3>
           <Content />
         </li>
@@ -41,6 +46,10 @@ const rendered = await Promise.all(
   }
 
   .symptoms li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--s-2);
+    align-items: start;
     padding: var(--s-4) 0;
     border-bottom: 1px solid var(--c-line);
   }
@@ -73,12 +82,86 @@ const rendered = await Promise.all(
   }
 
   .symptoms h3 {
+    grid-column: 2;
     margin-bottom: var(--s-1);
     font-size: var(--fs-h3);
   }
 
   .symptoms :global(p) {
+    grid-column: 2;
     margin: 0;
     color: var(--c-muted);
+  }
+
+  /* The box: a ring in the heading colour, filled once ticked, with the
+     mark drawn in the ring's ink. Ticked is the resting state. */
+  .tick {
+    grid-row: 1 / span 2;
+    position: relative;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.15em;
+    border: 2px solid var(--c-accent);
+    border-radius: 999px;
+    background: var(--c-accent);
+  }
+
+  .tick::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    width: 0.35rem;
+    height: 0.65rem;
+    border-right: 2.5px solid var(--c-accent-ink);
+    border-bottom: 2.5px solid var(--c-accent-ink);
+    transform: translate(-50%, -58%) rotate(45deg);
+  }
+
+  /* With the reveal active, the boxes start empty and tick in sequence
+     once the block is in view, after the rows have risen (global.css). The
+     gate mirrors the one on `.reveal`: no JS or reduced motion, no change. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-reveal] .reveal) .tick {
+      background: transparent;
+      transition: background-color var(--dur) var(--ease);
+    }
+
+    :global(html[data-reveal] .reveal) .tick::after {
+      opacity: 0;
+      transform: translate(-50%, -58%) rotate(45deg) scale(0.5);
+      transition:
+        opacity var(--dur) var(--ease),
+        transform var(--dur) var(--ease);
+    }
+
+    :global(html[data-reveal] .reveal.is-in) .tick {
+      background: var(--c-accent);
+    }
+
+    :global(html[data-reveal] .reveal.is-in) .tick::after {
+      opacity: 1;
+      transform: translate(-50%, -58%) rotate(45deg) scale(1);
+    }
+
+    :global(html[data-reveal] .reveal.is-in) .symptoms li:nth-child(1) .tick,
+    :global(html[data-reveal] .reveal.is-in) .symptoms li:nth-child(1) .tick::after {
+      transition-delay: 0.5s;
+    }
+
+    :global(html[data-reveal] .reveal.is-in) .symptoms li:nth-child(2) .tick,
+    :global(html[data-reveal] .reveal.is-in) .symptoms li:nth-child(2) .tick::after {
+      transition-delay: 0.75s;
+    }
+
+    :global(html[data-reveal] .reveal.is-in) .symptoms li:nth-child(3) .tick,
+    :global(html[data-reveal] .reveal.is-in) .symptoms li:nth-child(3) .tick::after {
+      transition-delay: 1s;
+    }
+
+    :global(html[data-reveal] .reveal.is-in) .symptoms li:nth-child(4) .tick,
+    :global(html[data-reveal] .reveal.is-in) .symptoms li:nth-child(4) .tick::after {
+      transition-delay: 1.25s;
+    }
   }
 </style>
