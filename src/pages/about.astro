@@ -68,9 +68,7 @@ const { Content } = await render(page);
       <li>Rest Regimen</li>
       <li>Highlight of My Day</li>
     </ul>
-    <p class="journals__note">
-      Needs John: clean Amazon short links and cover images for each.
-    </p>
+    {/* Covers and links are tracked in docs/parity-checklist.md, not shown here. */}
   </Section>
 
   <FinalCta band="final-cta-home" cta="intro" page="about" />
@@ -118,11 +116,5 @@ const { Content } = await render(page);
 
   .journals li {
     margin-bottom: var(--s-1);
-  }
-
-  .journals__note {
-    margin-top: var(--s-3);
-    color: var(--c-muted);
-    font-size: 0.95rem;
   }
 </style>
