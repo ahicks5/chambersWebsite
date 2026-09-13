@@ -29,7 +29,9 @@ export function builtRoutes(): string[] {
  * Those are drafts under review and are checked separately and in bulk.
  */
 export function primaryRoutes(): string[] {
-  return builtRoutes().filter((r) => !r.startsWith('/blog/') || r.startsWith('/blog/category/'));
+  return builtRoutes().filter(
+    (r) => !r.startsWith('/blog/') || r.startsWith('/blog/category/') || r.startsWith('/blog/page/')
+  );
 }
 
 /**
@@ -38,6 +40,11 @@ export function primaryRoutes(): string[] {
  */
 export function postRoutes(): string[] {
   return builtRoutes().filter(
-    (r) => r.startsWith('/blog/') && r !== '/blog/' && !r.startsWith('/blog/category/')
+    (r) =>
+      r.startsWith('/blog/') &&
+      r !== '/blog/' &&
+      !r.startsWith('/blog/category/') &&
+      // Pages two and up of the index are listings, not posts.
+      !r.startsWith('/blog/page/')
   );
 }

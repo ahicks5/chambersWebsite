@@ -21,6 +21,7 @@ import { footerGroups } from '../../config/nav';
 import type { CtaKey } from '../../config/cta';
 import Nav from './Nav.astro';
 import Button from '../ui/Button.astro';
+import Logo from '../ui/Logo.astro';
 
 interface Props {
   /** Page identifier for CTA attribution, e.g. `home`. */
@@ -58,7 +59,10 @@ const socials = (Object.keys(NETWORKS) as (keyof typeof NETWORKS)[])
   <div class="footer__inner">
     <div class="footer__top">
       <div class="footer__brand">
-        <a href="/" class="footer__wordmark">{site.name}</a>
+        <a href="/" class="footer__wordmark">
+          <Logo size={26} />
+          <span>{site.name}</span>
+        </a>
         {line && <p class="footer__line">{line}</p>}
         <Button {cta} {page} position="footer" size="compact" class="footer__cta" />
       </div>
@@ -159,7 +163,9 @@ const socials = (Object.keys(NETWORKS) as (keyof typeof NETWORKS)[])
   }
 
   .footer__wordmark {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     font-family: var(--font-heading);
     font-weight: var(--fw-heading);
     font-size: var(--fs-h3);

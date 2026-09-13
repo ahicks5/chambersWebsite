@@ -36,9 +36,13 @@ live site today.
    every page's `h1` ends in the mark, through `PageHero.astro`. Still one
    mark per page, still the headline's closing punctuation, never a word.
 5. Added the same day: the app icon and the social preview image carry the
-   mark too — "JC" with the dot, and the hero headline's full stop. They are
-   the brand mark and the hero reproduced, not new places on the pages, and
-   `scripts/brand-assets.mjs` renders both from the same tokens.
+   mark too. They are the brand mark and the hero reproduced, not new places
+   on the pages, and `scripts/brand-assets.mjs` renders both from the same
+   tokens.
+7. The brand mark itself (`src/components/ui/Logo.astro`, in the header and
+   the footer) ends on the dot: a ring, a rising check, and the warm point
+   the rise reaches for. It is the fourth and last place the yellow appears —
+   headline, icon, share image, mark — and all four are the same gesture.
 
 ## Consequences
 

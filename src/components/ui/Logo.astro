@@ -1,0 +1,53 @@
+---
+/**
+ * The brand mark.
+ *
+ * A ring with a rising check inside it and the warm dot at the top of the
+ * rise (ADR 0011). Every shape is already the site's: the ring and tick are
+ * the checklist's ("Sound familiar?", the fit lists, the burnout check's
+ * "2 minutes"), the rise is the steps' track, and the dot is the one warm
+ * mark the headlines end on. It reads as a check and as a way up.
+ *
+ * Two colours, both roles: the ring and stroke take `currentColor`, so the
+ * mark inherits whatever the surface gives it, and the dot is `--c-mark`,
+ * which resolves to the yellow on the green and to the green on a light
+ * band, where yellow would fail contrast.
+ *
+ * scripts/brand-assets.mjs renders the same geometry for the favicon, the
+ * home-screen icons and the share image, so the tab, the phone and the page
+ * carry one mark.
+ */
+interface Props {
+  /** Rendered size in px. The mark is drawn on a 32-unit grid. */
+  size?: number;
+  class?: string;
+}
+
+const { size = 28, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['logo', className]}
+  width={size}
+  height={size}
+  viewBox="0 0 32 32"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle cx="16" cy="16" r="13.6" stroke="currentColor" stroke-width="2.4"></circle>
+  <path
+    d="M9.2 16.4 13.8 21 20 12.4"
+    stroke="currentColor"
+    stroke-width="2.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"></path>
+  <circle cx="22.6" cy="9.4" r="2.4" fill="var(--c-mark)"></circle>
+</svg>
+
+<style>
+  .logo {
+    display: block;
+    flex: 0 0 auto;
+  }
+</style>

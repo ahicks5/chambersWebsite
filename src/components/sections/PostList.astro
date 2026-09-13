@@ -1,0 +1,313 @@
+---
+/**
+ * A page of blog posts, with the pager under it — audit §7.4.
+ *
+ * The index used to print all 65 posts in one column, which is a wall
+ * nobody reads to the end of. Ten to a page, and the rest are a click away
+ * at /blog/page/2/ and so on. Static pages rather than a "load more"
+ * button, so it costs no JavaScript, every post stays crawlable, and a
+ * reader can link to the page they are on.
+ *
+ * Shared by the blog index and the paged routes, so the two cannot drift.
+ */
+import type { CollectionEntry } from 'astro:content';
+import Section from '../layout/Section.astro';
+import { CATEGORY_LABELS } from '../../lib/posts';
+
+interface Props {
+  /** The posts on this page, already sliced and sorted. */
+  posts: CollectionEntry<'posts'>[];
+  /** 1-based. */
+  page: number;
+  totalPages: number;
+  /** Every published post, for the count under the pager. */
+  total: number;
+}
+
+const { posts, page, totalPages, total } = Astro.props;
+
+/** Page 1 lives at /blog/, so it never becomes /blog/page/1/. */
+const href = (n: number) => (n === 1 ? '/blog/' : `/blog/page/${n}/`);
+
+const fmt = (date: Date) =>
+  date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const first = (page - 1) * 10 + 1;
+const last = first + posts.length - 1;
+---
+
+<Section glow="right" aria-labelledby="posts">
+  <h2 id="posts" class="visually-hidden">Posts</h2>
+
+  {
+    posts.length === 0 ? (
+      <p class="empty">
+        Posts are being migrated from the old site and are waiting on a read
+        before they go live. Nothing is lost — every old link still works.
+      </p>
+    ) : (
+      <ul class="posts stagger">
+        {posts.map((post) => (
+          <li>
+            <p class="posts__meta">
+              <a href={`/blog/category/${post.data.category}`}>
+                {CATEGORY_LABELS[post.data.category]}
+              </a>
+              <span> · </span>
+              <time datetime={post.data.pubDate.toISOString()}>{fmt(post.data.pubDate)}</time>
+            </p>
+            <h3>
+              <a href={`/blog/${post.id}`}>{post.data.title}</a>
+            </h3>
+            <p class="posts__desc">{post.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  {
+    totalPages > 1 && (
+      <nav class="pager" aria-label="Posts">
+        <p class="pager__count">
+          {first}–{last} of {total}
+        </p>
+
+        <div class="pager__links">
+          {page > 1 && (
+            <a class="pager__link" href={href(page - 1)} rel="prev">
+              <svg aria-hidden="true" viewBox="0 0 16 16" width="15" height="15">
+                <path
+                  d="M14 8H3M7.5 3.5 3 8l4.5 4.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span>Newer</span>
+            </a>
+          )}
+
+          {page < totalPages && (
+            <a class="pager__link pager__link--next" href={href(page + 1)} rel="next">
+              <span>Older posts</span>
+              <svg aria-hidden="true" viewBox="0 0 16 16" width="15" height="15">
+                <path
+                  d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+          )}
+        </div>
+
+        {/* Every page, so a reader can jump and a crawler can reach them all. */}
+        <ol class="pager__pages">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+            <li>
+              <a
+                href={href(n)}
+                aria-current={n === page ? 'page' : undefined}
+                aria-label={`Page ${n}`}
+              >
+                {n}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )
+  }
+</Section>
+
+<style>
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .posts {
+    display: grid;
+    gap: var(--s-6);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .posts li {
+    padding-bottom: var(--s-6);
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .posts li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .posts__meta {
+    margin: 0 0 var(--s-1);
+    color: var(--c-muted);
+    font-size: 0.95rem;
+  }
+
+  .posts__meta a {
+    color: var(--c-accent);
+    font-weight: var(--fw-heading);
+  }
+
+  .posts h3 {
+    margin: 0 0 var(--s-1);
+  }
+
+  .posts h3 a {
+    color: var(--c-text);
+    text-decoration: none;
+  }
+
+  .posts h3 a:hover {
+    color: var(--c-accent);
+  }
+
+  .posts__desc {
+    max-width: var(--measure);
+    margin: 0;
+    color: var(--c-muted);
+  }
+
+  .empty {
+    max-width: var(--measure);
+    color: var(--c-muted);
+  }
+
+  .pager {
+    display: grid;
+    gap: var(--s-3);
+    margin-top: var(--s-8);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-line);
+  }
+
+  @media (min-width: 700px) {
+    .pager {
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: var(--s-4);
+    }
+  }
+
+  .pager__count {
+    margin: 0;
+    color: var(--c-muted);
+    font-size: var(--fs-small);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pager__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+  }
+
+  @media (min-width: 700px) {
+    .pager__links {
+      order: 3;
+      justify-content: end;
+    }
+  }
+
+  /* The same pill as the nav's, at button size: the way on is a real target. */
+  .pager__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 999px;
+    color: var(--c-text);
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: var(--fs-small);
+    text-decoration: none;
+    transition:
+      background-color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+
+  .pager__link:hover,
+  .pager__link:focus-visible {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-accent-ink);
+  }
+
+  .pager__link svg {
+    flex: 0 0 auto;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .pager__link--next:hover svg {
+    transform: translateX(3px);
+  }
+
+  .pager__link:not(.pager__link--next):hover svg {
+    transform: translateX(-3px);
+  }
+
+  .pager__pages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 700px) {
+    .pager__pages {
+      order: 2;
+      justify-content: center;
+    }
+  }
+
+  .pager__pages a {
+    display: grid;
+    place-items: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding-inline: 0.4rem;
+    border-radius: 999px;
+    color: var(--c-muted);
+    font-size: var(--fs-small);
+    font-variant-numeric: tabular-nums;
+    text-decoration: none;
+    transition:
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease);
+  }
+
+  .pager__pages a:hover {
+    background: var(--c-surface);
+    color: var(--c-text);
+  }
+
+  /* The page you are on, marked the way the nav marks the current page. */
+  .pager__pages a[aria-current='page'] {
+    background: var(--c-surface);
+    box-shadow: inset 0 0 0 1px var(--c-line);
+    color: var(--c-accent);
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+  }
+</style>
