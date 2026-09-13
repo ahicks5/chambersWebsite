@@ -15,7 +15,7 @@ if (!band) throw new Error('Missing src/content/bands/org-band.md');
 const { Content } = await render(band);
 ---
 
-<Section alt size="compact" class="org-section" aria-labelledby="for-organizations">
+<Section size="compact" class="org-section" aria-labelledby="for-organizations">
   <div class="org">
     <div class="org__text">
       <h2 id="for-organizations">{band.data.title}</h2>
@@ -28,7 +28,10 @@ const { Content } = await render(band);
 </Section>
 
 <style>
-  /* Sits under another surface band (Meet John), so a rule marks the edge. */
+  /* A panel on the page colour, like the decision row on its band: a
+     hairline, the surface tint and a radius, so the secondary pitch is one
+     framed object between Meet John and the burnout check rather than a
+     strip that reads as more page. */
   :global(.org-section) {
     border-top: 1px solid var(--c-line);
   }
@@ -36,6 +39,10 @@ const { Content } = await render(band);
   .org {
     display: grid;
     gap: var(--s-4);
+    padding: var(--s-4);
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
   }
 
   .org h2 {
@@ -47,6 +54,7 @@ const { Content } = await render(band);
       grid-template-columns: 1fr auto;
       gap: var(--s-8);
       align-items: center;
+      padding: var(--s-6);
     }
   }
 
