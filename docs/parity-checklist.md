@@ -32,6 +32,12 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       and the About-page candid in the other two. Alt text is his name from
       `site.ts`. **Still needs John:** better originals if he has them — the
       candid is 1233px at source — and a say on which photo goes where.
+- [ ] **Hero background.** `public/images/hero-bg-{900,1800}.webp` is an
+      Unsplash photo of misty hills with a trail (photo id
+      `1470071459604-3b5ec3a7fe05`, Unsplash licence: free to use, no
+      attribution required). It is blended into the green at low opacity, so
+      only its light and shade show. If John has a landscape of his own — a
+      trail he actually walks — swap the two files and nothing else changes.
 - [ ] **Pricing decision, Option A or B** (audit §4.4, §11 question 2). The
       3-month package currently costs *more* per session than a single session
       (~$167 vs $145), so there is no economic reason to commit. The homepage

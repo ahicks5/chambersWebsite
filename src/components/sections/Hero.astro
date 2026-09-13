@@ -67,9 +67,39 @@ const [, hook, mark = ''] = h1.match(/^(.*?)([.!?]?)$/) ?? [h1, h1, ''];
   /* A soft light behind the photo column, so the hero has depth rather than
      one flat fill. Tint over the page colour — no new colour. */
   :global(.hero) {
+    position: relative;
+    isolation: isolate;
     background:
       radial-gradient(60% 55% at 78% 30%, var(--c-surface), transparent 70%),
       var(--c-bg);
+  }
+
+  /* A landscape behind everything: misty hills with a trail winding through
+     them (public/images/hero-bg-*.webp, source in docs/parity-checklist.md).
+     Blended in luminosity mode it lends the page only its light and shade —
+     the green stays the green, and the photo reads as weather on it rather
+     than a picture under it. Low opacity, and a fade to the page colour
+     before the proof strip. Painted below the content by the negative
+     z-index inside the hero's own stacking context. */
+  :global(.hero)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('/images/hero-bg-900.webp') center 40% / cover no-repeat;
+    mix-blend-mode: luminosity;
+    /* Measured, not eyeballed: at this opacity, with the photo's highlights
+       pulled down at encode time, the brightest patch the photo puts behind
+       the subhead still clears 4.5:1 against white at every width. */
+    opacity: 0.26;
+    mask-image: linear-gradient(to bottom, black 45%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 45%, transparent 100%);
+  }
+
+  @media (min-width: 900px) {
+    :global(.hero)::before {
+      background-image: url('/images/hero-bg-1800.webp');
+    }
   }
 
   .hero__grid {
