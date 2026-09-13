@@ -85,6 +85,14 @@ const { h1, subhead } = Astro.props;
     line-height: 1.5;
   }
 
+  /* On a phone the lede at 20px ran to five lines under a four-line h1 and
+     read as a paragraph, not a subhead. Body size keeps it to four. */
+  @media (max-width: 639px) {
+    .hero__subhead {
+      font-size: var(--fs-body);
+    }
+  }
+
   .hero__figure {
     --frame: 0.75rem;
     position: relative;
