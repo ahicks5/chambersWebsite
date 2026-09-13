@@ -38,6 +38,7 @@
   --tint-22: rgb(255 255 255 / 0.22); /* decorative lines on green */
   --tint-55: rgb(255 255 255 / 0.55); /* interactive borders on green — 3.85:1 */
   --tint-78: rgb(255 255 255 / 0.78); /* muted text on green — 5.91:1 base, 4.87:1 band */
+  --tint-90: rgb(255 255 255 / 0.9); /* body text on green — 7.5:1; pure white is for headings */
 
   /* ---------- Roles: light scheme (default) ---------- */
   --c-bg: var(--palette-white);
@@ -112,7 +113,9 @@
 .scheme-green {
   --c-bg: var(--palette-green);
   --c-surface: var(--tint-8);
-  --c-text: var(--palette-white);
+  /* Body copy a shade below the headings, so a page of white-on-green does
+     not read as one weight of light. Headings and buttons stay pure white. */
+  --c-text: var(--tint-90);
   --c-muted: var(--tint-78);
   --c-accent: var(--palette-white);
   --c-accent-ink: var(--palette-green);

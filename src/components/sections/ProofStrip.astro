@@ -15,18 +15,18 @@ import { site } from '../../config/site';
 import Section from '../layout/Section.astro';
 ---
 
-<Section alt size="compact" class="proof-section" aria-label="Credentials">
+<Section size="compact" reveal={false} class="proof-section" aria-label="Credentials">
   <div class="proof">
     <div class="proof__group">
       <span class="eyebrow">Credentials</span>
-      <ul class="proof__badges">
+      <ul class="proof__list">
         {site.credentials.map((credential) => <li>{credential}</li>)}
       </ul>
     </div>
 
     <div class="proof__group">
       <span class="eyebrow">Trained at</span>
-      <ul class="proof__marks">
+      <ul class="proof__list proof__list--marks">
         {site.trainedAt.map((place) => <li>{place}</li>)}
       </ul>
     </div>
@@ -34,71 +34,65 @@ import Section from '../layout/Section.astro';
 </Section>
 
 <style>
+  /* Bounded by rules, not filled: it reads as the last line of the hero. */
+  :global(.proof-section) {
+    border-top: 1px solid var(--c-line);
+    border-bottom: 1px solid var(--c-line);
+  }
+
   .proof {
     display: grid;
-    gap: var(--s-4);
+    gap: var(--s-3);
   }
 
   @media (min-width: 900px) {
     .proof {
       grid-template-columns: auto auto;
       justify-content: space-between;
-      align-items: start;
-      gap: var(--s-8);
+      align-items: baseline;
+      gap: var(--s-6);
     }
   }
 
   .proof__group {
-    display: grid;
-    gap: var(--s-2);
-  }
-
-  .proof ul {
     display: flex;
     flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-1) var(--s-3);
+  }
+
+  .proof__group .eyebrow {
+    display: inline;
+    color: var(--c-muted);
+  }
+
+  .proof__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-3);
     margin: 0;
     padding: 0;
     list-style: none;
-  }
-
-  .proof__badges {
-    gap: var(--s-1) var(--s-2);
-  }
-
-  .proof__badges li {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.9rem 0.35rem 0.75rem;
-    background: var(--c-bg);
-    border: 1px solid var(--c-line);
-    border-radius: 999px;
-    font-family: var(--font-heading);
-    font-weight: var(--fw-heading);
     font-size: var(--fs-small);
-    line-height: 1.3;
   }
 
-  /* A filled dot in the accent stands in for the badge icon. */
-  .proof__badges li::before {
-    content: '';
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 999px;
-    background: var(--c-accent);
-  }
-
-  .proof__marks {
-    gap: var(--s-2) var(--s-4);
+  .proof__list li {
+    display: inline-flex;
     align-items: baseline;
+    gap: var(--s-3);
   }
 
-  .proof__marks li {
+  /* Middot between items, not after the last. */
+  .proof__list li:not(:last-child)::after {
+    content: '·';
+    color: var(--c-muted);
+  }
+
+  .proof__list--marks li {
     font-family: var(--font-heading);
     font-weight: var(--fw-heading);
-    font-size: 1.05rem;
-    letter-spacing: 0.06em;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    line-height: 1.3;
   }
 </style>

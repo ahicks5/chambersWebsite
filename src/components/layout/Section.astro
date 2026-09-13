@@ -16,7 +16,9 @@ interface Props {
    * page. `light` is the audit's white page as a band inside the green one
    * (ADR 0010) — every colour role inside it is the light scheme's.
    */
-  tone?: 'bg' | 'surface' | 'accent' | 'light';
+  tone?: 'bg' | 'surface' | 'accent' | 'light' | 'light-surface';
+  /** A one-pixel rule along the top edge, for two same-tone sections in a row. */
+  rule?: boolean;
   /** Vertical padding. `compact` for strips, `roomy` for the hero. */
   size?: 'compact' | 'default' | 'roomy';
   /** Rise into view on scroll (global.css). The hero opts out; it has its own entrance. */
@@ -32,6 +34,7 @@ const {
   tone = alt ? 'surface' : 'bg',
   size = 'default',
   reveal = true,
+  rule = false,
   id,
   class: className,
   ...rest
@@ -43,7 +46,8 @@ const {
   class:list={[
     'section',
     tone !== 'bg' && `section--${tone}`,
-    tone === 'light' && 'scheme-light',
+    (tone === 'light' || tone === 'light-surface') && 'scheme-light',
+    rule && 'section--rule',
     size !== 'default' && `section--${size}`,
     className,
   ]}
@@ -88,6 +92,15 @@ const {
   .section--light {
     background: var(--c-bg);
     color: var(--c-text);
+  }
+
+  .section--light-surface {
+    background: var(--c-surface);
+    color: var(--c-text);
+  }
+
+  .section--rule {
+    border-top: 1px solid var(--c-line);
   }
 
   /* One accent band per page at most. Everything inside is set in the ink

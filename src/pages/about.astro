@@ -44,7 +44,7 @@ const { Content } = await render(page);
   <ProofStrip />
 
   <CopyBand band="about-credentials" />
-  <CopyBand band="about-story" alt />
+  <CopyBand band="about-story" tone="light" />
   <CopyBand band="about-how-i-coach" />
 
   {/*
@@ -52,7 +52,7 @@ const { Content } = await render(page);
     nowhere useful. Titles are known from §2.6; the Amazon short links are not
     in the repo yet — see docs/parity-checklist.md.
   */}
-  <Section alt aria-labelledby="journals">
+  <Section rule aria-labelledby="journals">
     <h2 id="journals">Books and journals</h2>
     <ul class="journals">
       <li>Bhavana</li>

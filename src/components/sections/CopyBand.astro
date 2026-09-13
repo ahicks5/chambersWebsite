@@ -10,11 +10,13 @@ import Prose from '../ui/Prose.astro';
 interface Props {
   band: CollectionEntry<'bands'>['id'];
   alt?: boolean;
+  tone?: 'bg' | 'surface' | 'light' | 'light-surface';
+  rule?: boolean;
   /** Heading level. The page owns the h1, so bands default to h2. */
   as?: 'h2' | 'h3';
 }
 
-const { band: bandId, alt = false, as: Heading = 'h2' } = Astro.props;
+const { band: bandId, alt = false, tone, rule = false, as: Heading = 'h2' } = Astro.props;
 
 const band = await getEntry('bands', bandId);
 if (!band) throw new Error(`Missing src/content/bands/${bandId}.md`);
@@ -23,7 +25,7 @@ const { Content } = await render(band);
 const headingId = `band-${bandId}`;
 ---
 
-<Section {alt} aria-labelledby={headingId}>
+<Section {alt} {tone} {rule} aria-labelledby={headingId}>
   <Heading id={headingId}>{band.data.title}</Heading>
   <Prose>
     <Content />

@@ -6,7 +6,6 @@
  * paragraphs of prose. As cards they do the recognition work in one screen.
  */
 import { getCollection, render } from 'astro:content';
-import Card from '../ui/Card.astro';
 import Section from '../layout/Section.astro';
 
 const symptoms = (await getCollection('symptoms')).sort((a, b) => a.data.order - b.data.order);
@@ -22,10 +21,8 @@ const rendered = await Promise.all(
     {
       rendered.map(({ entry, Content }) => (
         <li>
-          <Card variant="quiet">
-            <h3>{entry.data.title}</h3>
-            <Content />
-          </Card>
+          <h3>{entry.data.title}</h3>
+          <Content />
         </li>
       ))
     }
@@ -33,12 +30,19 @@ const rendered = await Promise.all(
 </Section>
 
 <style>
+  /* Four statements separated by rules, not four boxes. The words do the
+     recognition work; a filled tile only adds furniture. */
   .symptoms {
     display: grid;
-    gap: var(--s-3);
-    margin: var(--s-4) 0 0;
+    margin: var(--s-6) 0 0;
     padding: 0;
     list-style: none;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .symptoms li {
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--c-line);
   }
 
   /* Audit §8.4: 1 column mobile, 2 at 640px, never five. */
@@ -46,29 +50,35 @@ const rendered = await Promise.all(
     .symptoms {
       grid-template-columns: repeat(2, 1fr);
     }
+
+    .symptoms li {
+      padding: var(--s-4) var(--s-4) var(--s-4) 0;
+    }
+
+    .symptoms li:nth-child(2n) {
+      padding-left: var(--s-4);
+      border-left: 1px solid var(--c-line);
+    }
   }
 
   @media (min-width: 1024px) {
     .symptoms {
       grid-template-columns: repeat(4, 1fr);
     }
-  }
 
-  /* Grid stretches the <li>; the card inside has to fill it or the row
-     bottoms do not line up. */
-  .symptoms li {
-    display: flex;
-  }
-
-  .symptoms :global(.card) {
-    width: 100%;
+    .symptoms li:nth-child(n + 2) {
+      padding-left: var(--s-4);
+      border-left: 1px solid var(--c-line);
+    }
   }
 
   .symptoms h3 {
     margin-bottom: var(--s-1);
+    font-size: var(--fs-h3);
   }
 
-  .symptoms :global(p:last-child) {
-    margin-bottom: 0;
+  .symptoms :global(p) {
+    margin: 0;
+    color: var(--c-muted);
   }
 </style>

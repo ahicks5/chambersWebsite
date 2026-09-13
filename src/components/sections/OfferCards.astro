@@ -40,7 +40,7 @@ const rendered = await Promise.all(
 ---
 
 {/* The pricing decision sits on the light band — ADR 0010. */}
-<Section tone="light" aria-labelledby="offer-cards">
+<Section tone="light-surface" aria-labelledby="offer-cards">
   <h2 id="offer-cards">{heading}</h2>
 
   <ul class="offers stagger">
@@ -137,6 +137,19 @@ const rendered = await Promise.all(
   .offers :global(.offer .button) {
     display: flex;
     width: 100%;
+  }
+
+  /* Narrow cards: a slightly tighter card and button so the label stays on
+     one line at phone and tablet widths. */
+  @media (max-width: 1023px) {
+    .offers :global(.offer) {
+      padding: var(--s-3);
+    }
+
+    .offers :global(.offer .button) {
+      padding-inline: 1rem 0.9rem;
+      font-size: 1rem;
+    }
   }
 
   .offer__badge {

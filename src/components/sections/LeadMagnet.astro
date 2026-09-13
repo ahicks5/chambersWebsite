@@ -22,7 +22,7 @@ if (!band) throw new Error('Missing src/content/bands/lead-magnet.md');
 const { Content } = await render(band);
 ---
 
-<Section aria-labelledby="burnout-check">
+<Section tone="light" aria-labelledby="burnout-check">
   <div class="magnet">
     <h2 id="burnout-check">{band.data.title}</h2>
     <Content />

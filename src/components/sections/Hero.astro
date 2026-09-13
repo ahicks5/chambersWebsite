@@ -50,6 +50,14 @@ const { h1, subhead } = Astro.props;
 </Section>
 
 <style>
+  /* A soft light behind the photo column, so the hero has depth rather than
+     one flat fill. Tint over the page colour — no new colour. */
+  :global(.hero) {
+    background:
+      radial-gradient(60% 55% at 78% 30%, var(--c-surface), transparent 70%),
+      var(--c-bg);
+  }
+
   .hero__grid {
     display: grid;
     gap: var(--s-8);
@@ -98,11 +106,13 @@ const { h1, subhead } = Astro.props;
     }
   }
 
+  /* An outline offset down and to the right, not a filled block: a filled
+     one read as a second slab behind the photo. */
   .hero__figure::before {
     content: '';
     position: absolute;
     inset: var(--frame) calc(-1 * var(--frame)) calc(-1 * var(--frame)) var(--frame);
-    background: var(--c-accent);
+    border: 1px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
 

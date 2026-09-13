@@ -27,15 +27,14 @@ const { Content } = await render(band);
 ---
 
 {/*
-  The one accent band on the page (ADR 0009). It closes every page that has a
-  closing CTA, so the hero and this band bracket the page: quiet and large at
-  the top, saturated at the bottom.
+  Closes every page that has a closing CTA, on the page colour and a size up,
+  so the hero and this band bracket the page (ADR 0009, 0010).
 */}
-<Section tone="accent" aria-labelledby="final-cta">
+<Section size="roomy" rule aria-labelledby="final-cta">
   <div class="final">
     <h2 id="final-cta">{band.data.title}</h2>
     <Content />
-    <Button {cta} {page} position="final" style="inverse" />
+    <Button {cta} {page} position="final" />
   </div>
 </Section>
 
@@ -48,6 +47,8 @@ const { Content } = await render(band);
 
   .final h2 {
     max-width: 20ch;
+    font-size: var(--fs-h1);
+    line-height: 1.05;
   }
 
   .final :global(p) {

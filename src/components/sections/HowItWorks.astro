@@ -14,10 +14,11 @@ interface Props {
   scope?: 'home' | 'coaching' | 'org';
   heading?: string;
   id?: string;
-  alt?: boolean;
+  /** Sits on the light band by default — the mechanism is read, not felt. */
+  tone?: 'bg' | 'surface' | 'light' | 'light-surface';
 }
 
-const { scope = 'home', heading = 'How it works', id = 'how-it-works', alt = true } = Astro.props;
+const { scope = 'home', heading = 'How it works', id = 'how-it-works', tone = 'light' } = Astro.props;
 
 const steps = (
   await getCollection('steps', ({ data }) => data.scope === scope || data.scope === 'both')
@@ -27,7 +28,7 @@ const rendered = await Promise.all(
 );
 ---
 
-<Section {alt} aria-labelledby={id}>
+<Section {tone} aria-labelledby={id}>
   <h2 {id}>{heading}</h2>
 
   {/* An ordered list, so the sequence is in the markup and not only the design. */}
