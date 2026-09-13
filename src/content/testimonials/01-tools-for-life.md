@@ -2,6 +2,7 @@
 engagement: 5-month engagement
 segment: individual
 featured: true
+rating: 5
 consent: role-only
 order: 1
 ---

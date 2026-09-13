@@ -2,6 +2,7 @@
 engagement: Resilience Team Training
 segment: organization
 featured: true
+rating: 5
 consent: role-only
 order: 1
 ---

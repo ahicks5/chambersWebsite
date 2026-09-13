@@ -71,6 +71,14 @@ const testimonials = defineCollection({
     featured: z.boolean().default(false),
     consent: z.enum(['named', 'role-only']),
     order: z.number().default(99),
+    /**
+     * Stars, 1–5, shown beside the attribution when set. No client has
+     * scored anything — the nine migrated quotes were set to 5 because every
+     * one is a recommendation — so this is John's call per quote, and it is
+     * never emitted as Review structured data, which search engines treat as
+     * self-serving.
+     */
+    rating: z.number().int().min(1).max(5).optional(),
   }),
 });
 
