@@ -28,11 +28,19 @@ export const site = {
   ],
   trainedAt: ['Cornell', 'Korn Ferry', 'UPenn', 'CaPP Institute'],
 
+  /** Short name for a home-screen icon, where the full name would truncate. */
+  shortName: 'JC Coaching',
+
+  /**
+   * The four profiles linked from the live site's footer, as of 2026-09-13.
+   * The footer renders only entries that are real URLs, so a profile can be
+   * dropped by emptying its string.
+   */
   social: {
-    linkedin: 'TODO: confirm LinkedIn profile URL',
-    instagram: 'TODO: confirm Instagram profile URL',
-    tiktok: 'TODO: confirm TikTok profile URL',
-    x: 'TODO: confirm X profile URL',
+    linkedin: 'https://www.linkedin.com/in/john-m-chambers-atx',
+    instagram: 'https://instagram.com/coachingwithjc',
+    tiktok: 'https://www.tiktok.com/@coachingwithjc',
+    x: 'https://x.com/coachingwith_jc',
   },
 } as const;
 
