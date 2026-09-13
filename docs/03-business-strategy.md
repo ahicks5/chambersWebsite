@@ -93,13 +93,15 @@ an informal arrangement.
 
 Add a simple line under the partnership:
 
-> **Keep going.** After your three months, continue month to month at $350
-> (biweekly) or $700 (weekly). Cancel any time.
+> **Keep going.** After your three months, continue month to month at $325
+> (biweekly) or $650 (weekly). Cancel any time.
 
-A small premium over the package rate is normal and fair. What matters is that
-the path exists and John does not have to negotiate it at the review session.
-The review step (step 5 on the Coaching page) is exactly where he says "here is
-what continuing looks like."
+Slightly under the package per-session rate, so staying costs less than
+starting. Finding a new client costs far more than that discount. What matters
+most is that the path exists and John does not have to negotiate it at the
+review session. The review step (step 5 on the Coaching page) is exactly where
+he says "here is what continuing looks like." `docs/04-growth-plan.md` §4
+covers the arcs and the maintenance tier that sit around this.
 
 ### 2.3 Payment plans
 
@@ -109,6 +111,8 @@ Publish them. The FAQ currently says "ask me on the intro call", which reads as
 - Pay in full, or three monthly payments.
 - Instalments carry a small premium (3 × $700 for the weekly tier, 3 × $350 for
   biweekly). Or no premium if John would rather. Either way, write it down.
+- Retention pricing (continuation, six-month prepay, maintenance tier) is in
+  `docs/04-growth-plan.md` §4.2.
 
 ### 2.4 Employer reimbursement as a headline
 
