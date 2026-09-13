@@ -85,12 +85,23 @@ const rendered = await Promise.all(
     content: '+';
     margin-left: auto;
     color: var(--c-accent);
-    font-weight: 700;
-    /* No transition: the element is replaced, not animated, on toggle. */
+    font-weight: var(--fw-heading);
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: transform var(--dur) var(--ease);
   }
 
+  /* Same glyph, turned: a plus becomes a cross. */
   details[open] summary::after {
-    content: '–';
+    transform: rotate(45deg);
+  }
+
+  summary:hover h3 {
+    color: var(--c-accent);
+  }
+
+  summary h3 {
+    transition: color var(--dur) var(--ease);
   }
 
   .faq__answer {

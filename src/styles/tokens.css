@@ -1,41 +1,79 @@
 /**
- * Design tokens — audit §8.2.
+ * Design tokens — audit §8.2, ADR 0010.
  *
  * This is the ONLY file in the repo that may contain a colour value. A raw hex
  * anywhere else is a bug.
  *
- * Colours and fonts below are extracted from the live Wix site
- * (www.coachingwithjc.com, 2026-09-12) — they are John's palette, not invented.
- * The extraction method, the per-slot evidence and the two documented
- * deviations are recorded in docs/brand/tokens.md.
+ * Two layers:
  *
- * The audit's constraint is "no change to the colour vibe." Only one value is
- * adjusted from the live site, and only for lightness, to clear a contrast
- * failure: --c-muted. See docs/brand/tokens.md.
+ *   1. The palette — John's colours, extracted from the live Wix site
+ *      (www.coachingwithjc.com, 2026-09-12). The extraction method, the per-slot
+ *      evidence and the documented deviations are in docs/brand/tokens.md. No
+ *      hue in this file is invented; every value is a palette colour or white
+ *      at a stated opacity over one.
+ *
+ *   2. The roles — the `--c-*` names every component uses. They are set twice:
+ *      once for the light scheme (the audit's white page) and once for the
+ *      green scheme (ADR 0010: the deep green is the page). A `.scheme-*` class
+ *      on any element switches every descendant, which is how a white band can
+ *      sit inside a green page with no per-component colour work.
  */
 
 :root {
-  /* ---------- Colour ----------
+  /* ---------- Palette ----------
      Wix palette slot shown for each, so any value can be traced back. */
-  --c-bg: #ffffff;         /* color_11  — page background */
-  --c-surface: #f1f1f1;    /* color_44  — cards, alternate sections */
-  --c-text: #121212;       /* color_45  — body copy */
-  --c-muted: #6e6e6e;      /* color_40 #757575, darkened — see tokens.md */
-  --c-accent: #365347;     /* color_43  — the ONE CTA colour, deep green */
-  --c-accent-ink: #ffffff; /* color_36  — text on accent */
-  --c-line: #b8b8b8;       /* color_39  — borders, dividers. Decorative only. */
-  /* Interactive borders — form fields and anything whose edge carries meaning.
-     --c-line is 1.98:1 on white and misses the 3:1 WCAG 1.4.11 bar for non-text
-     contrast; this is the lightest neutral grey that clears it on both the page
-     background and the surface band (3.41:1 and 3.02:1). Same hue as the rest
-     of the greys, which is to say none. See docs/brand/tokens.md. */
-  --c-line-strong: #8b8b8b;
+  --palette-white: #ffffff; /* color_11 — page background; color_36 — text on accent */
+  --palette-grey: #f1f1f1; /* color_44 — cards, alternate sections */
+  --palette-ink: #121212; /* color_45 — body copy */
+  --palette-muted: #6e6e6e; /* color_40 #757575, darkened — see tokens.md */
+  --palette-green: #365347; /* color_43 — the ONE CTA colour, deep green */
+  --palette-line: #b8b8b8; /* color_39 — borders, dividers. Decorative only. */
+  /* Interactive borders — the lightest neutral grey clearing WCAG 1.4.11's 3:1
+     on both the page background and the grey band. See tokens.md. */
+  --palette-line-strong: #8b8b8b;
+  /* color_5 — the theme's yellow slot, which the live site never paints. One
+     role, one use: the full stop of the hero headline. See ADR 0011. */
+  --palette-yellow: #ffcb05;
 
-  /* ---------- Type scale (fluid, mobile-first) ---------- */
-  --fs-h1: clamp(2rem, 1.2rem + 3.2vw, 3.25rem);
-  --fs-h2: clamp(1.5rem, 1.1rem + 1.8vw, 2.25rem);
-  --fs-h3: clamp(1.15rem, 1rem + 0.6vw, 1.4rem);
+  /* White at an opacity over the green. Not new colours: each resolves to a
+     tint of the green above. Ratios in tokens.md. */
+  --tint-8: rgb(255 255 255 / 0.08); /* the alternate band on green */
+  --tint-22: rgb(255 255 255 / 0.22); /* decorative lines on green */
+  --tint-55: rgb(255 255 255 / 0.55); /* interactive borders on green — 3.85:1 */
+  --tint-78: rgb(255 255 255 / 0.78); /* muted text on green — 5.91:1 base, 4.87:1 band */
+  --tint-90: rgb(255 255 255 / 0.9); /* body text on green — 7.5:1; pure white is for headings */
+
+  /* ---------- Roles: light scheme (default) ---------- */
+  --c-bg: var(--palette-white);
+  --c-surface: var(--palette-grey);
+  --c-text: var(--palette-ink);
+  --c-muted: var(--palette-muted);
+  --c-accent: var(--palette-green);
+  --c-accent-ink: var(--palette-white);
+  --c-line: var(--palette-line);
+  --c-line-strong: var(--palette-line-strong);
+  /* The one warm mark. Yellow on white is 1.52:1, so on the light scheme it
+     falls back to the heading colour and only the green scheme paints it. */
+  --c-mark: var(--c-accent);
+
+  /* Form fields stay white with dark text in both schemes — a field is a
+     field, and a green input on a green page is a guess. */
+  --c-field-bg: var(--palette-white);
+  --c-field-text: var(--palette-ink);
+
+  /* ---------- Type scale (fluid, mobile-first) ----------
+     Audit §8.2 gave the starting values; these are re-set against the real
+     face. Bitter Black is a heavy slab, so the H1 gets more room at the top of
+     the range and a tighter line, and the H2 sits further below it so the two
+     levels do not read as one. See docs/decisions/0008-type-against-bitter.md. */
+  --fs-h1: clamp(2.25rem, 1.3rem + 3.6vw, 3.9rem);
+  --fs-h2: clamp(1.6rem, 1.15rem + 1.8vw, 2.4rem);
+  --fs-h3: clamp(1.15rem, 1.05rem + 0.5vw, 1.35rem);
   --fs-body: 1.125rem; /* 18px — matches the live site */
+  --fs-lede: 1.25rem; /* subheads under an h1 */
+  --fs-small: 0.95rem; /* captions, meta, attribution */
+  --fs-eyebrow: 0.8rem; /* uppercase labels — see .eyebrow in global.css */
+  --ls-eyebrow: 0.1em;
 
   /* Live site runs 1.4. The audit §8.2 specifies 1.6 for readability, and the
      audit is the spec. */
@@ -45,8 +83,8 @@
   /* ---------- Fonts ----------
      The live site uses Bitter throughout (regular 400, black 900 for headings).
      One family, two weights, comfortably inside the audit §10 budget.
-     TODO: self-host as subset woff2 in public/fonts/ with font-display: swap
-     and preload the weight used in the H1. Until then these fall back. */
+     Self-hosted from public/fonts/ — see fonts.css. Georgia is the swap
+     fallback: a serif with a similar x-height, so the swap barely reflows. */
   --font-heading: 'Bitter', Georgia, 'Times New Roman', serif;
   --font-body: 'Bitter', Georgia, 'Times New Roman', serif;
   --fw-heading: 900;
@@ -60,8 +98,48 @@
   --s-6: 3rem;
   --s-8: 4rem;
   --s-12: 6rem;
+  --s-16: 8rem;
 
   /* ---------- Shape ---------- */
   --radius: 14px;
   --shadow: 0 6px 24px rgb(0 0 0 / 0.06);
+  --shadow-lift: 0 12px 32px rgb(0 0 0 / 0.18);
+
+  /* ---------- Motion ----------
+     One easing, two durations. Anything slower than --dur-slow reads as the
+     site being slow, not as calm. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.35s;
+  --dur-slow: 0.7s;
+}
+
+/* ---------- Roles: green scheme (ADR 0010) ----------
+   The accent and its ink swap places: everything that was green on white is
+   white on green, and the one filled button is white with a green label. */
+.scheme-green {
+  --c-bg: var(--palette-green);
+  --c-surface: var(--tint-8);
+  /* Body copy a shade below the headings, so a page of white-on-green does
+     not read as one weight of light. Headings and buttons stay pure white. */
+  --c-text: var(--tint-90);
+  --c-muted: var(--tint-78);
+  --c-accent: var(--palette-white);
+  --c-accent-ink: var(--palette-green);
+  --c-line: var(--tint-22);
+  --c-line-strong: var(--tint-55);
+  --c-mark: var(--palette-yellow); /* 5.55:1 on the green */
+}
+
+/* A light band inside the green page — the offer cards, where the pricing
+   decision is made, sit on the audit's white. */
+.scheme-light {
+  --c-bg: var(--palette-white);
+  --c-surface: var(--palette-grey);
+  --c-text: var(--palette-ink);
+  --c-muted: var(--palette-muted);
+  --c-accent: var(--palette-green);
+  --c-accent-ink: var(--palette-white);
+  --c-line: var(--palette-line);
+  --c-line-strong: var(--palette-line-strong);
+  --c-mark: var(--palette-green);
 }

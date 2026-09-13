@@ -77,7 +77,7 @@ const fmt = (date: Date) =>
       <Prose>
         <Author />
       </Prose>
-      <p class="author__badges">{site.credentials.slice(0, 3).join(' · ')}</p>
+      <p class="author__badges">{site.credentials.map((c) => c.short).join(' · ')}</p>
       <Button cta="intro" page="blog" position="post-footer" />
     </div>
   </Section>
@@ -104,7 +104,7 @@ const fmt = (date: Date) =>
 
   .meta a {
     color: var(--c-accent);
-    font-weight: 600;
+    font-weight: var(--fw-heading);
   }
 
   .post :global(h2) {

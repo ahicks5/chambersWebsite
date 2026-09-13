@@ -12,7 +12,6 @@ import { getCollection, getEntry, render } from 'astro:content';
 
 import Base from '../layouts/Base.astro';
 import Section from '../components/layout/Section.astro';
-import Card from '../components/ui/Card.astro';
 import Quote from '../components/ui/Quote.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
 
@@ -43,16 +42,14 @@ const rendered = await Promise.all(
       <Section alt={index % 2 === 0} aria-labelledby={group.id}>
         <h2 id={group.id}>{group.heading}</h2>
 
-        <ul class="grid">
+        <ul class="grid stagger">
           {rendered
             .filter(({ entry }) => entry.data.segment === group.segment)
             .map(({ entry, Content }) => (
               <li>
-                <Card>
-                  <Quote testimonial={entry}>
-                    <Content />
-                  </Quote>
-                </Card>
+                <Quote testimonial={entry}>
+                  <Content />
+                </Quote>
               </li>
             ))}
         </ul>
@@ -60,21 +57,14 @@ const rendered = await Promise.all(
     ))
   }
 
-  <FinalCta band="final-cta-home" cta="intro" page="testimonials" alt={false} />
+  <FinalCta band="final-cta-home" cta="intro" page="testimonials" />
 </Base>
 
 <style>
-  .subhead {
-    max-width: var(--measure);
-    margin-block: var(--s-3) 0;
-    color: var(--c-muted);
-    font-size: 1.25rem;
-  }
-
   .grid {
     display: grid;
-    gap: var(--s-3);
-    margin: var(--s-4) 0 0;
+    gap: var(--s-6);
+    margin: var(--s-6) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -82,14 +72,7 @@ const rendered = await Promise.all(
   @media (min-width: 700px) {
     .grid {
       grid-template-columns: repeat(2, 1fr);
+      gap: var(--s-6) var(--s-8);
     }
-  }
-
-  .grid li {
-    display: flex;
-  }
-
-  .grid :global(.card) {
-    width: 100%;
   }
 </style>

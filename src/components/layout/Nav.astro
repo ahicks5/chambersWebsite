@@ -15,14 +15,23 @@ interface Props {
    * off the first screen — the exact problem audit finding 1 is about.
    */
   scrollable?: boolean;
+  /**
+   * `text` is a plain list with a rule that grows under the hovered item.
+   * `pills` fills the current page's item so a visitor can see where they
+   * are at a glance — the header uses it; the footer stays as text.
+   */
+  variant?: 'text' | 'pills';
   class?: string;
 }
 
-const { items, label, scrollable = false, class: className } = Astro.props;
+const { items, label, scrollable = false, variant = 'text', class: className } = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
-<nav aria-label={label} class:list={['nav', scrollable && 'nav--scrollable', className]}>
+<nav
+  aria-label={label}
+  class:list={['nav', `nav--${variant}`, scrollable && 'nav--scrollable', className]}
+>
   <ul>
     {
       items.map((item) => (
@@ -49,18 +58,52 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
   .nav a {
     color: var(--c-text);
     text-decoration: none;
+    padding-bottom: 0.15em;
+    /* A one-pixel rule in the text colour that grows from the left. */
+    background: linear-gradient(currentColor, currentColor) no-repeat left bottom / 0 1px;
+    transition: background-size var(--dur) var(--ease);
   }
 
-  .nav a:hover,
-  .nav a[aria-current='page'] {
-    text-decoration: underline;
-    text-underline-offset: 0.25em;
+  .nav--text a:hover,
+  .nav--text a:focus-visible,
+  .nav--text a[aria-current='page'] {
+    background-size: 100% 1px;
   }
 
-  @media (max-width: 639px) {
+  /* Pills: hover tints the item with the surface colour; the current page
+     keeps that tint, adds a hairline and takes the heading colour, so it
+     is marked by fill, edge and tone rather than by colour alone. */
+  .nav--pills ul {
+    gap: var(--s-1);
+    /* The first pill's padding would otherwise push it off the brand's edge. */
+    margin-inline-start: -0.75em;
+  }
+
+  .nav--pills a {
+    display: inline-block;
+    padding: 0.35em 0.75em;
+    border-radius: 999px;
+    background: none;
+    transition:
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  .nav--pills a:hover,
+  .nav--pills a:focus-visible {
+    background-color: var(--c-surface);
+  }
+
+  .nav--pills a[aria-current='page'] {
+    background-color: var(--c-surface);
+    color: var(--c-accent);
+    box-shadow: inset 0 0 0 1px var(--c-line);
+  }
+
+  @media (max-width: 899px) {
     .nav--scrollable ul {
       flex-wrap: nowrap;
-      gap: var(--s-2);
       overflow-x: auto;
       /* Room for a focus ring on the first and last item while scrolled. */
       padding-block: 2px;
@@ -77,6 +120,21 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
     .nav--scrollable a {
       font-size: 0.95rem;
+    }
+  }
+
+  /* On a phone the four items fit a 375px row with nothing to spare. The
+     pills give back their padding so the last item is not pushed into the
+     scroll where nothing says it exists. */
+  @media (max-width: 639px) {
+    .nav--pills.nav--scrollable ul {
+      gap: 0.25rem;
+      margin-inline-start: -0.5em;
+    }
+
+    .nav--pills.nav--scrollable a {
+      padding: 0.3em 0.5em;
+      font-size: 0.875rem;
     }
   }
 </style>

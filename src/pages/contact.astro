@@ -98,13 +98,6 @@ const { Content: Alternatives } = await render(alternatives);
 </Base>
 
 <style>
-  .subhead {
-    max-width: var(--measure);
-    margin-block: var(--s-3) 0;
-    color: var(--c-muted);
-    font-size: 1.25rem;
-  }
-
   .visually-hidden {
     position: absolute;
     width: 1px;
@@ -150,16 +143,21 @@ const { Content: Alternatives } = await render(alternatives);
   }
 
   .field label {
-    font-weight: 600;
+    font-weight: var(--fw-heading);
     font-size: 0.95rem;
   }
 
   .field input,
   .field textarea {
+    /* An input's intrinsic width is ~20 characters of its font, which at
+       18px Bitter is wider than a phone column. Without this the grid track
+       grows to fit it and the page scrolls sideways at 375px. */
+    width: 100%;
+    min-width: 0;
     padding: 0.85rem 1rem;
     font: inherit;
-    color: var(--c-text);
-    background: var(--c-bg);
+    color: var(--c-field-text);
+    background: var(--c-field-bg);
     border: 2px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
@@ -172,8 +170,22 @@ const { Content: Alternatives } = await render(alternatives);
     padding: 0.9rem 1.6rem;
     border-radius: 999px;
     font: inherit;
-    font-weight: 600;
+    font-weight: var(--fw-heading);
     cursor: pointer;
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .button:active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: none;
+    transition-duration: 0.08s;
   }
 
   .button--primary {
@@ -208,5 +220,10 @@ const { Content: Alternatives } = await render(alternatives);
 
   .where p:last-child {
     margin-bottom: 0;
+  }
+
+  /* The email address is one unbreakable word wider than a phone column. */
+  .where a {
+    overflow-wrap: anywhere;
   }
 </style>

@@ -8,6 +8,7 @@
  * TL;DR and photo up top, badges next, the full story behind an opt-in subhead.
  */
 import { getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 
 import Base from '../layouts/Base.astro';
 import Section from '../components/layout/Section.astro';
@@ -16,6 +17,8 @@ import CopyBand from '../components/sections/CopyBand.astro';
 import ProofStrip from '../components/sections/ProofStrip.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
 import { render } from 'astro:content';
+import { site } from '../config/site';
+import candid from '../assets/john-chambers-candid.jpg';
 
 const page = await getEntry('pages', 'about');
 if (!page) throw new Error('Missing src/content/pages/about.md');
@@ -26,13 +29,19 @@ const { Content } = await render(page);
 <Base {title} {description} page="about">
   <Section>
     <div class="intro">
-      <div class="intro__photo" role="presentation">
-        <p class="intro__photo-note">Photo of John goes here.</p>
-      </div>
+      {/* The candid from his live About page. Above the fold, so not lazy. */}
+      <Image
+        class="intro__photo"
+        src={candid}
+        alt={site.person}
+        widths={[480, 768, 1000]}
+        sizes="(min-width: 900px) 18rem, calc(100vw - 3rem)"
+        loading="eager"
+      />
 
       <div>
         <h1>{h1}</h1>
-        {subhead && <p class="subhead">{subhead}</p>}
+        {subhead && <p class="subhead intro__subhead">{subhead}</p>}
         <Prose>
           <Content />
         </Prose>
@@ -44,7 +53,7 @@ const { Content } = await render(page);
   <ProofStrip />
 
   <CopyBand band="about-credentials" />
-  <CopyBand band="about-story" alt />
+  <CopyBand band="about-story" tone="light" />
   <CopyBand band="about-how-i-coach" />
 
   {/*
@@ -52,7 +61,7 @@ const { Content } = await render(page);
     nowhere useful. Titles are known from §2.6; the Amazon short links are not
     in the repo yet — see docs/parity-checklist.md.
   */}
-  <Section alt aria-labelledby="journals">
+  <Section rule aria-labelledby="journals">
     <h2 id="journals">Books and journals</h2>
     <ul class="journals">
       <li>Bhavana</li>
@@ -64,7 +73,7 @@ const { Content } = await render(page);
     </p>
   </Section>
 
-  <FinalCta band="final-cta-home" cta="intro" page="about" alt={false} />
+  <FinalCta band="final-cta-home" cta="intro" page="about" />
 </Base>
 
 <style>
@@ -81,35 +90,30 @@ const { Content } = await render(page);
     }
   }
 
-  .intro__photo {
+  /* A child component's root element, so :global() — see Header.astro. */
+  .intro :global(.intro__photo) {
+    display: block;
+    width: 100%;
+    height: auto;
     aspect-ratio: 4 / 5;
-    max-width: 100%;
-    display: grid;
-    place-items: center;
-    padding: var(--s-3);
-    background: var(--c-surface);
-    border: 1px dashed var(--c-line);
+    object-fit: cover;
     border-radius: var(--radius);
   }
 
-  .intro__photo-note {
-    margin: 0;
-    text-align: center;
-    color: var(--c-muted);
-    font-size: 0.95rem;
+  @media (max-width: 899px) {
+    .intro :global(.intro__photo) {
+      max-width: 18rem;
+    }
   }
 
-  .subhead {
-    max-width: var(--measure);
-    margin-block: var(--s-3);
-    color: var(--c-muted);
-    font-size: 1.25rem;
+  .intro__subhead {
+    margin-bottom: var(--s-3);
   }
 
   .journals {
     margin: var(--s-3) 0 0;
     padding-left: 1.1rem;
-    font-weight: 600;
+    font-weight: var(--fw-heading);
   }
 
   .journals li {

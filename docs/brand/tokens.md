@@ -33,6 +33,38 @@ the check and update this table.
 | `--c-accent-ink` | text on accent | `#ffffff` | `color_36` | Button label colour (`--txt:var(--color_36)`). |
 | `--c-line` | borders, dividers | `#b8b8b8` | `color_39` | Neutral grey from the theme. See deviation 2. |
 
+## Schemes (ADR 0010)
+
+The palette above is unchanged, but since ADR 0010 the deep green is the page
+and white is the accent: `tokens.css` sets the `--c-*` roles once per scheme,
+`<body>` carries `.scheme-green`, and a `Section` with `tone="light"` carries
+`.scheme-light` for the offer cards. The green scheme's secondary colours are
+white at a fixed opacity over the green, not new values:
+
+| Role on green | Value | Ratio on green | Ratio on the 8% band |
+|---|---|---|---|
+| text | white | 8.45:1 | 6.76:1 |
+| muted | white at 78% | 5.91:1 | 4.87:1 |
+| surface (band, tiles) | white at 8% | — | — |
+| line (decorative) | white at 22% | — | — |
+| line-strong (fields) | white at 55% | 3.85:1 (non-text) | — |
+
+### One warm mark (ADR 0011)
+
+`--palette-yellow` is `#ffcb05`, the theme's `color_5` slot. It is in John's
+Wix palette but the live site never paints it, so it is the one value here
+that changes the look rather than reproducing it. It has exactly one role,
+`--c-mark`, and one use: the full stop that ends the hero headline. The
+green scheme resolves the role to the yellow; the light scheme resolves it
+to the green, because yellow fails on white.
+
+| Pair | Ratio | Result |
+|---|---|---|
+| yellow on green | 5.55:1 | pass — text-sized use is fine |
+| yellow on the 8% band | 4.44:1 | fail for text — do not use on `surface` |
+| yellow on white | 1.52:1 | fail — never on the light scheme |
+| ink on yellow | 12.31:1 | pass — if it is ever a fill |
+
 ## Contrast
 
 Computed with the WCAG 2.x relative-luminance formula. Text pairs are held to
@@ -98,7 +130,11 @@ Body copy runs 18px on the live site, which matches `--fs-body`. Line height run
 1.4 there; the tokens use 1.6 because audit §8.2 specifies it and the audit is the
 spec.
 
-**Still TODO:** Bitter is not self-hosted yet. The tokens fall back to Georgia
-until subset woff2 files land in `public/fonts/` with `font-display: swap` and a
-`<link rel="preload">` for the weight used in the H1 (audit §10). Bitter is on
-Google Fonts, so this is a download-and-subset job, not a licensing one.
+Bitter is self-hosted from `public/fonts/` as two Latin-subset woff2 files, one
+per weight, about 23 KB each — instanced from the variable `Bitter[wght].ttf`
+in google/fonts and subset to the same unicode-range Google Fonts serves as
+"latin". `src/styles/fonts.css` declares them with `font-display: swap`;
+`Base.astro` preloads the 900 file, which is the H1 weight (audit §10). Two
+static instances rather than the one variable file, because the H1 preload then
+costs a single 23 KB request instead of pulling the whole axis before first
+paint. The OFL licence ships beside the files.

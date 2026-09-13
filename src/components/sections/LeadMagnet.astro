@@ -22,7 +22,7 @@ if (!band) throw new Error('Missing src/content/bands/lead-magnet.md');
 const { Content } = await render(band);
 ---
 
-<Section aria-labelledby="burnout-check">
+<Section tone="light" aria-labelledby="burnout-check">
   <div class="magnet">
     <h2 id="burnout-check">{band.data.title}</h2>
     <Content />
@@ -108,15 +108,17 @@ const { Content } = await render(band);
   }
 
   .magnet__label {
-    font-weight: 600;
+    font-weight: var(--fw-heading);
     font-size: 0.95rem;
   }
 
   .magnet__row input {
+    width: 100%;
+    min-width: 0;
     padding: 0.85rem 1rem;
     font: inherit;
-    color: var(--c-text);
-    background: var(--c-bg);
+    color: var(--c-field-text);
+    background: var(--c-field-bg);
     border: 2px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
@@ -128,8 +130,22 @@ const { Content } = await render(band);
     padding: 0.9rem 1.6rem;
     border-radius: 999px;
     font: inherit;
-    font-weight: 600;
+    font-weight: var(--fw-heading);
     cursor: pointer;
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  .button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .button:active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: none;
+    transition-duration: 0.08s;
   }
 
   .magnet__row .button--primary {

@@ -7,24 +7,32 @@
  * src/content/bands/meet-john.md.
  */
 import { getEntry, render } from 'astro:content';
+import { Image } from 'astro:assets';
 import Section from '../layout/Section.astro';
+import { site } from '../../config/site';
+import candid from '../../assets/john-chambers-candid.jpg';
 
 const band = await getEntry('bands', 'meet-john');
 if (!band) throw new Error('Missing src/content/bands/meet-john.md');
 const { Content } = await render(band);
 ---
 
-<Section aria-labelledby="meet-john">
+<Section rule aria-labelledby="meet-john">
   <div class="meet">
-    {/* Second photo slot — see the note in Hero.astro. */}
-    <div class="meet__photo" role="presentation">
-      <p class="meet__photo-note">Photo of John goes here.</p>
-    </div>
+    {/* A different photo from the hero's: the candid from his live About page. */}
+    <Image
+      class="meet__photo"
+      src={candid}
+      alt={site.person}
+      widths={[480, 768, 1000]}
+      sizes="(min-width: 700px) 14rem, calc(100vw - 3rem)"
+      loading="lazy"
+    />
 
     <div class="meet__text">
       <h2 id="meet-john">{band.data.title}</h2>
       <Content />
-      <p><a href="/about">Read more →</a></p>
+      <p><a href="/about" class="more">Read more →</a></p>
     </div>
   </div>
 </Section>
@@ -43,30 +51,25 @@ const { Content } = await render(band);
     }
   }
 
-  .meet__photo {
+  /* A child component's root element, so :global() — see Header.astro. */
+  .meet :global(.meet__photo) {
+    display: block;
+    width: 100%;
+    height: auto;
     aspect-ratio: 4 / 5;
-    max-width: 100%;
-    display: grid;
-    place-items: center;
-    padding: var(--s-3);
-    background: var(--c-surface);
-    border: 1px dashed var(--c-line);
+    object-fit: cover;
     border-radius: var(--radius);
   }
 
-  .meet__photo-note {
-    margin: 0;
-    text-align: center;
-    color: var(--c-muted);
-    font-size: 0.95rem;
+  /* Stacked on a phone the photo is a portrait beside nothing; cap it so the
+     band does not become one tall picture with a caption. */
+  @media (max-width: 699px) {
+    .meet :global(.meet__photo) {
+      max-width: 18rem;
+    }
   }
 
   .meet__text :global(p) {
     max-width: var(--measure);
-  }
-
-  .meet__text a {
-    color: var(--c-accent);
-    font-weight: 600;
   }
 </style>

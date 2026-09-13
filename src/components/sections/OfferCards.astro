@@ -10,7 +10,7 @@
  * that is still open — see docs/parity-checklist.md. This renders John's current
  * prices as they stand.
  */
-import { getCollection, render } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import Button from '../ui/Button.astro';
 import Card from '../ui/Card.astro';
 import Section from '../layout/Section.astro';
@@ -22,7 +22,6 @@ interface Props {
   heading?: string;
   /** The "which is right for me?" row — audit §4.4, individuals only. */
   decisionRow?: boolean;
-  alt?: boolean;
 }
 
 const {
@@ -30,7 +29,6 @@ const {
   page = 'home',
   heading = 'Coaching options',
   decisionRow = true,
-  alt = false,
 } = Astro.props;
 
 const offers = (await getCollection('offers', ({ data }) => data.segment === segment)).sort(
@@ -39,22 +37,32 @@ const offers = (await getCollection('offers', ({ data }) => data.segment === seg
 const rendered = await Promise.all(
   offers.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
 );
+
+// The decision row's heading, lede and closing note — copy, so a content file.
+const band = await getEntry('bands', 'decision-row');
+if (!band) throw new Error('Missing src/content/bands/decision-row.md');
+const { Content: DecisionLede } = await render(band);
 ---
 
-<Section {alt} aria-labelledby="offer-cards">
+{/* The pricing decision sits on the light band — ADR 0010. */}
+<Section tone="light-surface" aria-labelledby="offer-cards">
   <h2 id="offer-cards">{heading}</h2>
 
-  <ul class="offers">
+  <ul class="offers stagger">
     {
       rendered.map(({ entry, Content }) => {
-        const { title, tagline, priceDisplay, sessions, includes, badge, cta } = entry.data;
+        const { title, tagline, priceDisplay, priceValue, sessions, includes, badge, cta } = entry.data;
         return (
-          <li>
-            <Card variant="offer" class="offer">
+          <li id={`offer-${entry.id}`}>
+            <Card variant="offer" featured={Boolean(badge)} class="offer">
               {badge && <p class="offer__badge">{badge}</p>}
               <h3>{title}</h3>
               <p class="offer__tagline">{tagline}</p>
-              <p class="offer__price">{priceDisplay}</p>
+              {/* A number is the decision and is set large; "Scoped per
+                  engagement" is a label and is not. */}
+              <p class:list={['offer__price', priceValue === undefined && 'offer__price--label']}>
+                {priceDisplay}
+              </p>
               {sessions && <p class="offer__sessions">{sessions}</p>}
 
               {includes.length > 0 && (
@@ -77,35 +85,71 @@ const rendered = await Promise.all(
     }
   </ul>
 
-  {/* Audit §4.4 — "Which is right for me?" */}
-  <div class="decision" hidden={!decisionRow}>
-    <h3>Not sure which one?</h3>
-    <dl>
-      {
-        rendered.map(({ entry }) => (
-          <div class="decision__row">
-            <dt>{entry.data.forWho}</dt>
-            <dd>{entry.data.title}</dd>
-          </div>
-        ))
-      }
-    </dl>
-    <p class="decision__note">Most people start with the intro call.</p>
-  </div>
+  {/*
+    Audit §4.4 — "Which is right for me?" A panel under the cards: each line
+    is the reader's situation in their own words, and the pick beside it
+    jumps to that card. The way out for the undecided is the intro call.
+  */}
+  {
+    decisionRow && (
+      <div class="decision">
+        <div class="decision__head">
+          <h3 id="decision">{band.data.title}</h3>
+          <DecisionLede />
+        </div>
+
+        <ol class="decision__list stagger" aria-labelledby="decision">
+          {
+            rendered.map(({ entry }) => (
+              <li class="decision__row">
+                <p class="decision__who">{entry.data.forWho}</p>
+                <a class="decision__pick" href={`#offer-${entry.id}`}>
+                  <span>{entry.data.title}</span>
+                  <svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16">
+                    <path
+                      d="M2 8h11M8.5 3.5 13 8l-4.5 4.5"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </a>
+              </li>
+            ))
+          }
+        </ol>
+
+        {
+          band.data.note && (
+            <div class="decision__foot">
+              <p class="decision__note">{band.data.note}</p>
+              <Button cta="intro" {page} position="decision" style="ghost" />
+            </div>
+          )
+        }
+      </div>
+    )
+  }
 </Section>
 
 <style>
   .offers {
     display: grid;
     gap: var(--s-3);
-    margin: var(--s-4) 0 0;
+    margin: var(--s-6) 0 0;
     padding: 0;
     list-style: none;
   }
 
+  /* As many columns as fit at a readable card width: three on desktop, two
+     on a tablet with the third card below, and two org cards fill the row
+     rather than leaving a third column empty. Audit §8.4: never five. */
   @media (min-width: 640px) {
     .offers {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+      gap: var(--s-4);
     }
   }
 
@@ -113,17 +157,51 @@ const rendered = await Promise.all(
     display: flex;
     flex-direction: column;
     height: 100%;
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  @media (hover: hover) {
+    .offers :global(.offer:hover) {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lift);
+    }
+  }
+
+  /* Child component roots do not carry this file's scope attribute, so the
+     button inside a card is reached through the scoped list instead. */
+  .offers :global(.offer .button) {
+    display: flex;
+    width: 100%;
+  }
+
+  /* Narrow cards: a slightly tighter card and button so the label stays on
+     one line at phone and tablet widths. */
+  @media (max-width: 1023px) {
+    .offers :global(.offer) {
+      padding: var(--s-3);
+    }
+
+    .offers :global(.offer .button) {
+      padding-inline: 1rem 0.9rem;
+      font-size: 1rem;
+    }
   }
 
   .offer__badge {
     align-self: flex-start;
-    margin: 0 0 var(--s-2);
-    padding: 0.2rem 0.6rem;
+    margin: 0 0 var(--s-3);
+    padding: 0.3rem 0.75rem;
     background: var(--c-accent);
     color: var(--c-accent-ink);
     border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: 0.7rem;
+    letter-spacing: var(--ls-eyebrow);
+    text-transform: uppercase;
+    line-height: 1.3;
   }
 
   .offer__tagline {
@@ -131,45 +209,109 @@ const rendered = await Promise.all(
     color: var(--c-muted);
   }
 
+  /* The price is the decision, so it is set like a heading: Bitter Black in
+     the accent, the second-largest thing in the card after nothing. */
   .offer__price {
-    margin: var(--s-2) 0 0;
-    font-size: 1.5rem;
-    font-weight: 700;
+    margin: var(--s-4) 0 0;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: var(--fs-h2);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--c-accent);
+  }
+
+  .offer__price--label {
+    font-size: var(--fs-h3);
+    line-height: 1.2;
   }
 
   .offer__sessions {
     margin: var(--s-1) 0 0;
     color: var(--c-muted);
-    font-size: 0.95rem;
+    font-size: var(--fs-small);
   }
 
   .offer__includes {
-    margin: var(--s-3) 0 0;
-    padding-left: 1.1rem;
+    display: grid;
+    gap: var(--s-1);
+    margin: var(--s-4) 0 0;
+    padding: var(--s-3) 0 0;
+    border-top: 1px solid var(--c-line);
+    list-style: none;
   }
 
   .offer__includes li {
-    margin-bottom: var(--s-1);
+    display: flex;
+    gap: 0.6rem;
+    align-items: baseline;
+  }
+
+  /* Accent dot, matching the proof-strip badges. */
+  .offer__includes li::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--c-accent);
+    transform: translateY(-0.15em);
   }
 
   /* Pushes the CTA to the bottom so buttons line up across cards. */
   .offer__body {
     margin-top: var(--s-3);
     margin-bottom: auto;
-    padding-bottom: var(--s-3);
+    padding-bottom: var(--s-4);
     color: var(--c-muted);
+    font-size: var(--fs-small);
   }
 
   .offer__body :global(p:last-child) {
     margin-bottom: 0;
   }
 
-  .decision {
-    margin-top: var(--s-8);
+  /* A jump from the decision row lands with the card clear of the sticky
+     header. */
+  .offers > li {
+    scroll-margin-top: var(--s-12);
   }
 
-  .decision dl {
-    margin: var(--s-3) 0 0;
+  /* The decision panel: white on the grey band, like the cards, so it reads
+     as part of the same decision rather than a footnote under it. */
+  .decision {
+    margin-top: var(--s-6);
+    /* Tighter on phones so the full-width button keeps its label on one line. */
+    padding: var(--s-3);
+    background: var(--c-bg);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  @media (min-width: 640px) {
+    .decision {
+      padding: var(--s-4);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .decision {
+      margin-top: var(--s-8);
+      padding: var(--s-6);
+    }
+  }
+
+  .decision__head :global(p) {
+    margin: var(--s-1) 0 0;
+    max-width: var(--measure);
+    color: var(--c-muted);
+  }
+
+  .decision__list {
+    margin: var(--s-4) 0 0;
+    padding: 0;
+    list-style: none;
     border-top: 1px solid var(--c-line);
   }
 
@@ -184,21 +326,72 @@ const rendered = await Promise.all(
     .decision__row {
       grid-template-columns: 1fr auto;
       gap: var(--s-4);
-      align-items: baseline;
+      align-items: center;
     }
   }
 
-  .decision dt {
+  /* The reader's own line, in their own voice: set a size up, in ink. */
+  .decision__who {
+    margin: 0;
+    font-size: var(--fs-lede);
+    line-height: 1.4;
     color: var(--c-text);
   }
 
-  .decision dd {
-    margin: 0;
-    font-weight: 700;
+  /* The pick: the package name with an arrow, set like the other arrow
+     links but without the underline, since the arrow and weight already
+     mark it as a link and it sits alone in its column. */
+  .decision__pick {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-self: start;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .decision__pick svg {
+    flex: 0 0 auto;
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .decision__pick:hover svg,
+  .decision__pick:focus-visible svg {
+    transform: translateX(4px);
+  }
+
+  .decision__pick:hover span,
+  .decision__pick:focus-visible span {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+
+  .decision__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-top: var(--s-4);
   }
 
   .decision__note {
-    margin: var(--s-3) 0 0;
+    margin: 0;
+    max-width: 44ch;
     color: var(--c-muted);
+  }
+
+  /* Child component root: reached with :global(), see Header.astro. */
+  .decision__foot :global(.button) {
+    flex: 0 0 auto;
+  }
+
+  @media (max-width: 639px) {
+    .decision__foot :global(.button) {
+      flex: 1 1 100%;
+    }
   }
 </style>

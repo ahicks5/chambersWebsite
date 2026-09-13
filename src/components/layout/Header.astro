@@ -31,7 +31,7 @@ const { page, cta = 'intro' } = Astro.props;
 <header class="header">
   <div class="header__inner">
     <a href="/" class="header__brand">{site.name}</a>
-    <Nav items={primaryNav} label="Primary" scrollable class="header__nav" />
+    <Nav items={primaryNav} label="Primary" scrollable variant="pills" class="header__nav" />
     <Button {cta} page={page} position="header" size="compact" class="header__cta" />
   </div>
 </header>
@@ -40,6 +40,9 @@ const { page, cta = 'intro' } = Astro.props;
   .header {
     background: var(--c-bg);
     border-bottom: 1px solid var(--c-line);
+    transition:
+      box-shadow var(--dur) var(--ease),
+      background-color var(--dur) var(--ease);
   }
 
   /**
@@ -53,12 +56,15 @@ const { page, cta = 'intro' } = Astro.props;
       position: sticky;
       top: 0;
       z-index: 10;
-      transition: box-shadow 0.2s ease;
     }
 
-    /* Set by the observer in StickyCta once the hero has scrolled past. */
+    /* Set by the observer in StickyCta once the hero has scrolled past: the
+       bar goes a little translucent and blurs what passes under it. */
     .header.is-scrolled {
-      box-shadow: 0 2px 12px rgb(0 0 0 / 0.08);
+      background: color-mix(in srgb, var(--c-bg) 88%, transparent);
+      backdrop-filter: blur(12px) saturate(1.2);
+      -webkit-backdrop-filter: blur(12px) saturate(1.2);
+      box-shadow: var(--shadow-lift);
     }
   }
 
@@ -74,34 +80,52 @@ const { page, cta = 'intro' } = Astro.props;
 
   .header__brand {
     font-family: var(--font-heading);
-    font-weight: 700;
-    color: var(--c-text);
+    font-weight: var(--fw-heading);
+    font-size: 1.05rem;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--c-accent);
     text-decoration: none;
   }
 
-  .header__nav {
+  /*
+   * `:global()` on purpose. Nav and Button are child components, and Astro
+   * does not put this file's scope attribute on a child's root element, so a
+   * plain `.header__nav` rule here matches nothing. The classes are still set
+   * only from this file, so the reach is the same as a scoped rule.
+   */
+  .header__inner > :global(.header__nav) {
     margin-right: auto;
   }
 
   /**
-   * On phones the nav would wrap to two rows and push the h1 below the fold.
-   * Brand and CTA share the first row; the nav sits under them on its own row
-   * and scrolls sideways if it needs to.
+   * Below 900px the three pieces do not fit on one row. Rather than let the
+   * CTA fall to a third row (which is what free wrapping does at 375px and
+   * 768px alike), brand and CTA share the first row and the nav sits under
+   * them on its own row, scrolling sideways on phones if it must. Two rows,
+   * never three. The brand takes what the CTA leaves and wraps to a balanced
+   * second line when it has to.
    */
-  @media (max-width: 639px) {
-    .header__brand {
-      flex: 1 1 auto;
+  @media (max-width: 899px) {
+    .header__inner {
+      gap: var(--s-2);
     }
 
-    .header__cta {
+    .header__brand {
+      flex: 1 1 0;
+      min-width: 0;
+      font-size: 0.95rem;
+      text-wrap: balance;
+    }
+
+    .header__inner > :global(.header__cta) {
       order: 2;
     }
 
-    .header__nav {
+    .header__inner > :global(.header__nav) {
       order: 3;
       flex: 1 0 100%;
       margin-right: 0;
-      /* Cancel the wrapper's row gap; the ul carries its own padding. */
       min-width: 0;
     }
   }

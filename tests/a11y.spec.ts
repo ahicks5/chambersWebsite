@@ -8,6 +8,10 @@ import { primaryRoutes } from './routes';
 
 for (const route of primaryRoutes()) {
   test(`${route} has no serious accessibility violations`, async ({ page }) => {
+    // Scroll-revealed blocks start at opacity 0 until they enter the viewport
+    // (global.css), and axe skips what it cannot see. Under reduced motion
+    // the hidden state never applies, so the whole page is checked.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(route);
 
     const { violations } = await new AxeBuilder({ page })

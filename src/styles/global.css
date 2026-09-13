@@ -8,6 +8,7 @@
  */
 @import 'tailwindcss';
 @import './tokens.css';
+@import './fonts.css';
 
 /**
  * Token → utility mapping. `inline` so utilities resolve to the token variable
@@ -53,15 +54,25 @@
     text-wrap: balance;
   }
 
+  /* The live site sets its headings in the deep green (tokens.md: the accent
+     is "button fill and heading text on 12 elements"). It clears 4.5:1 on
+     both backgrounds at any size, so h1 and h2 carry it; h3 stays in ink so
+     card titles do not compete with the section title above them. */
+  h1,
+  h2 {
+    color: var(--c-accent);
+  }
+
   h1 {
     font-size: var(--fs-h1);
-    line-height: 1.1;
-    letter-spacing: -0.01em;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
   }
 
   h2 {
     font-size: var(--fs-h2);
-    line-height: 1.2;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
   }
 
   h3 {
@@ -69,11 +80,115 @@
     line-height: 1.3;
   }
 
+  /* Only two weights exist (fonts.css). Anything asking for semi-bold would
+     be snapped to 900 by the browser anyway; say so explicitly. */
+  strong,
+  b {
+    font-weight: var(--fw-heading);
+  }
+
+  /* Links are underlined by default, site-wide. Tailwind's preflight strips
+     the browser underline, which once left links distinguishable by colour
+     alone (WCAG 1.4.1). Nav, buttons and the brand opt out deliberately. */
+  a {
+    color: var(--c-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
   /* Audit §10: visible focus on every interactive element. */
   :focus-visible {
     outline: 3px solid var(--c-accent);
     outline-offset: 3px;
   }
+}
+
+@layer components {
+  /* The line under a page's h1 — the positioning statement, not a caption.
+     Ink rather than muted, so it reads as the second sentence of the
+     headline; the hero uses the same setting. */
+  .subhead {
+    max-width: var(--measure);
+    margin-block: var(--s-3) 0;
+    font-size: var(--fs-lede);
+    line-height: 1.5;
+  }
+
+  /* Small uppercase label above a heading or beside a fact: section kickers,
+     the offer badge, proof-strip groups. Bitter Black holds up at this size
+     because the slab serifs keep the letterforms open. */
+  .eyebrow {
+    display: block;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: var(--fs-eyebrow);
+    letter-spacing: var(--ls-eyebrow);
+    line-height: 1.3;
+    text-transform: uppercase;
+    color: var(--c-accent);
+  }
+
+  /* A standalone "Read more →" style link: heavier than running-text links,
+     still underlined so it is never colour-alone. */
+  .more {
+    font-weight: var(--fw-heading);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+}
+
+/* ---------- Motion — audit §9.4, translated ----------
+   Two movements, both calm: the hero rises on load, and everything below it
+   rises as it scrolls into view. One IntersectionObserver in Base.astro adds
+   `.is-in`; CSS does the rest. The hidden state is gated on `html[data-reveal]`,
+   set by a one-line inline script, so with JS off nothing is ever hidden. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-reveal] .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity var(--dur-slow) var(--ease),
+      transform var(--dur-slow) var(--ease);
+  }
+
+  html[data-reveal] .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Children of a `.stagger` list inside a revealed block arrive one after
+     another — cards, steps, quotes. */
+  html[data-reveal] .reveal .stagger > * {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--dur-slow) var(--ease),
+      transform var(--dur-slow) var(--ease);
+  }
+
+  html[data-reveal] .reveal.is-in .stagger > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(2) { transition-delay: 70ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(3) { transition-delay: 140ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(4) { transition-delay: 210ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(5) { transition-delay: 280ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(6) { transition-delay: 350ms; }
+  html[data-reveal] .reveal.is-in .stagger > :nth-child(n + 7) { transition-delay: 420ms; }
 }
 
 @media (prefers-reduced-motion: reduce) {

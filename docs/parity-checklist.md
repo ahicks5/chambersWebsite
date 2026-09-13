@@ -26,11 +26,18 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       and deliberately says nothing about analytics because none are wired. It is
       not legal advice and no lawyer has seen it. It also needs updating the day
       GA4 goes in.
-- [ ] **Photos.** Three slots are reserved and sized at 4:5 — hero, Meet John,
-      and About — each rendering a dashed placeholder, so dropping the real
-      images in shifts no layout. Audit §10 wants the hero photo ~1500px wide and
-      never lazy-loaded, since it is the LCP element. Real alt text too, not a
-      filename (audit §7.6).
+- [x] **Photos.** The three 4:5 slots — hero, Meet John, About — now carry the
+      two photos from the live site (`src/assets/`): the studio headshot in the
+      hero at 1600px, eager and high-priority as the LCP element (audit §10),
+      and the About-page candid in the other two. Alt text is his name from
+      `site.ts`. **Still needs John:** better originals if he has them — the
+      candid is 1233px at source — and a say on which photo goes where.
+- [ ] **Hero background.** `public/images/hero-bg-{900,1800}.webp` is an
+      Unsplash photo of misty hills with a trail (photo id
+      `1470071459604-3b5ec3a7fe05`, Unsplash licence: free to use, no
+      attribution required). It is blended into the green at low opacity, so
+      only its light and shade show. If John has a landscape of his own — a
+      trail he actually walks — swap the two files and nothing else changes.
 - [ ] **Pricing decision, Option A or B** (audit §4.4, §11 question 2). The
       3-month package currently costs *more* per session than a single session
       (~$167 vs $145), so there is no economic reason to commit. The homepage
@@ -52,10 +59,10 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       and strips our `data-netlify` attribute — checked on the live deploy.
 - [ ] **Submit each form once for real** and confirm it arrives. The only part
       of the chain that cannot be verified from here.
-- [ ] **Self-host Bitter.** Subset woff2 into `public/fonts/`, `font-display:
-      swap`, preload the H1 weight. Bitter is on Google Fonts; the tokens fall
-      back to Georgia until then. Audit §10 caps this at two families, four
-      weights — Bitter is one family, two weights.
+- [x] **Self-host Bitter.** Latin-subset woff2 for 400 and 900 in
+      `public/fonts/`, `font-display: swap`, the H1 weight preloaded. One
+      family, two weights, inside the audit §10 cap of two and four. Until this
+      landed every page rendered in Georgia — see `docs/brand/tokens.md`.
 - [ ] **ESP for the lead magnet** (ConvertKit or Buttondown). Netlify Forms
       collects the address; something has to send the PDF.
 - [ ] **Who owns the domain and DNS?** (§11 question 7.) Find out before cutover

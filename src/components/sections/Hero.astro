@@ -9,8 +9,11 @@
  * The h1 is rendered by this section rather than by Page.astro, because the hero
  * is a two-column layout and the heading belongs inside its text column.
  */
+import { Image } from 'astro:assets';
 import Button from '../ui/Button.astro';
 import Section from '../layout/Section.astro';
+import { site } from '../../config/site';
+import portrait from '../../assets/john-chambers-cutout.webp';
 
 interface Props {
   h1: string;
@@ -18,68 +21,225 @@ interface Props {
 }
 
 const { h1, subhead } = Astro.props;
+
+// The headline's closing mark is the one warm thing on the page (ADR 0011).
+// Split off at render time so the content file stays a plain sentence.
+const [, hook, mark = ''] = h1.match(/^(.*?)([.!?]?)$/) ?? [h1, h1, ''];
 ---
 
-<Section class="hero">
+<Section size="roomy" reveal={false} class="hero">
   <div class="hero__grid">
     <div class="hero__text">
-      <h1>{h1}</h1>
+      <h1>{hook}{mark && <span class="hero__mark">{mark}</span>}</h1>
       <p class="hero__subhead">{subhead}</p>
       <Button cta="intro" page="home" position="hero" />
     </div>
 
     {/*
       Audit §5.2 wants John's photo beside the headline, and §10 makes it the LCP
-      element: upload ~1500px wide, never lazy-load it, fixed 4:5 ratio to stop
-      layout shift (§8.4).
+      element: ~1500px wide, never lazy-loaded, a fixed 4:5 ratio so nothing
+      shifts while it loads (§8.4). The source is his studio headshot with the
+      flat grey backdrop keyed out (scripts/cutout-backdrop.mjs), cropped to
+      4:5 at 1600px; Astro resizes and re-encodes it at build time, so the
+      browser fetches only the width it needs.
 
-      No photo is in the repo yet, so this reserves the exact box the image will
-      occupy. Swapping in <Image> later changes no layout. Tracked in
-      docs/parity-checklist.md.
+      With the backdrop gone he sits on the page colour itself rather than in
+      a grey rectangle on it. The outline frame behind him is the one
+      decorative element: it starts below the top of his head, so he rises out
+      of it, and his torso fades into the green at the bottom edge.
     */}
-    <div class="hero__photo" role="presentation">
-      <p class="hero__photo-note">Photo of John goes here — 4:5, ~1500px wide.</p>
+    <div class="hero__figure">
+      <Image
+        class="hero__photo"
+        src={portrait}
+        alt={site.person}
+        widths={[480, 768, 1024, 1600]}
+        sizes="(min-width: 900px) 30rem, (min-width: 640px) 24rem, calc(100vw - 3rem)"
+        loading="eager"
+        fetchpriority="high"
+        decoding="sync"
+      />
     </div>
   </div>
 </Section>
 
 <style>
+  /* A soft light behind the photo column, so the hero has depth rather than
+     one flat fill. Tint over the page colour — no new colour. */
+  :global(.hero) {
+    position: relative;
+    isolation: isolate;
+    background:
+      radial-gradient(60% 55% at 78% 30%, var(--c-surface), transparent 70%),
+      var(--c-bg);
+  }
+
+  /* A landscape behind everything: misty hills with a trail winding through
+     them (public/images/hero-bg-*.webp, source in docs/parity-checklist.md).
+     Blended in luminosity mode it lends the page only its light and shade —
+     the green stays the green, and the photo reads as weather on it rather
+     than a picture under it. Low opacity, and a fade to the page colour
+     before the proof strip. Painted below the content by the negative
+     z-index inside the hero's own stacking context. */
+  :global(.hero)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('/images/hero-bg-900.webp') center 40% / cover no-repeat;
+    mix-blend-mode: luminosity;
+    /* Measured, not eyeballed: at this opacity, with the photo's highlights
+       pulled down at encode time, the brightest patch the photo puts behind
+       the subhead still clears 4.5:1 against white at every width. */
+    opacity: 0.26;
+    mask-image: linear-gradient(to bottom, black 45%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 45%, transparent 100%);
+  }
+
+  @media (min-width: 900px) {
+    :global(.hero)::before {
+      background-image: url('/images/hero-bg-1800.webp');
+    }
+  }
+
   .hero__grid {
     display: grid;
-    gap: var(--s-6);
+    gap: var(--s-8);
   }
 
   @media (min-width: 900px) {
     .hero__grid {
-      grid-template-columns: 1.15fr 1fr;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
       align-items: center;
-      gap: var(--s-8);
+      gap: var(--s-12);
     }
   }
 
-  .hero__subhead {
-    max-width: var(--measure);
-    margin-block: var(--s-3) var(--s-4);
-    font-size: 1.25rem;
-    color: var(--c-muted);
+  .hero__text h1 {
+    /* Six to eight words a line keeps the hook from running the column. */
+    max-width: 16ch;
   }
 
-  .hero__photo {
-    aspect-ratio: 4 / 5;
-    max-width: 100%;
-    display: grid;
-    place-items: center;
-    padding: var(--s-3);
-    background: var(--c-surface);
-    border: 1px dashed var(--c-line);
+  .hero__mark {
+    color: var(--c-mark);
+  }
+
+  /* The subhead is the positioning line (audit §3.2 step 2), not a caption.
+     Ink, not muted, and a touch larger than body. */
+  .hero__subhead {
+    max-width: 38ch;
+    margin-block: var(--s-3) var(--s-6);
+    font-size: var(--fs-lede);
+    line-height: 1.5;
+  }
+
+  /* On a phone the lede at 20px ran to five lines under a four-line h1 and
+     read as a paragraph, not a subhead. Body size keeps it to four. */
+  @media (max-width: 639px) {
+    .hero__subhead {
+      font-size: var(--fs-body);
+    }
+  }
+
+  .hero__figure {
+    --frame: 0.75rem;
+    position: relative;
+    /* Explicit, because `justify-self: end` below would otherwise shrink the
+       box to the width of the placeholder note. */
+    width: 100%;
+    /* Room for the frame, which sits down and to the right. Margin rather
+       than overflow, so a phone never gains a horizontal scrollbar. */
+    margin-inline-end: var(--frame);
+    margin-bottom: var(--frame);
+    max-width: 24rem;
+  }
+
+  @media (min-width: 900px) {
+    .hero__figure {
+      --frame: 1rem;
+      max-width: 30rem;
+      justify-self: end;
+    }
+  }
+
+  /* An outline behind him, not a filled block: a filled one read as a second
+     slab. Its top edge sits a fifth of the way down, below the crown of his
+     head, so the portrait breaks out of the frame instead of sitting in it. */
+  .hero__figure::before {
+    content: '';
+    position: absolute;
+    inset: 22% calc(-1 * var(--frame)) calc(-1 * var(--frame)) var(--frame);
+    border: 1px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
 
-  .hero__photo-note {
-    margin: 0;
-    max-width: 22ch;
-    text-align: center;
-    color: var(--c-muted);
-    font-size: 0.95rem;
+  /* Below the two-column breakpoint the portrait goes first, top right, at a
+     little over half the width, and the headline block rides up over its
+     faded lower edge. The face is in the first screen with the hook instead
+     of parked under the button. The text stacks above the figure, and the
+     overlap is confined to the part the mask has already faded, so it never
+     covers a word. After the base figure rules on purpose: same specificity,
+     so source order decides. */
+  @media (max-width: 899px) {
+    .hero__grid {
+      gap: 0;
+    }
+
+    .hero__figure {
+      order: -1;
+      justify-self: end;
+      width: 58%;
+      max-width: 20rem;
+      /* The bottom 22% of the figure, in the container-width terms that
+         percentage margins use: 0.58 wide × 1.25 tall × 0.22. */
+      margin-bottom: -16%;
+    }
+
+    /* The frame stops where the headline begins. */
+    .hero__figure::before {
+      bottom: 24%;
+    }
+
+    .hero__text {
+      position: relative;
+      z-index: 1;
+    }
   }
+
+  /* A child component's root element, so :global() — see Header.astro.
+     The bottom fifth fades to transparent so the crop across his chest
+     dissolves into the page rather than ending on a hard line. */
+  .hero__figure :global(.hero__photo) {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    mask-image: linear-gradient(to top, transparent, black 22%);
+    -webkit-mask-image: linear-gradient(to top, transparent, black 22%);
+  }
+
+  /* The calm reveal: headline, line, button, then the photo, each rising a
+     little as it fades in. CSS only, so it costs nothing and starts before
+     any script runs. Reduced motion collapses it to an instant (global.css). */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__text > *,
+    .hero__figure {
+      animation: rise var(--dur-slow) var(--ease) both;
+    }
+
+    .hero__text > :nth-child(2) {
+      animation-delay: 0.12s;
+    }
+
+    .hero__text > :nth-child(3) {
+      animation-delay: 0.24s;
+    }
+
+    .hero__figure {
+      animation-delay: 0.18s;
+    }
+  }
+
 </style>
