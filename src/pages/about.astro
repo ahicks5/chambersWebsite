@@ -11,9 +11,10 @@ import { getEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import Base from '../layouts/Base.astro';
-import Section from '../components/layout/Section.astro';
+import PageHero from '../components/sections/PageHero.astro';
 import Prose from '../components/ui/Prose.astro';
 import CopyBand from '../components/sections/CopyBand.astro';
+import JournalShelf from '../components/sections/JournalShelf.astro';
 import ProofStrip from '../components/sections/ProofStrip.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
 import { render } from 'astro:content';
@@ -27,94 +28,42 @@ const { Content } = await render(page);
 ---
 
 <Base {title} {description} page="about">
-  <Section>
-    <div class="intro">
-      {/* The candid from his live About page. Above the fold, so not lazy. */}
-      <Image
-        class="intro__photo"
-        src={candid}
-        alt={site.person}
-        widths={[480, 768, 1000]}
-        sizes="(min-width: 900px) 18rem, calc(100vw - 3rem)"
-        loading="eager"
-      />
-
-      <div>
-        <h1>{h1}</h1>
-        {subhead && <p class="subhead intro__subhead">{subhead}</p>}
-        <Prose>
-          <Content />
-        </Prose>
-      </div>
-    </div>
-  </Section>
+  {/* The candid from his live About page, in the hero's frame. Above the fold, so not lazy. */}
+  <PageHero {h1} {subhead}>
+    <Image
+      slot="figure"
+      src={candid}
+      alt={site.person}
+      widths={[480, 768, 1000]}
+      sizes="(min-width: 900px) 18rem, calc(100vw - 3rem)"
+      loading="eager"
+    />
+    <Prose class="intro__prose">
+      <Content />
+    </Prose>
+  </PageHero>
 
   {/* Audit §2.2: the credentials are the most skimmable thing on the site. */}
   <ProofStrip />
 
-  <CopyBand band="about-credentials" />
-  <CopyBand band="about-story" tone="light" />
-  <CopyBand band="about-how-i-coach" />
+  <CopyBand band="about-credentials" glow="right" />
+  <CopyBand band="about-story" tone="light" glow="left" />
+  <CopyBand band="about-how-i-coach" glow="right" />
 
   {/*
     Audit §3.3 calls the three journals a major authority signal that appears
-    nowhere useful. Titles are known from §2.6; the Amazon short links are not
-    in the repo yet — see docs/parity-checklist.md.
+    nowhere useful. A shelf of typographic covers until the real ones arrive
+    (docs/parity-checklist.md), from the resources collection.
   */}
-  <Section rule aria-labelledby="journals">
-    <h2 id="journals">Books and journals</h2>
-    <ul class="journals">
-      <li>Bhavana</li>
-      <li>Rest Regimen</li>
-      <li>Highlight of My Day</li>
-    </ul>
-    {/* Covers and links are tracked in docs/parity-checklist.md, not shown here. */}
-  </Section>
+  <JournalShelf heading="Journals I wrote" id="journals" />
 
   <FinalCta band="final-cta-home" cta="intro" page="about" />
 </Base>
 
 <style>
-  .intro {
-    display: grid;
-    gap: var(--s-4);
+  /* Child component root: reached with :global(), see Header.astro. */
+  :global(.intro__prose) {
+    margin-top: var(--s-3);
   }
 
-  @media (min-width: 900px) {
-    .intro {
-      grid-template-columns: 18rem 1fr;
-      gap: var(--s-8);
-      align-items: start;
-    }
-  }
-
-  /* A child component's root element, so :global() — see Header.astro. */
-  .intro :global(.intro__photo) {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: var(--radius);
-  }
-
-  @media (max-width: 899px) {
-    .intro :global(.intro__photo) {
-      max-width: 18rem;
-    }
-  }
-
-  .intro__subhead {
-    margin-bottom: var(--s-3);
-  }
-
-  .journals {
-    margin: var(--s-3) 0 0;
-    padding-left: 1.1rem;
-    font-weight: var(--fw-heading);
-  }
-
-  .journals li {
-    margin-bottom: var(--s-1);
-  }
 </style>

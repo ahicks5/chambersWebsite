@@ -8,7 +8,7 @@
 import { getCollection, getEntry } from 'astro:content';
 
 import Base from '../layouts/Base.astro';
-import Section from '../components/layout/Section.astro';
+import PageHero from '../components/sections/PageHero.astro';
 import ForWho from '../components/sections/ForWho.astro';
 import OfferCards from '../components/sections/OfferCards.astro';
 import HowItWorks from '../components/sections/HowItWorks.astro';
@@ -29,10 +29,7 @@ const faqs = (await getCollection('faqs', ({ data }) => data.page === 'coaching'
 <Base {title} {description} page="coaching">
   <SchemaFaq {faqs} slot="head" />
 
-  <Section>
-    <h1>{h1}</h1>
-    {subhead && <p class="subhead">{subhead}</p>}
-  </Section>
+  <PageHero {h1} {subhead} />
 
   <ForWho {forWho} {notForWho} />
   <OfferCards segment="individual" page="coaching" heading="Ways to work together" />

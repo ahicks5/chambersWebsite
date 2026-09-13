@@ -1,7 +1,7 @@
 ---
 title: Client Success Stories | JC Coaching
 description: Feedback from real coaching clients and organizations — ambitious professionals, purpose-driven leaders, and the teams they lead.
-h1: Client success stories
+h1: Client success stories.
 subhead: The feedback below comes from real clients — ambitious professionals, purpose-driven leaders, and their organizations.
 forWho: []
 notForWho: []

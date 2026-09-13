@@ -12,6 +12,7 @@ import { getCollection, getEntry, render } from 'astro:content';
 
 import Base from '../layouts/Base.astro';
 import Section from '../components/layout/Section.astro';
+import PageHero from '../components/sections/PageHero.astro';
 import Quote from '../components/ui/Quote.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
 
@@ -32,14 +33,12 @@ const rendered = await Promise.all(
 ---
 
 <Base {title} {description} page="testimonials">
-  <Section>
-    <h1>{h1}</h1>
-    {subhead && <p class="subhead">{subhead}</p>}
-  </Section>
+  <PageHero {h1} {subhead} />
 
+  {/* The quote band's landscape and giant mark (global.css), on both groups. */}
   {
     groups.map((group, index) => (
-      <Section alt={index % 2 === 0} aria-labelledby={group.id}>
+      <Section alt={index % 2 === 0} class="quotes-section" aria-labelledby={group.id}>
         <h2 id={group.id}>{group.heading}</h2>
 
         <ul class="grid stagger">

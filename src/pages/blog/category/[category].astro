@@ -9,6 +9,7 @@ import { getCollection } from 'astro:content';
 
 import Base from '../../../layouts/Base.astro';
 import Section from '../../../components/layout/Section.astro';
+import PageHero from '../../../components/sections/PageHero.astro';
 import { CATEGORY_LABELS, sortByDate, type Category } from '../../../lib/posts';
 
 export async function getStaticPaths() {
@@ -35,10 +36,9 @@ const fmt = (date: Date) =>
   description={`Writing on ${label.toLowerCase()} from John Chambers — an ICF-credentialed coach working with ambitious people on burnout, rest and sustainable success.`}
   page="blog"
 >
-  <Section>
-    <p class="crumb"><a href="/blog">Rooted Reflections</a></p>
-    <h1>{label}</h1>
-  </Section>
+  <PageHero h1={label} kicker="" flip>
+    <p class="crumb" slot="before"><a href="/blog">Rooted Reflections</a></p>
+  </PageHero>
 
   <Section alt>
     {

@@ -32,6 +32,9 @@ live site today.
    1.52:1 and must never be text.
 4. It must not be used on the `surface` tint either: 4.44:1 misses the text
    bar.
+6. Also the same day, once the inner pages gained the hero's opening band:
+   every page's `h1` ends in the mark, through `PageHero.astro`. Still one
+   mark per page, still the headline's closing punctuation, never a word.
 5. Added the same day: the app icon and the social preview image carry the
    mark too — "JC" with the dot, and the hero headline's full stop. They are
    the brand mark and the hero reproduced, not new places on the pages, and

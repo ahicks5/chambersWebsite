@@ -1,0 +1,192 @@
+---
+/**
+ * The opening band of every page but the homepage.
+ *
+ * The same weather as the hero: the landscape blended into the green, a
+ * glow, a kicker taken from the page's nav label, and the headline with its
+ * closing mark (ADR 0011). Rises on load like the hero and opts out of the
+ * scroll reveal. A page can hand it a figure (the About portrait) and extra
+ * content under the subhead.
+ */
+import Section from '../layout/Section.astro';
+import { primaryNav, footerNav } from '../../config/nav';
+
+interface Props {
+  h1: string;
+  subhead?: string;
+  /** Overrides the kicker derived from the nav. An empty string shows none. */
+  kicker?: string;
+  /** Mirror the landscape, so consecutive pages do not open on the same view. */
+  flip?: boolean;
+  /** Vertical crop: the hills, or higher into the sky. */
+  focus?: 'hills' | 'sky';
+}
+
+const { h1, subhead, kicker, flip = false, focus = 'hills' } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const navLabel = [...primaryNav, ...footerNav].find((item) => item.href === path)?.label;
+const label = kicker ?? navLabel;
+
+// The headline's closing mark is the one warm thing on the page (ADR 0011).
+const [, hook, mark = ''] = h1.match(/^(.*?)([.!?]?)$/) ?? [h1, h1, ''];
+
+const hasFigure = Astro.slots.has('figure');
+const classes = ['page-hero', flip && 'page-hero--flip', `page-hero--${focus}`]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<Section size="roomy" reveal={false} class={classes}>
+  <div class:list={['page-hero__grid', hasFigure && 'page-hero__grid--figure']}>
+    <div class="page-hero__text">
+      <slot name="before" />
+      {label && <span class="eyebrow page-hero__kicker">{label}</span>}
+      <h1>{hook}{mark && <span class="page-hero__mark">{mark}</span>}</h1>
+      {subhead && <p class="subhead">{subhead}</p>}
+      <slot />
+    </div>
+    {hasFigure && (
+      <div class="page-hero__figure">
+        <slot name="figure" />
+      </div>
+    )}
+  </div>
+</Section>
+
+<style>
+  :global(.page-hero) {
+    position: relative;
+    isolation: isolate;
+    background:
+      radial-gradient(60% 55% at 80% 20%, var(--c-surface), transparent 70%),
+      var(--c-bg);
+  }
+
+  /* The landscape, as in Hero.astro: luminosity blend at the opacity whose
+     brightest patch was measured to clear 4.5:1 behind body-sized text. */
+  :global(.page-hero)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('/images/hero-bg-900.webp') center 40% / cover no-repeat;
+    mix-blend-mode: luminosity;
+    opacity: 0.26;
+    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  }
+
+  :global(.page-hero--flip)::before {
+    transform: scaleX(-1);
+  }
+
+  :global(.page-hero--sky)::before {
+    background-position: center 5%;
+  }
+
+  @media (min-width: 900px) {
+    :global(.page-hero)::before {
+      background-image: url('/images/hero-bg-1800.webp');
+    }
+  }
+
+  .page-hero__grid {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 900px) {
+    .page-hero__grid--figure {
+      grid-template-columns: minmax(0, 1fr) 18rem;
+      gap: var(--s-12);
+      align-items: center;
+    }
+  }
+
+  .page-hero__text {
+    max-width: var(--measure);
+  }
+
+  .page-hero__text h1 {
+    max-width: 18ch;
+  }
+
+  .page-hero__kicker {
+    margin-bottom: var(--s-2);
+    color: var(--c-muted);
+  }
+
+  .page-hero__mark {
+    color: var(--c-mark);
+  }
+
+  /* The figure slot: whatever the page hands over, in the hero's offset
+     outline frame. */
+  .page-hero__figure {
+    --frame: 0.75rem;
+    position: relative;
+    width: 100%;
+    max-width: 16rem;
+    margin-inline-end: var(--frame);
+    margin-bottom: var(--frame);
+  }
+
+  /* Stacked, the figure leads, top right, as the homepage hero does. */
+  @media (max-width: 899px) {
+    .page-hero__figure {
+      order: -1;
+      max-width: 13rem;
+      justify-self: end;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .page-hero__figure {
+      max-width: none;
+      justify-self: end;
+    }
+  }
+
+  .page-hero__figure::before {
+    content: '';
+    position: absolute;
+    inset: var(--frame) calc(-1 * var(--frame)) calc(-1 * var(--frame)) var(--frame);
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--radius);
+  }
+
+  .page-hero__figure > :global(*) {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+
+  /* The same calm entrance as the hero. */
+  @media (prefers-reduced-motion: no-preference) {
+    .page-hero__text > *,
+    .page-hero__figure {
+      animation: rise var(--dur-slow) var(--ease) both;
+    }
+
+    .page-hero__text > :nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .page-hero__text > :nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .page-hero__text > :nth-child(n + 4) {
+      animation-delay: 0.3s;
+    }
+
+    .page-hero__figure {
+      animation-delay: 0.18s;
+    }
+  }
+</style>

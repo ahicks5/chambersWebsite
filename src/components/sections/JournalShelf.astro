@@ -1,0 +1,177 @@
+---
+/**
+ * John's three journals as a shelf of covers — audit §3.3, which calls them a
+ * major authority signal that appears nowhere useful on the live site.
+ *
+ * There are no cover images yet (docs/parity-checklist.md), so each cover is
+ * typographic: a tall card with the title set in Bitter Black, a spine line,
+ * and the kind as a kicker. When the real covers arrive they replace the
+ * card's face; the shelf and its links stay. Titles link to the journal's
+ * page where a URL exists.
+ */
+import { getCollection, render } from 'astro:content';
+import Section from '../layout/Section.astro';
+
+interface Props {
+  heading: string;
+  id: string;
+  alt?: boolean;
+  /** Show each journal's description under its cover (the resources page). */
+  withBody?: boolean;
+}
+
+const { heading, id, alt = false, withBody = false } = Astro.props;
+
+const journals = (await getCollection('resources', ({ data }) => data.kind === 'journal')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const rendered = await Promise.all(
+  journals.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+---
+
+<Section {alt} glow="left" aria-labelledby={id}>
+  <h2 {id}>{heading}</h2>
+
+  <ul class="shelf stagger">
+    {
+      rendered.map(({ entry, Content }) => (
+        <li class="shelf__item">
+          {entry.data.url ? (
+            <a class="cover" href={entry.data.url} rel="noopener">
+              <span class="eyebrow cover__kind">Journal</span>
+              <span class="cover__title">{entry.data.title}</span>
+            </a>
+          ) : (
+            <div class="cover">
+              <span class="eyebrow cover__kind">Journal</span>
+              <span class="cover__title">{entry.data.title}</span>
+            </div>
+          )}
+          {withBody && (
+            <div class="shelf__body">
+              <Content />
+            </div>
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .shelf {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-3);
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 700px) {
+    .shelf {
+      gap: var(--s-6);
+      max-width: 44rem;
+    }
+  }
+
+  /* A phone gets one journal per row — a small cover at the left, and the
+     description beside it where there is one — rather than three columns
+     too narrow for a title like "Highlight". */
+  @media (max-width: 699px) {
+    .shelf {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--s-3);
+    }
+
+    .shelf__item {
+      display: grid;
+      grid-template-columns: 7rem minmax(0, 1fr);
+      gap: var(--s-3);
+      align-items: start;
+    }
+
+    .shelf__body {
+      margin-top: 0;
+    }
+  }
+
+  /* The cover: a tall card in the surface tint with a hairline, and a spine
+     drawn a little in from the left edge. Set like a book, not a button. */
+  .cover {
+    position: relative;
+    display: grid;
+    align-content: end;
+    gap: var(--s-1);
+    aspect-ratio: 2 / 3;
+    padding: var(--s-2) var(--s-2) var(--s-2) calc(var(--s-2) + 0.6rem);
+    background: var(--c-surface);
+    border: 1px solid var(--c-line-strong);
+    border-radius: 4px 10px 10px 4px;
+    color: var(--c-accent);
+    text-decoration: none;
+    transition:
+      transform var(--dur) var(--ease),
+      box-shadow var(--dur) var(--ease);
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0.6rem;
+    border-left: 1px solid var(--c-line);
+  }
+
+  a.cover:hover,
+  a.cover:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .cover__kind {
+    color: var(--c-muted);
+  }
+
+  .cover__title {
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: var(--fs-h3);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  @media (min-width: 700px) {
+    .cover {
+      padding: var(--s-3) var(--s-3) var(--s-3) calc(var(--s-3) + 0.75rem);
+    }
+
+    .cover::before {
+      left: 0.75rem;
+    }
+  }
+
+  @media (max-width: 699px) {
+    .cover {
+      padding: var(--s-2) var(--s-1) var(--s-2) calc(var(--s-1) + 0.6rem);
+    }
+
+    .cover__title {
+      font-size: 0.9rem;
+    }
+  }
+
+  .shelf__body {
+    margin-top: var(--s-2);
+    font-size: var(--fs-small);
+    color: var(--c-muted);
+    overflow-wrap: anywhere;
+  }
+
+  .shelf__body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

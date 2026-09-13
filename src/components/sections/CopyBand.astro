@@ -14,9 +14,18 @@ interface Props {
   rule?: boolean;
   /** Heading level. The page owns the h1, so bands default to h2. */
   as?: 'h2' | 'h3';
+  /** The soft corner light from Section — alternate sides down a page. */
+  glow?: 'left' | 'right';
 }
 
-const { band: bandId, alt = false, tone, rule = false, as: Heading = 'h2' } = Astro.props;
+const {
+  band: bandId,
+  alt = false,
+  tone,
+  rule = false,
+  as: Heading = 'h2',
+  glow,
+} = Astro.props;
 
 const band = await getEntry('bands', bandId);
 if (!band) throw new Error(`Missing src/content/bands/${bandId}.md`);
@@ -25,7 +34,7 @@ const { Content } = await render(band);
 const headingId = `band-${bandId}`;
 ---
 
-<Section {alt} {tone} {rule} aria-labelledby={headingId}>
+<Section {alt} {tone} {rule} {glow} aria-labelledby={headingId}>
   <Heading id={headingId}>{band.data.title}</Heading>
   <Prose>
     <Content />

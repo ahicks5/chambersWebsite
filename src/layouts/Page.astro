@@ -6,7 +6,7 @@
  * remember to write one.
  */
 import Base from './Base.astro';
-import Section from '../components/layout/Section.astro';
+import PageHero from '../components/sections/PageHero.astro';
 
 interface Props {
   title: string;
@@ -22,10 +22,7 @@ const { title, description, page, h1, subhead, noindex } = Astro.props;
 ---
 
 <Base {title} {description} {page} {noindex}>
-  <Section>
-    <h1>{h1}</h1>
-    {subhead && <p class="subhead">{subhead}</p>}
-  </Section>
+  <PageHero {h1} {subhead} />
 
   <slot />
 </Base>
