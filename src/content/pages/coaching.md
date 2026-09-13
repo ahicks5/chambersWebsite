@@ -1,7 +1,7 @@
 ---
 title: Individual Coaching Packages & Pricing
 description: 3-month partnerships, career-pivot packages, and single sessions for burnout, career change, and sustainable success. Transparent pricing.
-h1: Individual coaching
+h1: Individual coaching.
 subhead: For ambitious people navigating important decisions, transitions, goals, and challenges — and looking for a way forward that feels both successful and sustainable.
 forWho:
   - You are burned out and still performing, which is why nobody has noticed.

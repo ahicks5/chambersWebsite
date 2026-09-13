@@ -13,6 +13,7 @@ import { getEntry, render } from 'astro:content';
 
 import Base from '../layouts/Base.astro';
 import Section from '../components/layout/Section.astro';
+import PageHero from '../components/sections/PageHero.astro';
 import Prose from '../components/ui/Prose.astro';
 import Button from '../components/ui/Button.astro';
 
@@ -23,10 +24,7 @@ const { Content } = await render(page);
 ---
 
 <Base {title} {description} page="thanks" {noindex}>
-  <Section>
-    <h1>{h1}</h1>
-    {subhead && <p class="subhead">{subhead}</p>}
-  </Section>
+  <PageHero {h1} {subhead} flip />
 
   <Section alt>
     <Prose>

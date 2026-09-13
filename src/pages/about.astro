@@ -12,6 +12,7 @@ import { Image } from 'astro:assets';
 
 import Base from '../layouts/Base.astro';
 import Section from '../components/layout/Section.astro';
+import PageHero from '../components/sections/PageHero.astro';
 import Prose from '../components/ui/Prose.astro';
 import CopyBand from '../components/sections/CopyBand.astro';
 import ProofStrip from '../components/sections/ProofStrip.astro';
@@ -27,27 +28,20 @@ const { Content } = await render(page);
 ---
 
 <Base {title} {description} page="about">
-  <Section>
-    <div class="intro">
-      {/* The candid from his live About page. Above the fold, so not lazy. */}
-      <Image
-        class="intro__photo"
-        src={candid}
-        alt={site.person}
-        widths={[480, 768, 1000]}
-        sizes="(min-width: 900px) 18rem, calc(100vw - 3rem)"
-        loading="eager"
-      />
-
-      <div>
-        <h1>{h1}</h1>
-        {subhead && <p class="subhead intro__subhead">{subhead}</p>}
-        <Prose>
-          <Content />
-        </Prose>
-      </div>
-    </div>
-  </Section>
+  {/* The candid from his live About page, in the hero's frame. Above the fold, so not lazy. */}
+  <PageHero {h1} {subhead}>
+    <Image
+      slot="figure"
+      src={candid}
+      alt={site.person}
+      widths={[480, 768, 1000]}
+      sizes="(min-width: 900px) 18rem, calc(100vw - 3rem)"
+      loading="eager"
+    />
+    <Prose class="intro__prose">
+      <Content />
+    </Prose>
+  </PageHero>
 
   {/* Audit §2.2: the credentials are the most skimmable thing on the site. */}
   <ProofStrip />
@@ -75,37 +69,9 @@ const { Content } = await render(page);
 </Base>
 
 <style>
-  .intro {
-    display: grid;
-    gap: var(--s-4);
-  }
-
-  @media (min-width: 900px) {
-    .intro {
-      grid-template-columns: 18rem 1fr;
-      gap: var(--s-8);
-      align-items: start;
-    }
-  }
-
-  /* A child component's root element, so :global() — see Header.astro. */
-  .intro :global(.intro__photo) {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: var(--radius);
-  }
-
-  @media (max-width: 899px) {
-    .intro :global(.intro__photo) {
-      max-width: 18rem;
-    }
-  }
-
-  .intro__subhead {
-    margin-bottom: var(--s-3);
+  /* Child component root: reached with :global(), see Header.astro. */
+  :global(.intro__prose) {
+    margin-top: var(--s-3);
   }
 
   .journals {

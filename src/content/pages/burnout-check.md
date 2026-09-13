@@ -1,7 +1,7 @@
 ---
 title: The 2-Minute Burnout Check
 description: Ten honest questions to tell burnout from a hard season, plus one practice to try this week. Free, takes two minutes, no diagnosis.
-h1: The 2-minute burnout check
+h1: The 2-minute burnout check.
 subhead: Ten honest questions, a short read on where you actually are, and one practice to try this week.
 forWho: []
 notForWho: []

@@ -11,6 +11,7 @@ import { getEntry, render } from 'astro:content';
 
 import Base from '../layouts/Base.astro';
 import Section from '../components/layout/Section.astro';
+import PageHero from '../components/sections/PageHero.astro';
 import Prose from '../components/ui/Prose.astro';
 
 const page = await getEntry('pages', 'burnout-check');
@@ -20,10 +21,7 @@ const { Content } = await render(page);
 ---
 
 <Base {title} {description} page="burnout-check">
-  <Section>
-    <h1>{h1}</h1>
-    {subhead && <p class="subhead">{subhead}</p>}
-  </Section>
+  <PageHero {h1} {subhead} focus="sky" />
 
   <Section alt aria-labelledby="get-the-check">
     <div class="check">
