@@ -26,11 +26,12 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       and deliberately says nothing about analytics because none are wired. It is
       not legal advice and no lawyer has seen it. It also needs updating the day
       GA4 goes in.
-- [ ] **Photos.** Three slots are reserved and sized at 4:5 — hero, Meet John,
-      and About — each rendering a dashed placeholder, so dropping the real
-      images in shifts no layout. Audit §10 wants the hero photo ~1500px wide and
-      never lazy-loaded, since it is the LCP element. Real alt text too, not a
-      filename (audit §7.6).
+- [x] **Photos.** The three 4:5 slots — hero, Meet John, About — now carry the
+      two photos from the live site (`src/assets/`): the studio headshot in the
+      hero at 1600px, eager and high-priority as the LCP element (audit §10),
+      and the About-page candid in the other two. Alt text is his name from
+      `site.ts`. **Still needs John:** better originals if he has them — the
+      candid is 1233px at source — and a say on which photo goes where.
 - [ ] **Pricing decision, Option A or B** (audit §4.4, §11 question 2). The
       3-month package currently costs *more* per session than a single session
       (~$167 vs $145), so there is no economic reason to commit. The homepage
