@@ -32,3 +32,11 @@
   for = "/fonts/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# The manifest is JSON with its own media type. Without this Netlify serves
+# it as a generic binary, which the nosniff header above then makes a
+# warning in the browser console.
+[[headers]]
+  for = "/site.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json; charset=utf-8"
