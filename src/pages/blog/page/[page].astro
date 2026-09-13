@@ -1,0 +1,61 @@
+---
+/**
+ * Pages two and up of the blog index — audit §7.4.
+ *
+ * Page one is /blog/ (src/pages/blog/index.astro); this route starts at two,
+ * so there is never a /blog/page/1/ competing with it for the same content.
+ * Both render PostList, so the list and the pager cannot drift apart.
+ *
+ * Static pages rather than a "load more" button: no JavaScript, every post
+ * stays crawlable, and a reader can link to the page they are on. The title
+ * carries the page number so the eleven pages are not eleven duplicates in
+ * search results.
+ */
+import { getCollection, getEntry } from 'astro:content';
+
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/sections/PageHero.astro';
+import PostList from '../../../components/sections/PostList.astro';
+import { PER_PAGE, sortByDate } from '../../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = sortByDate(await getCollection('posts', ({ data }) => !data.draft));
+  const totalPages = Math.max(1, Math.ceil(posts.length / PER_PAGE));
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => {
+    const page = i + 2;
+    return {
+      params: { page: String(page) },
+      props: {
+        page,
+        totalPages,
+        total: posts.length,
+        posts: posts.slice((page - 1) * PER_PAGE, page * PER_PAGE),
+      },
+    };
+  });
+}
+
+type Props = {
+  page: number;
+  totalPages: number;
+  total: number;
+  posts: Awaited<ReturnType<typeof getCollection<'posts'>>>;
+};
+
+const { page, totalPages, total, posts } = Astro.props;
+
+const meta = await getEntry('pages', 'blog');
+if (!meta) throw new Error('Missing src/content/pages/blog.md');
+const { h1, subhead } = meta.data;
+---
+
+<Base
+  title={`${h1} — page ${page}`}
+  description={`Page ${page} of ${totalPages}. ${meta.data.description}`}
+  page="blog"
+>
+  <PageHero {h1} subhead={subhead} />
+
+  <PostList {posts} {page} {totalPages} {total} />
+</Base>

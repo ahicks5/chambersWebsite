@@ -15,6 +15,13 @@ export const CATEGORY_LABELS = {
 
 export type Category = keyof typeof CATEGORY_LABELS;
 
+/**
+ * Posts per page on the blog index. Sixty-five in one column is a wall; ten
+ * is a page someone finishes. The index is page one and
+ * src/pages/blog/page/[page].astro renders the rest.
+ */
+export const PER_PAGE = 10;
+
 /** Newest first. */
 export function sortByDate(posts: CollectionEntry<'posts'>[]): CollectionEntry<'posts'>[] {
   return [...posts].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
