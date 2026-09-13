@@ -14,6 +14,7 @@ import StickyCta from '../components/islands/StickyCta.astro';
 import Footer from '../components/layout/Footer.astro';
 import { site } from '../config/site';
 import type { CtaKey } from '../config/cta';
+import tokens from '../styles/tokens.css?raw';
 
 interface Props {
   /** <title> — audit §7.2 caps these at 60 characters. */
@@ -50,6 +51,19 @@ const isCanonicalHost = new URL(site.url).host;
 const onCanonicalDomain = deployUrl !== '' && new URL(deployUrl).host === isCanonicalHost;
 const robots = noindex || !onCanonicalDomain ? 'noindex' : null;
 const canonical = new URL(Astro.url.pathname, site.url);
+
+/**
+ * The share image has to be an absolute URL on a host that actually serves
+ * it — iMessage, Slack and the rest fetch it. Until cutover that is the
+ * deploy's own host, not the canonical domain, which still points at the
+ * old site. After cutover the two are the same and this needs no change.
+ * The image itself is rendered by scripts/brand-assets.mjs.
+ */
+const ogImage = new URL('/og/default.jpg', deployUrl || site.url).href;
+
+// The browser-chrome colour is the page green. Read from tokens.css rather
+// than typed here, so the one file that may hold a colour still is.
+const themeColor = tokens.match(/--palette-green:\s*(#[0-9a-fA-F]{6})/)?.[1];
 ---
 
 <!doctype html>
@@ -57,7 +71,13 @@ const canonical = new URL(Astro.url.pathname, site.url);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* Icons and the home-screen entry — rendered by scripts/brand-assets.mjs. */}
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="apple-mobile-web-app-title" content={site.shortName} />
+    {themeColor && <meta name="theme-color" content={themeColor} />}
 
     {/*
       The H1 weight only. It is the largest text on every page and paints
@@ -89,6 +109,14 @@ const canonical = new URL(Astro.url.pathname, site.url);
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical.href} />
     <meta property="og:site_name" content={site.name} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.person}, ${site.name}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
     <meta name="generator" content={Astro.generator} />
 
     {/* Per-page <head> additions — JSON-LD, preloads. Pass slot="head". */}

@@ -32,6 +32,10 @@ live site today.
    1.52:1 and must never be text.
 4. It must not be used on the `surface` tint either: 4.44:1 misses the text
    bar.
+5. Added the same day: the app icon and the social preview image carry the
+   mark too — "JC" with the dot, and the hero headline's full stop. They are
+   the brand mark and the hero reproduced, not new places on the pages, and
+   `scripts/brand-assets.mjs` renders both from the same tokens.
 
 ## Consequences
 
