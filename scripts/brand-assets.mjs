@@ -16,8 +16,10 @@
  *   public/icons/icon-512.png     same, larger; also the maskable icon
  *   public/og/default.jpg         1200×630 — iMessage, Slack, LinkedIn, X
  *
- * The icon is "JC" with the site's one warm mark after it (ADR 0011). The
- * preview image is the hero: headline, positioning line, portrait, landscape.
+ * The icon is the brand mark from src/components/ui/Logo.astro — a ring, a
+ * rising check, and the warm dot (ADR 0011) — redrawn here so the tab, the
+ * phone and the header carry one shape. The preview image is the hero:
+ * the mark, the headline, the positioning line, the portrait, the landscape.
  */
 import { spawn } from 'node:child_process';
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -48,14 +50,26 @@ const fonts = `
   body { font-family: Bitter, Georgia, serif; background: ${green}; color: ${white}; }
 `;
 
-// The mark: JC and the dot, centred in the safe zone (the middle 80%) so it
-// survives every platform's mask.
+/**
+ * The brand mark — the same geometry as src/components/ui/Logo.astro, drawn
+ * on the same 32-unit grid. Keep the two in step: a ring, a rising check,
+ * and the warm dot at the top of the rise.
+ */
+const markSvg = (px, stroke = 2.4) => `
+  <svg width="${px}" height="${px}" viewBox="0 0 32 32" fill="none">
+    <circle cx="16" cy="16" r="13.6" stroke="${white}" stroke-width="${stroke}"/>
+    <path d="M9.2 16.4 13.8 21 20 12.4" stroke="${white}" stroke-width="${stroke + 0.2}"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22.6" cy="9.4" r="2.4" fill="${yellow}"/>
+  </svg>`;
+
+// Centred in the safe zone (the middle ~70%) so it survives every platform's
+// mask, and drawn with a heavier stroke than the header's, which is read at
+// 30px rather than 16.
 const iconHtml = (size, radius) => `<!doctype html><style>${fonts}
   .icon { width: ${size}px; height: ${size}px; border-radius: ${radius}px; background: ${green};
-          display: grid; place-items: center; font-weight: 900; font-size: ${size * 0.5}px;
-          letter-spacing: -0.04em; line-height: 1; padding-bottom: ${size * 0.04}px; }
-  .dot { color: ${yellow}; }
-</style><div class="icon"><span>JC<span class="dot">.</span></span></div>`;
+          display: grid; place-items: center; }
+</style><div class="icon">${markSvg(size * 0.66, 2.8)}</div>`;
 
 const ogHtml = `<!doctype html><style>${fonts}
   .card { position: relative; width: 1200px; height: 630px; overflow: hidden; background: ${green}; isolation: isolate; }
@@ -65,7 +79,7 @@ const ogHtml = `<!doctype html><style>${fonts}
     mask-image: linear-gradient(to bottom, black 45%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 45%, transparent 100%); }
   .text { position: absolute; left: 72px; top: 64px; width: 660px; }
-  .brand { font-weight: 900; font-size: 22px; letter-spacing: -0.01em; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 22px; letter-spacing: -0.01em; }
   h1 { margin-top: 44px; font-weight: 900; font-size: 66px; line-height: 1.05; letter-spacing: -0.015em; max-width: 14ch; }
   .dot { color: ${yellow}; }
   p { margin-top: 26px; font-size: 26px; line-height: 1.45; max-width: 30ch; opacity: 0.9; }
@@ -75,7 +89,7 @@ const ogHtml = `<!doctype html><style>${fonts}
 </style>
 <div class="card">
   <div class="text">
-    <div class="brand">${siteName}</div>
+    <div class="brand">${markSvg(28)}<span>${siteName}</span></div>
     <h1>${hook}<span class="dot">${mark}</span></h1>
     <p>${subhead}</p>
   </div>

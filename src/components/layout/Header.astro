@@ -10,6 +10,7 @@
 import { site } from '../../config/site';
 import { primaryNav } from '../../config/nav';
 import Button from '../ui/Button.astro';
+import Logo from '../ui/Logo.astro';
 import Nav from './Nav.astro';
 import type { CtaKey } from '../../config/cta';
 
@@ -30,7 +31,10 @@ const { page, cta = 'intro' } = Astro.props;
 
 <header class="header">
   <div class="header__inner">
-    <a href="/" class="header__brand">{site.name}</a>
+    <a href="/" class="header__brand">
+      <Logo size={30} class="header__logo" />
+      <span class="header__name">{site.name}</span>
+    </a>
     <Nav items={primaryNav} label="Primary" scrollable variant="pills" class="header__nav" />
     <Button {cta} page={page} position="header" size="compact" class="header__cta" />
   </div>
@@ -79,6 +83,9 @@ const { page, cta = 'intro' } = Astro.props;
   }
 
   .header__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     font-family: var(--font-heading);
     font-weight: var(--fw-heading);
     font-size: 1.05rem;
@@ -86,6 +93,15 @@ const { page, cta = 'intro' } = Astro.props;
     letter-spacing: -0.01em;
     color: var(--c-accent);
     text-decoration: none;
+  }
+
+  /* The mark lifts a little on hover, the way the buttons do. */
+  .header__brand :global(.header__logo) {
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .header__brand:hover :global(.header__logo) {
+    transform: translateY(-2px);
   }
 
   /*
@@ -133,8 +149,36 @@ const { page, cta = 'intro' } = Astro.props;
     .header__brand {
       flex: 1 1 0;
       min-width: 0;
+      gap: 0.45rem;
       font-size: 0.95rem;
+    }
+
+    .header__name {
+      min-width: 0;
       text-wrap: balance;
+    }
+
+    /*
+     * On a phone the mark stands alone. Measured at 375: the CTA needs 209
+     * of the 327 pixels inside the padding, which leaves the brand about a
+     * hundred — less than the word "Consulting" on its own, so the name
+     * broke to four lines and made the header 146px tall. The name stays in
+     * the markup for assistive tech and for search; only its pixels go.
+     */
+    @media (max-width: 639px) {
+      .header__brand {
+        flex: 0 0 auto;
+      }
+
+      .header__name {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
     }
 
     .header__inner > :global(.header__cta) {
