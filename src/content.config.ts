@@ -170,6 +170,12 @@ const bands = defineCollection({
     title: z.string(),
     /** Small print under the band, e.g. the lead magnet's privacy line. */
     note: z.string().optional(),
+    /**
+     * A figure the band can set large beside its copy — "2" with the label
+     * "minutes" on the burnout check. Both or neither.
+     */
+    figure: z.string().optional(),
+    figureLabel: z.string().optional(),
   }),
 });
 

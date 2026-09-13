@@ -19,15 +19,21 @@ const { Content } = await render(band);
 
 <Section rule aria-labelledby="meet-john">
   <div class="meet">
-    {/* A different photo from the hero's: the candid from his live About page. */}
-    <Image
-      class="meet__photo"
-      src={candid}
-      alt={site.person}
-      widths={[480, 768, 1000]}
-      sizes="(min-width: 700px) 14rem, calc(100vw - 3rem)"
-      loading="lazy"
-    />
+    {/*
+      A different photo from the hero's: the candid from his live About page,
+      in the same offset outline frame as the hero, so the two portraits
+      read as one set.
+    */}
+    <div class="meet__figure">
+      <Image
+        class="meet__photo"
+        src={candid}
+        alt={site.person}
+        widths={[480, 768, 1000]}
+        sizes="(min-width: 700px) 17rem, calc(100vw - 3rem)"
+        loading="lazy"
+      />
+    </div>
 
     <div class="meet__text">
       <h2 id="meet-john">{band.data.title}</h2>
@@ -45,28 +51,41 @@ const { Content } = await render(band);
 
   @media (min-width: 700px) {
     .meet {
-      grid-template-columns: 14rem 1fr;
-      gap: var(--s-6);
+      grid-template-columns: 17rem 1fr;
+      gap: var(--s-8);
       align-items: center;
     }
   }
 
+  /* The frame from the hero: an outline offset down and to the right, with
+     margin reserved for it so nothing overflows. Capped on a phone so the
+     stacked band is not one tall picture with a caption. */
+  .meet__figure {
+    --frame: 0.75rem;
+    position: relative;
+    width: 100%;
+    max-width: 16rem;
+    margin-inline-end: var(--frame);
+    margin-bottom: var(--frame);
+  }
+
+  .meet__figure::before {
+    content: '';
+    position: absolute;
+    inset: var(--frame) calc(-1 * var(--frame)) calc(-1 * var(--frame)) var(--frame);
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--radius);
+  }
+
   /* A child component's root element, so :global() — see Header.astro. */
   .meet :global(.meet__photo) {
+    position: relative;
     display: block;
     width: 100%;
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
     border-radius: var(--radius);
-  }
-
-  /* Stacked on a phone the photo is a portrait beside nothing; cap it so the
-     band does not become one tall picture with a caption. */
-  @media (max-width: 699px) {
-    .meet :global(.meet__photo) {
-      max-width: 18rem;
-    }
   }
 
   .meet__text :global(p) {

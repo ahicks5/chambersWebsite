@@ -30,7 +30,7 @@ const { Content } = await render(band);
   Closes every page that has a closing CTA, on the page colour and a size up,
   so the hero and this band bracket the page (ADR 0009, 0010).
 */}
-<Section size="roomy" rule aria-labelledby="final-cta">
+<Section size="roomy" rule class="final-section" aria-labelledby="final-cta">
   <div class="final">
     <h2 id="final-cta">{band.data.title}</h2>
     <Content />
@@ -39,6 +39,36 @@ const { Content } = await render(band);
 </Section>
 
 <style>
+  /* The hero's landscape returns, mirrored and rising from the bottom edge,
+     so the opening and closing bands carry the same weather. Same blend,
+     opacity and files as Hero.astro; the mask runs the other way. */
+  :global(.final-section) {
+    position: relative;
+    isolation: isolate;
+    /* The blend needs a backdrop inside this stacking context, or the photo
+       paints in its own colours over nothing. */
+    background: var(--c-bg);
+  }
+
+  :global(.final-section)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('/images/hero-bg-900.webp') center 30% / cover no-repeat;
+    transform: scaleX(-1);
+    mix-blend-mode: luminosity;
+    opacity: 0.26;
+    mask-image: linear-gradient(to top, black 35%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, black 35%, transparent 100%);
+  }
+
+  @media (min-width: 900px) {
+    :global(.final-section)::before {
+      background-image: url('/images/hero-bg-1800.webp');
+    }
+  }
+
   .final {
     display: grid;
     justify-items: start;

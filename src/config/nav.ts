@@ -22,3 +22,13 @@ export const footerNav: readonly NavItem[] = [
   { label: 'Contact', href: '/contact' },
   { label: 'Privacy', href: '/privacy' },
 ] as const;
+
+/**
+ * The footer lists everything, in two columns: the primary nav again, then
+ * the pages that are deliberately kept out of the header. The column labels
+ * live here with the links so the footer types no navigation text of its own.
+ */
+export const footerGroups: readonly { readonly label: string; readonly items: readonly NavItem[] }[] = [
+  { label: 'Pages', items: primaryNav },
+  { label: 'More', items: footerNav },
+] as const;
