@@ -9,8 +9,11 @@
  * The h1 is rendered by this section rather than by Page.astro, because the hero
  * is a two-column layout and the heading belongs inside its text column.
  */
+import { Image } from 'astro:assets';
 import Button from '../ui/Button.astro';
 import Section from '../layout/Section.astro';
+import { site } from '../../config/site';
+import portrait from '../../assets/john-chambers.jpg';
 
 interface Props {
   h1: string;
@@ -30,21 +33,25 @@ const { h1, subhead } = Astro.props;
 
     {/*
       Audit §5.2 wants John's photo beside the headline, and §10 makes it the LCP
-      element: upload ~1500px wide, never lazy-load it, fixed 4:5 ratio to stop
-      layout shift (§8.4).
+      element: ~1500px wide, never lazy-loaded, a fixed 4:5 ratio so nothing
+      shifts while it loads (§8.4). The source is his studio headshot from the
+      live site, cropped to 4:5 at 1600px; Astro resizes and re-encodes it at
+      build time, so the browser fetches only the width it needs.
 
-      No photo is in the repo yet, so this reserves the exact box the image will
-      occupy. Swapping in <Image> later changes no layout. Tracked in
-      docs/parity-checklist.md.
-
-      The offset frame behind the box is the one decorative element in the
-      hero. It is drawn by a pseudo-element on the wrapper, so it costs no
-      markup and survives the photo swap unchanged.
+      The offset frame behind the photo is the one decorative element in the
+      hero, drawn by a pseudo-element on the wrapper.
     */}
     <div class="hero__figure">
-      <div class="hero__photo" role="presentation">
-        <p class="hero__photo-note">Photo of John goes here — 4:5, ~1500px wide.</p>
-      </div>
+      <Image
+        class="hero__photo"
+        src={portrait}
+        alt={site.person}
+        widths={[480, 768, 1024, 1600]}
+        sizes="(min-width: 900px) 30rem, (min-width: 640px) 24rem, calc(100vw - 3rem)"
+        loading="eager"
+        fetchpriority="high"
+        decoding="sync"
+      />
     </div>
   </div>
 </Section>
@@ -124,15 +131,14 @@ const { h1, subhead } = Astro.props;
     border-radius: var(--radius);
   }
 
-  .hero__photo {
+  /* A child component's root element, so :global() — see Header.astro. */
+  .hero__figure :global(.hero__photo) {
     position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
     aspect-ratio: 4 / 5;
-    display: grid;
-    place-items: center;
-    padding: var(--s-3);
-    /* Opaque, or the frame behind shows through the tint on the green page. */
-    background: linear-gradient(var(--c-surface), var(--c-surface)), var(--c-bg);
-    border: 1px dashed var(--c-line);
+    object-fit: cover;
     border-radius: var(--radius);
   }
 
@@ -158,11 +164,4 @@ const { h1, subhead } = Astro.props;
     }
   }
 
-  .hero__photo-note {
-    margin: 0;
-    max-width: 22ch;
-    text-align: center;
-    color: var(--c-muted);
-    font-size: var(--fs-small);
-  }
 </style>
