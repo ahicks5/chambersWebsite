@@ -15,6 +15,8 @@ import PageHero from '../components/sections/PageHero.astro';
 import Prose from '../components/ui/Prose.astro';
 import Calendly from '../components/islands/Calendly.astro';
 import { site } from '../config/site';
+import { Image } from 'astro:assets';
+import candid from '../assets/john-chambers-candid.jpg';
 
 const page = await getEntry('pages', 'contact');
 if (!page) throw new Error('Missing src/content/pages/contact.md');
@@ -82,6 +84,15 @@ const { Content: Alternatives } = await render(alternatives);
 
       {/* Audit §2.7: a buyer needs to know they can work with him from Denver. */}
       <aside class="where">
+        {/* A face beside the address: the person who reads the note. */}
+        <Image
+          class="where__photo"
+          src={candid}
+          alt={site.person}
+          widths={[320, 640]}
+          sizes="8rem"
+          loading="lazy"
+        />
         <h3>Where I am</h3>
         <p>
           {site.locality}, {site.region}. I coach by video, so where you are does
@@ -205,7 +216,19 @@ const { Content: Alternatives } = await render(alternatives);
   .where {
     padding: var(--s-4);
     background: var(--c-surface);
+    border: 1px solid var(--c-line);
     border-radius: var(--radius);
+  }
+
+  /* Child component root: reached with :global(), see Header.astro. */
+  .where :global(.where__photo) {
+    display: block;
+    width: 8rem;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    margin-bottom: var(--s-3);
+    border-radius: calc(var(--radius) / 2);
   }
 
   .where h3 {
