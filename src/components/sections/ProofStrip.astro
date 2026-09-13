@@ -6,9 +6,11 @@
  * sits mid-paragraph on the live homepage, "12 years HR" only on Services, and
  * the three journals only on a Resources page missing from the nav.
  *
- * §3.3 asks for badges and a logo strip. There are no logo files yet, so the
- * two kinds of claim get two typographic treatments instead: credentials as
- * badges, institutions as a tracked wordmark row — the way a logo strip reads
+ * §3.3 asks for badges and a logo strip. There are still no logo files, so
+ * the two kinds of claim get two typographic treatments. Each credential is
+ * a figure set like a heading with its label beneath — the way a stat reads,
+ * so "12" and "3" carry the weight rather than sitting inside a sentence.
+ * The institutions are a tracked wordmark row, the way a logo strip reads
  * when the logos are text. Both lists come from src/config/site.ts.
  */
 import { site } from '../../config/site';
@@ -17,16 +19,20 @@ import Section from '../layout/Section.astro';
 
 <Section size="compact" reveal={false} class="proof-section" aria-label="Credentials">
   <div class="proof">
-    <div class="proof__group">
-      <span class="eyebrow">Credentials</span>
-      <ul class="proof__list">
-        {site.credentials.map((credential) => <li>{credential}</li>)}
-      </ul>
-    </div>
+    <ul class="facts">
+      {
+        site.credentials.map(({ figure, label }) => (
+          <li class="fact">
+            <span class="fact__figure">{figure}</span>
+            <span class="fact__label">{label}</span>
+          </li>
+        ))
+      }
+    </ul>
 
-    <div class="proof__group">
-      <span class="eyebrow">Trained at</span>
-      <ul class="proof__list proof__list--marks">
+    <div class="marks">
+      <span class="eyebrow marks__eyebrow">Trained at</span>
+      <ul class="marks__list">
         {site.trainedAt.map((place) => <li>{place}</li>)}
       </ul>
     </div>
@@ -42,57 +48,130 @@ import Section from '../layout/Section.astro';
 
   .proof {
     display: grid;
-    gap: var(--s-3);
+    gap: var(--s-4);
   }
 
   @media (min-width: 900px) {
     .proof {
-      grid-template-columns: auto auto;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: var(--s-6);
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: var(--s-8);
     }
   }
 
-  .proof__group {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--s-1) var(--s-3);
+  /* Three figures in a row at every width, divided by hairlines. On phones
+     the three share the width equally and the labels wrap; `minmax(0, …)`
+     so a long label cannot push the row past the viewport. */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .proof__group .eyebrow {
-    display: inline;
+  @media (min-width: 900px) {
+    .facts {
+      grid-template-columns: repeat(3, auto);
+      justify-content: start;
+    }
+  }
+
+  .fact {
+    display: grid;
+    align-content: start;
+    gap: 0.3rem;
+    padding-inline: var(--s-2);
+  }
+
+  @media (max-width: 639px) {
+    .fact__label {
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .fact__label {
+      white-space: nowrap;
+    }
+  }
+
+  .fact:first-child {
+    padding-inline-start: 0;
+  }
+
+  .fact + .fact {
+    border-left: 1px solid var(--c-line);
+  }
+
+  /* The figure is the design: Bitter Black at heading size, in the heading
+     colour. The label is the sentence it used to be buried in. */
+  .fact__figure {
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: var(--fs-h2);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--c-accent);
+  }
+
+  .fact__label {
+    font-size: var(--fs-small);
+    line-height: 1.3;
     color: var(--c-muted);
   }
 
-  .proof__list {
+  @media (min-width: 900px) {
+    .fact {
+      padding-inline: var(--s-4);
+    }
+  }
+
+  .marks {
+    display: grid;
+    gap: var(--s-1);
+  }
+
+  .marks__eyebrow {
+    color: var(--c-muted);
+  }
+
+  .marks__list {
     display: flex;
     flex-wrap: wrap;
     gap: var(--s-1) var(--s-3);
     margin: 0;
     padding: 0;
     list-style: none;
-    font-size: var(--fs-small);
   }
 
-  .proof__list li {
+  /* Beside the figures there is room for the four names on one line, and a
+     logo strip does not wrap. */
+  @media (min-width: 900px) {
+    .marks__list {
+      flex-wrap: nowrap;
+    }
+
+    .marks__list li {
+      white-space: nowrap;
+    }
+  }
+
+  .marks__list li {
     display: inline-flex;
     align-items: baseline;
     gap: var(--s-3);
-  }
-
-  /* Middot between items, not after the last. */
-  .proof__list li:not(:last-child)::after {
-    content: '·';
-    color: var(--c-muted);
-  }
-
-  .proof__list--marks li {
     font-family: var(--font-heading);
     font-weight: var(--fw-heading);
     font-size: 0.85rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    color: var(--c-accent);
+  }
+
+  /* Middot between items, not after the last. */
+  .marks__list li:not(:last-child)::after {
+    content: '·';
+    color: var(--c-muted);
   }
 </style>

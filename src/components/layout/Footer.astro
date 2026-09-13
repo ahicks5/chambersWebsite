@@ -20,7 +20,9 @@ const year = new Date().getFullYear();
   <div class="footer__inner">
     <Nav items={footerNav} label="Footer" />
 
-    <p class="footer__credentials">{[...site.credentials, ...site.trainedAt].join(' · ')}</p>
+    <p class="footer__credentials">
+      {[...site.credentials.map((c) => c.short), ...site.trainedAt].join(' · ')}
+    </p>
 
     {/* Single line on purpose: Astro 7 compresses whitespace by JSX rules, so a
         newline between inline expressions is dropped rather than collapsed to a
