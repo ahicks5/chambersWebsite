@@ -137,41 +137,63 @@ import Section from '../layout/Section.astro';
   }
 
   .marks__list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-1) var(--s-3);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  /* Beside the figures there is room for the four names on one line, and a
-     logo strip does not wrap. */
-  @media (min-width: 900px) {
-    .marks__list {
-      flex-wrap: nowrap;
-    }
-
-    .marks__list li {
-      white-space: nowrap;
-    }
-  }
-
   .marks__list li {
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--s-3);
     font-family: var(--font-heading);
     font-weight: var(--fw-heading);
     font-size: 0.85rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    white-space: nowrap;
     color: var(--c-accent);
   }
 
-  /* Middot between items, not after the last. */
-  .marks__list li:not(:last-child)::after {
-    content: '·';
-    color: var(--c-muted);
+  /* On a phone the four names sit in a two-by-two grid divided by the same
+     hairlines as the figures above — a middot row wrapped unevenly. */
+  @media (max-width: 639px) {
+    .marks__list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .marks__list li {
+      padding: 0.45rem var(--s-2);
+    }
+
+    .marks__list li:nth-child(odd) {
+      padding-inline-start: 0;
+    }
+
+    .marks__list li:nth-child(even) {
+      border-left: 1px solid var(--c-line);
+    }
+
+    .marks__list li:nth-child(n + 3) {
+      border-top: 1px solid var(--c-line);
+    }
+  }
+
+  /* Wider, one row: the way a logo strip reads when the logos are text. */
+  @media (min-width: 640px) {
+    .marks__list {
+      display: flex;
+      gap: var(--s-3);
+    }
+
+    .marks__list li {
+      display: inline-flex;
+      align-items: baseline;
+      gap: var(--s-3);
+    }
+
+    /* Middot between items, not after the last. */
+    .marks__list li:not(:last-child)::after {
+      content: '·';
+      color: var(--c-muted);
+    }
   }
 </style>
