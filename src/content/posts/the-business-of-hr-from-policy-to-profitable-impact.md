@@ -4,7 +4,7 @@ description: "HR does not support the business – it's the heart of it. It's ti
 pubDate: "2025-08-01"
 category: leadership
 keywords: []
-draft: true
+draft: false
 ---
 
 In May, I had the privilege of joining a panel for SHRM’s _Pathways & Perspectives_ alongside five thoughtful, engaging HR professionals. We talked candidly about the realities of this work – what’s working, what’s changing, and what still needs to.

@@ -5,7 +5,7 @@ pubDate: "2025-08-15"
 updatedDate: "2025-10-03"
 category: practices
 keywords: []
-draft: true
+draft: false
 ---
 
 It was the end of the year – that time in HR when you’re running on caffeine, desperation, and willpower. Juggling performance reviews, benefits deadlines, and the final crunch of annual reports. My inbox was a battlefield.

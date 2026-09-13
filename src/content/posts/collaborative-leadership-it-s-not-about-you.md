@@ -5,7 +5,7 @@ pubDate: "2025-05-17"
 updatedDate: "2025-10-03"
 category: leadership
 keywords: []
-draft: true
+draft: false
 ---
 
 Let’s get this out of the way: leadership is not a solo act. It’s not a TED Talk. It’s not the CEO’s origin story told dramatically over a PowerPoint deck.

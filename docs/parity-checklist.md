@@ -76,11 +76,13 @@ Items marked **Andrew** need a dashboard, a credential, or a file. Items marked
       Median 1,163 words, structure preserved (263 subheadings, lists, emphasis,
       links). Every old slug resolves: all 65 `/post/<slug>` map to `/blog/<slug>`
       via `public/_redirects`, verified against the live sitemap.
-- [ ] **John: read all 65 and set the category.** Every post is `draft: true`
-      and stays out of the listings and the sitemap until he flips it. Routes
-      exist and are `noindex`, so he can read each one on a deploy preview. The
-      script guessed the category from keywords — 21 of the 65 with low
-      confidence — and that guess is not a judgment about his own writing.
+- [ ] **John: read all 65 and confirm the category.** All 65 posts are now
+      published (`draft: false`), so the blog, the category pages and the
+      sitemap are full on staging. The draft gate still works: set
+      `draft: true` on any post to pull it back out of the listings and the
+      sitemap and put the banner back. The script guessed each category from
+      keywords — 21 of the 65 with low confidence — and that guess is not a
+      judgment about his own writing.
 - [ ] **43 migrated posts contain inline Calendly links** written into the
       original copy. They bypass `src/config/cta.ts`, carry no UTMs, and some
       point at the bare profile rather than one of the two event types (audit

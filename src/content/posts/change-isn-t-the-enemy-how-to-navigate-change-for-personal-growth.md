@@ -5,7 +5,7 @@ pubDate: "2025-05-29"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 Last week, I caught up with an old friend over the phone. He was telling me about a new job opportunity – new city, new company, new responsibilities. Basically, a full-blown new life chapter was about to begin.

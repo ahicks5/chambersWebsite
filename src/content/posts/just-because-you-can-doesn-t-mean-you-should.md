@@ -4,7 +4,7 @@ description: "Discover how values-based decision making, career alignment, and s
 pubDate: "2026-08-10"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 Something came up in a coaching session this week that I want to share with you.

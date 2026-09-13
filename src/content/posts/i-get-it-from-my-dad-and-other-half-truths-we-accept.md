@@ -5,7 +5,7 @@ pubDate: "2025-04-20"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 There I was – fingers hovering over the keyboard, jaw clenched, holding my breath, body tensed like I was about to file my taxes for the first time.

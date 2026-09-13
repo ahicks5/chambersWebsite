@@ -4,7 +4,7 @@ description: "Losing my little brother broke me open, shining a light on my fail
 pubDate: "2025-12-06"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 There are moments that split your life in two – a before, and an after. Losing my little brother, Phil, in October of 2023 was one of mine.

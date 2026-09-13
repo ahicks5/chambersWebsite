@@ -5,7 +5,7 @@ pubDate: "2025-04-28"
 updatedDate: "2025-10-03"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 Sixteen years ago today, I received an email that changed my life.

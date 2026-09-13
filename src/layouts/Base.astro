@@ -131,7 +131,10 @@ const canonical = new URL(Astro.url.pathname, site.url);
           }
         }
       },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.05 }
+      // Threshold 0, not a fraction: a block taller than twenty screens (the
+      // blog index on a phone) never shows 5% of itself at once, and with a
+      // fractional threshold it stayed hidden while the visitor was inside it.
+      { rootMargin: '0px 0px -8% 0px', threshold: 0 }
     );
     blocks.forEach((el) => io.observe(el));
   } else {

@@ -4,7 +4,7 @@ description: "We never know how much time we have, but we can make the most of i
 pubDate: "2025-11-30"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 Today, my mom boarded a plane and headed to Culebra – a small, fishing island off the coast of Puerto Rico where the beaches look unreal, the days move slowly, and the warm sunshine is in full supply.

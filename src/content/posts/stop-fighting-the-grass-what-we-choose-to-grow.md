@@ -4,7 +4,7 @@ description: "Stop fighting what you can’t control. Discover how shifting atte
 pubDate: "2026-08-14"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 For the first three years we lived in our current home, I spent an ungodly amount of time trying to keep grass out of our flower beds.

@@ -4,7 +4,7 @@ description: "Leadership is not about perfection or performance – the most eff
 pubDate: "2025-08-29"
 category: leadership
 keywords: []
-draft: true
+draft: false
 ---
 
 This past year, I was working with a manager who had a communication challenge no one wanted. She'd been tasked with announcing a reorganization that impacted an entire team – one she cared about deeply.

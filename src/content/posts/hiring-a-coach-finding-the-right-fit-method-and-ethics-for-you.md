@@ -5,7 +5,7 @@ pubDate: "2025-08-09"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 This week, along with millions of others, I got pulled into an online sensation.

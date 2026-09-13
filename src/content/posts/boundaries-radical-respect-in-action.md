@@ -5,7 +5,7 @@ pubDate: "2025-05-24"
 updatedDate: "2025-10-03"
 category: leadership
 keywords: []
-draft: true
+draft: false
 ---
 
 ## Understanding Resilient Leadership

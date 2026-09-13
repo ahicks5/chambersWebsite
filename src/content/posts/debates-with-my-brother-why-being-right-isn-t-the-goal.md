@@ -5,7 +5,7 @@ pubDate: "2025-05-08"
 updatedDate: "2025-10-03"
 category: practices
 keywords: []
-draft: true
+draft: false
 ---
 
 Two weeks ago, my brother called me to vent and, just as importantly, to debate.

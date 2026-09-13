@@ -5,7 +5,7 @@ pubDate: "2025-07-23"
 updatedDate: "2025-10-03"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 Earlier this week, while standing in line for coffee, I overheard a man talking to his friend about his two teenagers.

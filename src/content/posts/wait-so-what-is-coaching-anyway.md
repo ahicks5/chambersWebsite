@@ -5,7 +5,7 @@ pubDate: "2025-06-02"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 A few weeks ago, I was on the phone with one of my brothers when he asked, “So what exactly do coaches even do?”

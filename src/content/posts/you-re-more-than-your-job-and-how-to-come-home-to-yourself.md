@@ -4,7 +4,7 @@ description: "Your job is what you do – not who you are. Here’s how to recla
 pubDate: "2025-11-02"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 In 2017, I made what many would call a bold move.

@@ -5,7 +5,7 @@ pubDate: "2025-06-12"
 updatedDate: "2025-10-03"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 If you’re anything like me, chances are you’ve been taught to see rest as something you have to earn — a luxury you can only afford yourself after grinding through work, checking off every box, and proving you’re worthy of some down time.

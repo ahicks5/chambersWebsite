@@ -4,7 +4,7 @@ description: "The stories we tell ourselves quietly shape what we believe and ho
 pubDate: "2026-04-04"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 I want to start with something that might feel a little uncomfortable at first:

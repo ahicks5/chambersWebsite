@@ -4,7 +4,7 @@ description: "Many of us drown out or silence our thoughts as often as possible.
 pubDate: "2025-06-20"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 We need to address something important: you need to stop drowning out or running away from your thoughts.

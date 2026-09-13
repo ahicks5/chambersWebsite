@@ -4,7 +4,7 @@ description: "Family gatherings have a way of testing our patience. This piece e
 pubDate: "2025-11-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 Thanksgiving may still be a few weeks away, but in my house, the annual family “negotiations” have already begun.

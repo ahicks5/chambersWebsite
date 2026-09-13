@@ -63,16 +63,20 @@ test('every old Wix post URL has a page at its new address', async ({ page }) =>
   expect(response?.status()).toBe(200);
 });
 
-test('migrated posts are drafts: noindex and out of the sitemap', async ({ page, request }) => {
+test('published posts are in the sitemap and carry no draft banner', async ({ page, request }) => {
+  // The 65 migrated posts are published (ADR 0007's draft gate is still there:
+  // a post with `draft: true` leaves the listings and the sitemap and shows the
+  // banner again). Off the canonical domain every page is noindex, so that is
+  // not what distinguishes a draft here — the sitemap and the banner are.
   const posts = postRoutes();
   const [first] = posts;
   if (!first) throw new Error('no post routes were built');
 
   await page.goto(first);
-  await expect(page.locator('meta[name="robots"][content="noindex"]')).toHaveCount(1);
+  await expect(page.locator('.draft')).toHaveCount(0);
 
   const sitemap = await (await request.get('/sitemap-0.xml')).text();
   for (const post of posts.slice(0, 5)) {
-    expect(sitemap, `${post} must not be in the sitemap while it is a draft`).not.toContain(post);
+    expect(sitemap, `${post} should be in the sitemap once published`).toContain(post);
   }
 });

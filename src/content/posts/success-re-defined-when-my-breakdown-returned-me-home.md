@@ -5,7 +5,7 @@ pubDate: "2025-05-03"
 updatedDate: "2025-10-03"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 This week, I cried.

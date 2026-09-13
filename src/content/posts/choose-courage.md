@@ -5,7 +5,7 @@ pubDate: "2025-04-02"
 updatedDate: "2025-04-10"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 I used to think fear was a flaw.

@@ -5,7 +5,7 @@ pubDate: "2025-08-22"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 Over the last two weeks, I’ve made a shift: I’ve slowed down my professional output to create time and space for more one-on-one conversations. This change has not only helped me regain a sense of real connection in my own life, but it seems to be a rarity for those I'm meeting with, too. The space to be truly present, honest, and reflective without any expectations, judgment, or ulterior motives is invaluable.

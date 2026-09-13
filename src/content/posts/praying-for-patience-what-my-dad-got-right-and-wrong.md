@@ -4,7 +4,7 @@ description: "Impatience drains energy. Patience builds presence and resilience.
 pubDate: "2025-08-26"
 category: practices
 keywords: []
-draft: true
+draft: false
 ---
 
 When I was growing up, my dad had a favorite warning:_“Be careful what you pray for – you might actually get it.”_

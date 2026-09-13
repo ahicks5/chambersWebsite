@@ -5,7 +5,7 @@ pubDate: "2025-05-07"
 updatedDate: "2025-10-03"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 "I am an absolute [lunatic](http://lunatic.In)!"

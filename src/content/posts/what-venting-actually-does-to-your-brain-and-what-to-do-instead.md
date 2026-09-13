@@ -4,7 +4,7 @@ description: "Venting feels like relief — but is it actually making things wor
 pubDate: "2026-04-14"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 Earlier this week, a client forwarded me an article with a subject line that made me laugh out loud:

@@ -5,7 +5,7 @@ pubDate: "2025-05-24"
 updatedDate: "2025-10-03"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 As spring settles in and the days grow warmer here in Texas, I’ve been starting more of my morning walking the pups around the neighborhood.
