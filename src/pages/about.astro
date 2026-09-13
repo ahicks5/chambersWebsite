@@ -46,9 +46,9 @@ const { Content } = await render(page);
   {/* Audit §2.2: the credentials are the most skimmable thing on the site. */}
   <ProofStrip />
 
-  <CopyBand band="about-credentials" />
-  <CopyBand band="about-story" tone="light" />
-  <CopyBand band="about-how-i-coach" />
+  <CopyBand band="about-credentials" glow="right" />
+  <CopyBand band="about-story" tone="light" glow="left" />
+  <CopyBand band="about-how-i-coach" glow="right" />
 
   {/*
     Audit §3.3 calls the three journals a major authority signal that appears
