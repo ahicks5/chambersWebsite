@@ -2,6 +2,7 @@
 engagement: Resilient Leadership Training
 segment: organization
 featured: false
+rating: 5
 consent: role-only
 order: 3
 ---

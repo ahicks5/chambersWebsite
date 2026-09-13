@@ -2,6 +2,7 @@
 engagement: 3-month engagement
 segment: individual
 featured: false
+rating: 5
 consent: role-only
 order: 2
 ---
