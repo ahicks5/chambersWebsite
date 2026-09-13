@@ -5,6 +5,11 @@
  * The audit's reasoning: it raises intro-call quality, it signals confidence,
  * and it lets a wrong-fit visitor leave quickly instead of booking and
  * no-showing. Both lists come from the page's frontmatter.
+ *
+ * Set as two checklists, the way "Sound familiar?" is: the fit list's rings
+ * tick one after another as the block comes into view; the not-for-you
+ * list's rings stay hollow with a dash, in the muted colour. Same shapes,
+ * two answers.
  */
 import Section from '../layout/Section.astro';
 
@@ -19,29 +24,35 @@ const { forWho, notForWho, alt = true } = Astro.props;
 
 {
   (forWho.length > 0 || notForWho.length > 0) && (
-    <Section {alt} aria-labelledby="for-who">
+    <Section {alt} glow="right" aria-labelledby="for-who">
       <h2 id="for-who" class="visually-hidden">
         Who this is for
       </h2>
 
       <div class="forwho">
         {forWho.length > 0 && (
-          <div>
+          <div class="forwho__col">
             <h3>This is for you if</h3>
-            <ul>
-              {forWho.map((item) => (
-                <li>{item}</li>
+            <ul class="forwho__list">
+              {forWho.map((item, i) => (
+                <li style={`--tick-delay: ${(0.45 + i * 0.22).toFixed(2)}s`}>
+                  <span class="tick" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
           </div>
         )}
 
         {notForWho.length > 0 && (
-          <div>
+          <div class="forwho__col forwho__col--not">
             <h3>This is not for you if</h3>
-            <ul class="forwho__not">
+            <ul class="forwho__list">
               {notForWho.map((item) => (
-                <li>{item}</li>
+                <li>
+                  <span class="tick tick--no" aria-hidden="true" />
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
           </div>
@@ -70,21 +81,98 @@ const { forWho, notForWho, alt = true } = Astro.props;
 
   @media (min-width: 700px) {
     .forwho {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: var(--s-8);
+    }
+
+    /* A hairline between the two answers. */
+    .forwho__col--not {
+      padding-left: var(--s-8);
+      border-left: 1px solid var(--c-line);
     }
   }
 
-  .forwho ul {
-    margin: var(--s-2) 0 0;
-    padding-left: 1.1rem;
+  .forwho__list {
+    display: grid;
+    gap: var(--s-3);
+    margin: var(--s-3) 0 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .forwho li {
-    margin-bottom: var(--s-2);
+  .forwho__list li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: var(--s-2);
+    align-items: start;
   }
 
-  .forwho__not {
+  .forwho__col--not li {
     color: var(--c-muted);
+  }
+
+  /* The ring, as in SymptomGrid: heading colour, filled once ticked, the mark
+     in its ink. Ticked is the resting state. */
+  .tick {
+    position: relative;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.15em;
+    border: 2px solid var(--c-accent);
+    border-radius: 999px;
+    background: var(--c-accent);
+  }
+
+  .tick::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 48%;
+    width: 0.35rem;
+    height: 0.65rem;
+    border-right: 2.5px solid var(--c-accent-ink);
+    border-bottom: 2.5px solid var(--c-accent-ink);
+    transform: translate(-50%, -58%) rotate(45deg);
+  }
+
+  /* The hollow ring with a dash: not this one. */
+  .tick--no {
+    border-color: var(--c-line-strong);
+    background: transparent;
+  }
+
+  .tick--no::after {
+    width: 0.6rem;
+    height: 0;
+    border: 0;
+    border-bottom: 2px solid var(--c-line-strong);
+    transform: translate(-50%, -50%);
+    top: 50%;
+  }
+
+  /* With the reveal active the fit rings start empty and tick in sequence
+     once the block is in view, each on its own delay. Same gate as global.css. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-reveal] .reveal) .tick:not(.tick--no) {
+      background: transparent;
+      transition: background-color var(--dur) var(--ease) var(--tick-delay, 0.5s);
+    }
+
+    :global(html[data-reveal] .reveal) .tick:not(.tick--no)::after {
+      opacity: 0;
+      transform: translate(-50%, -58%) rotate(45deg) scale(0.5);
+      transition:
+        opacity var(--dur) var(--ease) var(--tick-delay, 0.5s),
+        transform var(--dur) var(--ease) var(--tick-delay, 0.5s);
+    }
+
+    :global(html[data-reveal] .reveal.is-in) .tick:not(.tick--no) {
+      background: var(--c-accent);
+    }
+
+    :global(html[data-reveal] .reveal.is-in) .tick:not(.tick--no)::after {
+      opacity: 1;
+      transform: translate(-50%, -58%) rotate(45deg) scale(1);
+    }
   }
 </style>
