@@ -13,7 +13,7 @@ import { Image } from 'astro:assets';
 import Button from '../ui/Button.astro';
 import Section from '../layout/Section.astro';
 import { site } from '../../config/site';
-import portrait from '../../assets/john-chambers.jpg';
+import portrait from '../../assets/john-chambers-cutout.webp';
 
 interface Props {
   h1: string;
@@ -34,12 +34,15 @@ const { h1, subhead } = Astro.props;
     {/*
       Audit §5.2 wants John's photo beside the headline, and §10 makes it the LCP
       element: ~1500px wide, never lazy-loaded, a fixed 4:5 ratio so nothing
-      shifts while it loads (§8.4). The source is his studio headshot from the
-      live site, cropped to 4:5 at 1600px; Astro resizes and re-encodes it at
-      build time, so the browser fetches only the width it needs.
+      shifts while it loads (§8.4). The source is his studio headshot with the
+      flat grey backdrop keyed out (scripts/cutout-backdrop.mjs), cropped to
+      4:5 at 1600px; Astro resizes and re-encodes it at build time, so the
+      browser fetches only the width it needs.
 
-      The offset frame behind the photo is the one decorative element in the
-      hero, drawn by a pseudo-element on the wrapper.
+      With the backdrop gone he sits on the page colour itself rather than in
+      a grey rectangle on it. The outline frame behind him is the one
+      decorative element: it starts below the top of his head, so he rises out
+      of it, and his torso fades into the green at the bottom edge.
     */}
     <div class="hero__figure">
       <Image
@@ -121,17 +124,20 @@ const { h1, subhead } = Astro.props;
     }
   }
 
-  /* An outline offset down and to the right, not a filled block: a filled
-     one read as a second slab behind the photo. */
+  /* An outline behind him, not a filled block: a filled one read as a second
+     slab. Its top edge sits a fifth of the way down, below the crown of his
+     head, so the portrait breaks out of the frame instead of sitting in it. */
   .hero__figure::before {
     content: '';
     position: absolute;
-    inset: var(--frame) calc(-1 * var(--frame)) calc(-1 * var(--frame)) var(--frame);
+    inset: 22% calc(-1 * var(--frame)) calc(-1 * var(--frame)) var(--frame);
     border: 1px solid var(--c-line-strong);
     border-radius: var(--radius);
   }
 
-  /* A child component's root element, so :global() — see Header.astro. */
+  /* A child component's root element, so :global() — see Header.astro.
+     The bottom fifth fades to transparent so the crop across his chest
+     dissolves into the page rather than ending on a hard line. */
   .hero__figure :global(.hero__photo) {
     position: relative;
     display: block;
@@ -139,7 +145,8 @@ const { h1, subhead } = Astro.props;
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    border-radius: var(--radius);
+    mask-image: linear-gradient(to top, transparent, black 22%);
+    -webkit-mask-image: linear-gradient(to top, transparent, black 22%);
   }
 
   /* The calm reveal: headline, line, button, then the photo, each rising a
