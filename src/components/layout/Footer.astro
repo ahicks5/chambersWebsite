@@ -1,60 +1,212 @@
 ---
 /**
- * Site footer.
+ * Site footer — audit §5.1, §3.3.
  *
  * The year and business name are rendered, never typed. Audit §2.8 bug 2: the
  * live blog footer reads "© 2024 by JC Consulting & Consulting" — two errors in
  * one line. That cannot happen here.
  *
+ * Four columns on a wide screen: the brand with its positioning line and the
+ * page's primary CTA (the audit wants that CTA in the footer as well as the
+ * hero); the two link groups from src/config/nav.ts; and how to reach John.
+ * Under them, the credentials as a tracked line — §3.3 asks for the ICF
+ * credential in every footer — and the legal line.
+ *
  * Social links live in the footer only, never the top of the page (audit §2.8
  * bug 8), and are not rendered until the URLs in site.ts are confirmed.
  */
+import { getEntry } from 'astro:content';
 import { site } from '../../config/site';
-import { footerNav } from '../../config/nav';
+import { footerGroups } from '../../config/nav';
+import type { CtaKey } from '../../config/cta';
 import Nav from './Nav.astro';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  /** Page identifier for CTA attribution, e.g. `home`. */
+  page: string;
+  /** Mirrors the header: organizations pages pass `consult` (audit §4.3). */
+  cta?: Extract<CtaKey, 'intro' | 'consult'>;
+}
+
+const { page, cta = 'intro' } = Astro.props;
+
+// The positioning line under the wordmark is the homepage subhead — one
+// sentence John already owns, not a second one written for the footer.
+const home = await getEntry('pages', 'home');
+const line = home?.data.subhead;
 
 const year = new Date().getFullYear();
+const proof = [...site.credentials.map((c) => c.short), ...site.trainedAt];
 ---
 
 <footer class="footer">
   <div class="footer__inner">
-    <Nav items={footerNav} label="Footer" />
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href="/" class="footer__wordmark">{site.name}</a>
+        {line && <p class="footer__line">{line}</p>}
+        <Button {cta} {page} position="footer" size="compact" class="footer__cta" />
+      </div>
 
-    <p class="footer__credentials">
-      {[...site.credentials.map((c) => c.short), ...site.trainedAt].join(' · ')}
-    </p>
+      {
+        footerGroups.map((group) => (
+          <div class="footer__group">
+            <span class="eyebrow footer__eyebrow">{group.label}</span>
+            <Nav items={group.items} label={group.label} stack />
+          </div>
+        ))
+      }
 
-    {/* Single line on purpose: Astro 7 compresses whitespace by JSX rules, so a
-        newline between inline expressions is dropped rather than collapsed to a
-        space. See docs/decisions/0004-astro-7.md. */}
-    <p class="footer__legal">
-      © {year} {site.name} · <a href={`mailto:${site.email}`}>{site.email}</a> · {`${site.locality}, ${site.region}`}
-    </p>
+      <div class="footer__group footer__group--contact">
+        <span class="eyebrow footer__eyebrow">Contact</span>
+        <ul class="footer__contact">
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li>{`${site.locality}, ${site.region}`}</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <ul class="footer__proof" aria-label="Credentials">
+        {proof.map((item) => <li>{item}</li>)}
+      </ul>
+      <p class="footer__legal">© {year} {site.name}</p>
+    </div>
   </div>
 </footer>
 
 <style>
+  /* On the surface tint, so the footer reads as the page's base rather than
+     more of the closing band above it. */
   .footer {
-    background: var(--c-bg);
+    background: var(--c-surface);
     border-top: 1px solid var(--c-line);
   }
 
   .footer__inner {
     display: grid;
-    gap: var(--s-3);
+    gap: var(--s-6);
     max-width: 1200px;
     margin-inline: auto;
-    padding: var(--s-8) var(--s-3);
+    padding: var(--s-8) var(--s-3) var(--s-6);
   }
 
-  .footer__credentials,
+  @media (min-width: 900px) {
+    .footer__inner {
+      padding-top: var(--s-12);
+    }
+  }
+
+  /* Two columns even on a phone: the link groups sit side by side, and the
+     brand and the contact block each take a full row. */
+  .footer__top {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-4);
+  }
+
+  .footer__brand,
+  .footer__group--contact {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 900px) {
+    .footer__top {
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.9fr) minmax(0, 0.9fr) minmax(0, 1.3fr);
+      gap: var(--s-8);
+    }
+
+    .footer__brand,
+    .footer__group--contact {
+      grid-column: auto;
+    }
+  }
+
+  /* Child component roots do not carry this file's scope attribute. */
+  .footer__group :global(.nav a) {
+    font-size: var(--fs-small);
+  }
+
+  .footer__wordmark {
+    display: inline-block;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: var(--fs-h3);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--c-accent);
+    text-decoration: none;
+  }
+
+  .footer__line {
+    max-width: 36ch;
+    margin: var(--s-2) 0 var(--s-3);
+    font-size: var(--fs-small);
+    color: var(--c-muted);
+  }
+
+  .footer__eyebrow {
+    margin-bottom: var(--s-2);
+    color: var(--c-muted);
+  }
+
+  .footer__contact {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer__contact {
+    font-size: var(--fs-small);
+  }
+
+  .footer__contact a {
+    color: var(--c-text);
+    text-decoration-color: var(--c-line-strong);
+    overflow-wrap: anywhere;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-2) var(--s-4);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--c-line);
+  }
+
+  /* The proof line, set the way the proof strip sets the institutions. */
+  .footer__proof {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--c-muted);
+  }
+
+  .footer__proof li {
+    display: inline-flex;
+    gap: var(--s-2);
+  }
+
+  .footer__proof li:not(:last-child)::after {
+    content: '·';
+  }
+
   .footer__legal {
     margin: 0;
+    font-size: var(--fs-small);
     color: var(--c-muted);
-    font-size: 0.95rem;
-  }
-
-  .footer__legal a {
-    color: inherit;
   }
 </style>

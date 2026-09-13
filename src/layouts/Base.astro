@@ -102,7 +102,7 @@ const canonical = new URL(Astro.url.pathname, site.url);
     <main id="main">
       <slot />
     </main>
-    <Footer />
+    <Footer {page} cta={headerCta} />
   </body>
 </html>
 

@@ -21,16 +21,31 @@ interface Props {
    * are at a glance — the header uses it; the footer stays as text.
    */
   variant?: 'text' | 'pills';
+  /** One item per line, for a footer column. */
+  stack?: boolean;
   class?: string;
 }
 
-const { items, label, scrollable = false, variant = 'text', class: className } = Astro.props;
+const {
+  items,
+  label,
+  scrollable = false,
+  variant = 'text',
+  stack = false,
+  class: className,
+} = Astro.props;
 const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
 <nav
   aria-label={label}
-  class:list={['nav', `nav--${variant}`, scrollable && 'nav--scrollable', className]}
+  class:list={[
+    'nav',
+    `nav--${variant}`,
+    scrollable && 'nav--scrollable',
+    stack && 'nav--stack',
+    className,
+  ]}
 >
   <ul>
     {
@@ -68,6 +83,12 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
   .nav--text a:focus-visible,
   .nav--text a[aria-current='page'] {
     background-size: 100% 1px;
+  }
+
+  .nav--stack ul {
+    flex-direction: column;
+    align-items: start;
+    gap: var(--s-1);
   }
 
   /* Pills: hover tints the item with the surface colour; the current page
