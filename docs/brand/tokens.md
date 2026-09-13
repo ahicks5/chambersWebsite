@@ -49,6 +49,22 @@ white at a fixed opacity over the green, not new values:
 | line (decorative) | white at 22% | — | — |
 | line-strong (fields) | white at 55% | 3.85:1 (non-text) | — |
 
+### One warm mark (ADR 0011)
+
+`--palette-yellow` is `#ffcb05`, the theme's `color_5` slot. It is in John's
+Wix palette but the live site never paints it, so it is the one value here
+that changes the look rather than reproducing it. It has exactly one role,
+`--c-mark`, and one use: the full stop that ends the hero headline. The
+green scheme resolves the role to the yellow; the light scheme resolves it
+to the green, because yellow fails on white.
+
+| Pair | Ratio | Result |
+|---|---|---|
+| yellow on green | 5.55:1 | pass — text-sized use is fine |
+| yellow on the 8% band | 4.44:1 | fail for text — do not use on `surface` |
+| yellow on white | 1.52:1 | fail — never on the light scheme |
+| ink on yellow | 12.31:1 | pass — if it is ever a fill |
+
 ## Contrast
 
 Computed with the WCAG 2.x relative-luminance formula. Text pairs are held to

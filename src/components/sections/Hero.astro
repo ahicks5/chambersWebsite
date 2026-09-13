@@ -21,12 +21,16 @@ interface Props {
 }
 
 const { h1, subhead } = Astro.props;
+
+// The headline's closing mark is the one warm thing on the page (ADR 0011).
+// Split off at render time so the content file stays a plain sentence.
+const [, hook, mark = ''] = h1.match(/^(.*?)([.!?]?)$/) ?? [h1, h1, ''];
 ---
 
 <Section size="roomy" reveal={false} class="hero">
   <div class="hero__grid">
     <div class="hero__text">
-      <h1>{h1}</h1>
+      <h1>{hook}{mark && <span class="hero__mark">{mark}</span>}</h1>
       <p class="hero__subhead">{subhead}</p>
       <Button cta="intro" page="home" position="hero" />
     </div>
@@ -84,6 +88,10 @@ const { h1, subhead } = Astro.props;
   .hero__text h1 {
     /* Six to eight words a line keeps the hook from running the column. */
     max-width: 16ch;
+  }
+
+  .hero__mark {
+    color: var(--c-mark);
   }
 
   /* The subhead is the positioning line (audit §3.2 step 2), not a caption.

@@ -31,6 +31,9 @@
   /* Interactive borders — the lightest neutral grey clearing WCAG 1.4.11's 3:1
      on both the page background and the grey band. See tokens.md. */
   --palette-line-strong: #8b8b8b;
+  /* color_5 — the theme's yellow slot, which the live site never paints. One
+     role, one use: the full stop of the hero headline. See ADR 0011. */
+  --palette-yellow: #ffcb05;
 
   /* White at an opacity over the green. Not new colours: each resolves to a
      tint of the green above. Ratios in tokens.md. */
@@ -49,6 +52,9 @@
   --c-accent-ink: var(--palette-white);
   --c-line: var(--palette-line);
   --c-line-strong: var(--palette-line-strong);
+  /* The one warm mark. Yellow on white is 1.52:1, so on the light scheme it
+     falls back to the heading colour and only the green scheme paints it. */
+  --c-mark: var(--c-accent);
 
   /* Form fields stay white with dark text in both schemes — a field is a
      field, and a green input on a green page is a guess. */
@@ -121,6 +127,7 @@
   --c-accent-ink: var(--palette-green);
   --c-line: var(--tint-22);
   --c-line-strong: var(--tint-55);
+  --c-mark: var(--palette-yellow); /* 5.55:1 on the green */
 }
 
 /* A light band inside the green page — the offer cards, where the pricing
@@ -134,4 +141,5 @@
   --c-accent-ink: var(--palette-white);
   --c-line: var(--palette-line);
   --c-line-strong: var(--palette-line-strong);
+  --c-mark: var(--palette-green);
 }
