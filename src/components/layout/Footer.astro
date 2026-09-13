@@ -38,6 +38,20 @@ const line = home?.data.subhead;
 
 const year = new Date().getFullYear();
 const proof = [...site.credentials.map((c) => c.short), ...site.trainedAt];
+
+// Profiles, from site.ts. Only real URLs render (audit §2.8 bug 8: footer
+// only, and never a dead link). The glyphs are simple line drawings, not the
+// networks' trademarked logos.
+const NETWORKS = {
+  linkedin: { label: 'LinkedIn', path: 'M4 9h3.4v11H4zM5.7 4a2 2 0 1 1 0 4 2 2 0 0 1 0-4M9.6 9h3.3v1.5c.5-.9 1.7-1.8 3.5-1.8 3.7 0 4.4 2.4 4.4 5.6V20h-3.4v-5.1c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V20H9.6z' },
+  instagram: { label: 'Instagram', path: 'M7.5 3h9A4.5 4.5 0 0 1 21 7.5v9a4.5 4.5 0 0 1-4.5 4.5h-9A4.5 4.5 0 0 1 3 16.5v-9A4.5 4.5 0 0 1 7.5 3zm0 2A2.5 2.5 0 0 0 5 7.5v9A2.5 2.5 0 0 0 7.5 19h9a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 16.5 5zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm5-3.2a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z' },
+  tiktok: { label: 'TikTok', path: 'M13.5 3h3c.2 2.3 1.6 3.7 4 3.9v3c-1.5 0-2.9-.5-4-1.3V15a5.5 5.5 0 1 1-5.5-5.5h.5v3.1a2.4 2.4 0 1 0 2 2.4z' },
+  x: { label: 'X', path: 'M4 3h4.3l4 5.6L17.2 3H20l-6.4 7.4L20.5 21h-4.3l-4.3-6-5.2 6H4l6.8-7.8z' },
+} as const;
+
+const socials = (Object.keys(NETWORKS) as (keyof typeof NETWORKS)[])
+  .map((key) => ({ key, href: site.social[key], ...NETWORKS[key] }))
+  .filter(({ href }) => href.startsWith('https://'));
 ---
 
 <footer class="footer">
@@ -64,6 +78,22 @@ const proof = [...site.credentials.map((c) => c.short), ...site.trainedAt];
           <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
           <li>{`${site.locality}, ${site.region}`}</li>
         </ul>
+
+        {
+          socials.length > 0 && (
+            <ul class="footer__social" aria-label="Profiles">
+              {socials.map(({ href, label, path }) => (
+                <li>
+                  <a href={href} rel="me noopener" aria-label={label} title={label}>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
+                      <path d={path} fill="currentColor" />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
       </div>
     </div>
 
@@ -167,6 +197,37 @@ const proof = [...site.credentials.map((c) => c.short), ...site.trainedAt];
     color: var(--c-text);
     text-decoration-color: var(--c-line-strong);
     overflow-wrap: anywhere;
+  }
+
+  /* Profiles as rings — the site's small-mark motif — at a full tap size. */
+  .footer__social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+    margin: var(--s-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 999px;
+    color: var(--c-text);
+    transition:
+      background-color var(--dur) var(--ease),
+      color var(--dur) var(--ease),
+      border-color var(--dur) var(--ease);
+  }
+
+  .footer__social a:hover,
+  .footer__social a:focus-visible {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-accent-ink);
   }
 
   .footer__bottom {
