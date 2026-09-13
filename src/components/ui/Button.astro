@@ -80,6 +80,37 @@ const isExternal = href.startsWith('http');
     transform: translateX(3px);
   }
 
+  /* On the filled buttons the arrow sits in a small disc of the label colour,
+     so the pill has a second shape inside it and does not read as a plain
+     capsule of text. Sized to the line height so the button grows nowhere.
+     The two colours are the button's own, swapped. */
+  .button--primary .button__arrow,
+  .button--inverse .button__arrow {
+    box-sizing: content-box;
+    width: 12px;
+    height: 12px;
+    padding: 0.3rem;
+    margin-inline-end: -0.7rem;
+    border-radius: 999px;
+    background: currentColor;
+  }
+
+  .button--primary .button__arrow path {
+    stroke: var(--c-accent);
+  }
+
+  .button--inverse .button__arrow path {
+    stroke: var(--c-accent-ink);
+  }
+
+  .button--compact.button--primary .button__arrow,
+  .button--compact.button--inverse .button__arrow {
+    width: 11px;
+    height: 11px;
+    padding: 0.22rem;
+    margin-inline-end: -0.5rem;
+  }
+
   .button:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lift);
@@ -121,7 +152,7 @@ const isExternal = href.startsWith('http');
     font-size: 0.95rem;
   }
 
-  .button--compact .button__arrow {
+  .button--compact.button--ghost .button__arrow {
     width: 13px;
     height: 13px;
   }

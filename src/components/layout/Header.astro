@@ -31,7 +31,7 @@ const { page, cta = 'intro' } = Astro.props;
 <header class="header">
   <div class="header__inner">
     <a href="/" class="header__brand">{site.name}</a>
-    <Nav items={primaryNav} label="Primary" scrollable class="header__nav" />
+    <Nav items={primaryNav} label="Primary" scrollable variant="pills" class="header__nav" />
     <Button {cta} page={page} position="header" size="compact" class="header__cta" />
   </div>
 </header>
