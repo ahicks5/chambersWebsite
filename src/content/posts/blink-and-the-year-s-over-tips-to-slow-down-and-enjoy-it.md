@@ -4,7 +4,7 @@ description: "Time seems to be slipping by, especially when we are stressed or o
 pubDate: "2025-10-28"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 After more than a decade in corporate HR, I can tell you: Q4 might as well be a four-letter word.

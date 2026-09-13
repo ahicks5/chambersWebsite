@@ -4,7 +4,7 @@ description: "How the stories we tell shape our brain, behavior, and confidence 
 pubDate: "2026-01-17"
 category: practices
 keywords: []
-draft: true
+draft: false
 ---
 
 Over the last few weeks, I’ve found myself slightly obsessed with the idea of **neurostimulation**.

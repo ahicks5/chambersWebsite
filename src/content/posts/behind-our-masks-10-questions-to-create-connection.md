@@ -5,7 +5,7 @@ pubDate: "2025-05-30"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 Today, while walking the dogs and trying to ignore the fact that central Texas is actively trying to cook us alive, I listened to an NPR podcast featuring Brett Goldstein (a.k.a. THE Roy Kent from _Ted Lasso_).

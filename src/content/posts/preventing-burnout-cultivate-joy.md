@@ -5,7 +5,7 @@ pubDate: "2025-08-13"
 updatedDate: "2025-10-03"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 It was one of those weeks where my to-do list seemed to multiply every time I blinked.

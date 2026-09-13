@@ -5,7 +5,7 @@ pubDate: "2025-05-28"
 updatedDate: "2025-10-03"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 This last week, my relationship with the new and unfamiliar changed – I think forever.

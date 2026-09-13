@@ -4,7 +4,7 @@ description: "Tiny moments of joy aren't frivolous – they're fortifying. Read 
 pubDate: "2025-08-04"
 category: practices
 keywords: []
-draft: true
+draft: false
 ---
 
 This weekend, I FaceTimed two of my favorite humans – former colleagues turned real-deal friends. The kind you can laugh and cry with in the same five minutes.

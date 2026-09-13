@@ -4,7 +4,7 @@ description: "She was so burned out, she no longer felt good enough to work anyw
 pubDate: "2026-05-02"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 I cannot stop thinking about a message I received from a woman on TikTok this week.

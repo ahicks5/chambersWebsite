@@ -13,7 +13,3 @@ I truly wanted.
 I stopped living to prove myself worthy and started living proactively in support
 of my core values and signature strengths. That shift helped me connect with a
 deep desire to more meaningfully help others to do the same.
-
-TODO — John: this is stitched together from the live page and is missing
-the middle of your story. Paste the full version here; audit §2.2 calls it the
-strongest differentiator on the site, and it should read as you wrote it.

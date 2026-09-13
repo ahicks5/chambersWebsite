@@ -5,7 +5,7 @@ pubDate: "2025-06-09"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 A few months ago, a client told me she wanted to “work out every day, eat clean, be in nature, go on walks – basically just live my best influencer life.”

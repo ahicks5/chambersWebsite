@@ -5,7 +5,7 @@ pubDate: "2025-09-04"
 updatedDate: "2025-10-28"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 Last week, a stranger messaged me on TikTok after watching one of my posts about resilience. He wrote to say how much the message resonated with him and then asked a simple but profound question:

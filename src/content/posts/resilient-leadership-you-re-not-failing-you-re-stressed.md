@@ -5,7 +5,7 @@ pubDate: "2025-04-07"
 updatedDate: "2025-10-03"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 If you are alive in 2025, it is likely you’re feeling exhausted, foggy, snappy, or maybe even numb these days – at work and at home.

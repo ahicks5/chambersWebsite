@@ -4,7 +4,7 @@ description: "Cynicism is everywhere and spreading quickly. It’s also holding 
 pubDate: "2025-07-19"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 Recently, I have begun to notice a growing trend sweeping across our timelines and group chats. No, it’s not another randomly obscure TikTok dance or transformational life-hack. And – unfortunately for some of you – it's also has nothing to do with secret affairs exposed at the latest Coldplay concert.

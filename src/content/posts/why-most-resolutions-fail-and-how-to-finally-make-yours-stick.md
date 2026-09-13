@@ -5,7 +5,7 @@ pubDate: "2025-10-28"
 updatedDate: "2026-02-01"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 Each January, millions of us begin the year with a sense of hope and determination. We buy the planners, download the apps, and make big promises to ourselves: _This is the year I’ll finally get in shape. Spend less. Save more. Stress less._

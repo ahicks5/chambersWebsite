@@ -5,7 +5,7 @@ pubDate: "2025-11-05"
 updatedDate: "2025-12-06"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 ## The True Essence of Thanksgiving

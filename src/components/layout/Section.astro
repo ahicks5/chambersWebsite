@@ -23,6 +23,12 @@ interface Props {
   size?: 'compact' | 'default' | 'roomy';
   /** Rise into view on scroll (global.css). The hero opts out; it has its own entrance. */
   reveal?: boolean;
+  /**
+   * A soft light in one upper corner, in the band's own secondary colour —
+   * the surface tint on a page-coloured band, the page colour on a surface
+   * one. Depth without a new colour; the hero's glow, made a knob.
+   */
+  glow?: 'left' | 'right';
   id?: string;
   /** Set when the section is introduced by a heading, for the a11y tree. */
   'aria-labelledby'?: string;
@@ -35,6 +41,7 @@ const {
   size = 'default',
   reveal = true,
   rule = false,
+  glow,
   id,
   class: className,
   ...rest
@@ -49,6 +56,7 @@ const {
     (tone === 'light' || tone === 'light-surface') && 'scheme-light',
     rule && 'section--rule',
     size !== 'default' && `section--${size}`,
+    glow && `section--glow-${glow}`,
     className,
   ]}
   {...rest}
@@ -101,6 +109,30 @@ const {
 
   .section--rule {
     border-top: 1px solid var(--c-line);
+  }
+
+  /* The glow: a radial tint in the band's secondary colour, after the tone
+     rules so it wins the background-image slot. On a surface-toned band the
+     light is the page colour instead, so it still reads as a lift. */
+  .section--glow-left,
+  .section--glow-right {
+    --glow: var(--c-surface);
+    background-image: radial-gradient(55% 70% at var(--glow-x) 15%, var(--glow), transparent 70%);
+  }
+
+  .section--glow-left {
+    --glow-x: 12%;
+  }
+
+  .section--glow-right {
+    --glow-x: 88%;
+  }
+
+  .section--surface.section--glow-left,
+  .section--surface.section--glow-right,
+  .section--light-surface.section--glow-left,
+  .section--light-surface.section--glow-right {
+    --glow: var(--c-bg);
   }
 
   /* One accent band per page at most. Everything inside is set in the ink

@@ -5,7 +5,7 @@ pubDate: "2025-04-18"
 updatedDate: "2025-10-03"
 category: leadership
 keywords: []
-draft: true
+draft: false
 ---
 
 Over the past couple of weeks, I’ve been writing about the foundations of resilient leadership – what it is, what it isn’t, and how small shifts in mindset, behavior, and presence can make a real difference, no matter your title or experience level.

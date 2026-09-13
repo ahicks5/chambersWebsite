@@ -2,9 +2,9 @@
 /**
  * Blog index — audit §7.4.
  *
- * Lists published posts only. All 65 migrated posts are drafts until John has
- * read them (ADR 0007), so this is deliberately empty right now and says so
- * rather than rendering a bare page that looks broken.
+ * Lists published posts only. The 65 migrated posts are published for review
+ * on staging; a post can be pulled back with `draft: true` (ADR 0007), and the
+ * empty state below covers the case where every post is a draft again.
  */
 import { getCollection, getEntry } from 'astro:content';
 

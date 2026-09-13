@@ -42,36 +42,8 @@ const { title, description, h1, subhead } = page.data;
   {/*
     Audit §5.4 step 4 wants a format-facts table (group sizes, durations,
     pricing model) and step 6 a capabilities PDF. Both need facts and a file
-    from John — see docs/parity-checklist.md. Reserved rather than invented.
+    from John — tracked in docs/parity-checklist.md, not shown on the page.
   */}
-  <Section>
-    <div class="pending" role="note">
-      <h2>Formats, group sizes and pricing</h2>
-      <p>
-        Needs John: group size ranges, typical durations, and the pricing model,
-        plus the one-page capabilities PDF.
-      </p>
-    </div>
-  </Section>
 
   <FinalCta band="final-cta-orgs" cta="consult" page="organizations" />
 </Base>
-
-<style>
-  .pending {
-    max-width: var(--measure);
-    padding: var(--s-4);
-    background: var(--c-surface);
-    border: 1px dashed var(--c-line);
-    border-radius: var(--radius);
-    color: var(--c-muted);
-  }
-
-  .pending h2 {
-    margin-top: 0;
-  }
-
-  .pending p {
-    margin-bottom: 0;
-  }
-</style>

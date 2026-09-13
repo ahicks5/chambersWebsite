@@ -4,7 +4,7 @@ description: "70% of us experience imposter syndrome, but that doesn't mean ther
 pubDate: "2025-07-17"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 I still remember sitting at my desk, staring at the screen as the Zoom meeting was about to begin. My heart pounding, palms sweaty – breathing so irregularly it was as though I had just learned to do it for the first time.

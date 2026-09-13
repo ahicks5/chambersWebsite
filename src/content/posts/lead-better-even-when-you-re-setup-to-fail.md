@@ -5,7 +5,7 @@ pubDate: "2025-07-25"
 updatedDate: "2025-10-03"
 category: leadership
 keywords: []
-draft: true
+draft: false
 ---
 
 A decade after our formal working relationship ended, my former manager and mentor, [Laura Waitz](https://www.linkedin.com/in/laurawaitz/), still influences me. Our call scheduled for this weekend is one that I'm already excited to have – to hear from her, learn from her, and share with her.

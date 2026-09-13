@@ -4,7 +4,7 @@ description: "Perfectionism is keeping us from being. Not even being good – fr
 pubDate: "2026-09-04"
 category: practices
 keywords: []
-draft: true
+draft: false
 ---
 
 I used to write for hours on end when I was younger.

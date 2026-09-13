@@ -5,7 +5,7 @@ pubDate: "2025-04-16"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 I often think back to the summer of 2011.

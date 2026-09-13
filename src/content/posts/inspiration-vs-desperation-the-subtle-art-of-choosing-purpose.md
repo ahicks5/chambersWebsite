@@ -5,7 +5,7 @@ pubDate: "2025-04-26"
 updatedDate: "2025-10-03"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 Some lessons land quietly.

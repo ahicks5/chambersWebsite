@@ -5,7 +5,7 @@ pubDate: "2025-06-04"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 Recently, my husband came home and jokingly said, "Your coaching business has ruined my social media. Now I see like 10 ads a day for people claiming they're ready to unlock my potential or help me earn $100k in '3 easy steps.'"

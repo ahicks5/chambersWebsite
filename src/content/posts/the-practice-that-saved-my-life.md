@@ -4,7 +4,7 @@ description: "I was burned out, cynical, and couldn't find a gratitude practice 
 pubDate: "2026-05-26"
 category: practices
 keywords: []
-draft: true
+draft: false
 ---
 
 It actually started as a homework assignment for my first positive psychology class.

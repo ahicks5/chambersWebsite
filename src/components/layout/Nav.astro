@@ -102,9 +102,15 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
 
   .nav--pills a {
     display: inline-block;
-    padding: 0.35em 0.75em;
+    padding: 0.4em 0.85em;
     border-radius: 999px;
     background: none;
+    /* Bitter Black, a step smaller than body: the header reads as one
+       family with the wordmark and the button rather than as body text. */
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
     transition:
       background-color var(--dur) var(--ease),
       color var(--dur) var(--ease),
@@ -149,13 +155,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
      scroll where nothing says it exists. */
   @media (max-width: 639px) {
     .nav--pills.nav--scrollable ul {
-      gap: 0.25rem;
-      margin-inline-start: -0.5em;
+      gap: 0.15rem;
+      margin-inline-start: -0.45em;
     }
 
     .nav--pills.nav--scrollable a {
-      padding: 0.3em 0.5em;
-      font-size: 0.875rem;
+      padding: 0.3em 0.45em;
+      font-size: 0.8rem;
+      letter-spacing: 0;
     }
   }
 </style>

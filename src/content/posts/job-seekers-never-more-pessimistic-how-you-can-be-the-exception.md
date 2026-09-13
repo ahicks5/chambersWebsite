@@ -5,7 +5,7 @@ pubDate: "2025-07-26"
 updatedDate: "2025-10-03"
 category: career
 keywords: []
-draft: true
+draft: false
 ---
 
 LinkedIn News dropped a churn-worthy headline this week:

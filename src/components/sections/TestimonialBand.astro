@@ -34,7 +34,7 @@ const rendered = await Promise.all(
 );
 ---
 
-<Section {alt} aria-labelledby="what-clients-say">
+<Section {alt} class="quotes-section" aria-labelledby="what-clients-say">
   <h2 id="what-clients-say">{heading}</h2>
 
   <ul class="band stagger">
@@ -55,6 +55,51 @@ const rendered = await Promise.all(
 </Section>
 
 <style>
+  /* Behind the quotes: the hero's landscape, faint and fading at both edges,
+     and one enormous opening mark in the surface tint at the top right —
+     the same glyph each quote opens with, at the size of the band. Both sit
+     under the content by the negative z-index inside the band's own
+     stacking context; overflow is clipped so the glyph never widens the
+     page. */
+  :global(.quotes-section) {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--c-bg);
+  }
+
+  :global(.quotes-section)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url('/images/hero-bg-900.webp') center 65% / cover no-repeat;
+    mix-blend-mode: luminosity;
+    opacity: 0.16;
+    mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+  }
+
+  :global(.quotes-section)::after {
+    content: '\201C';
+    position: absolute;
+    z-index: -1;
+    top: -0.08em;
+    right: 2%;
+    font-family: var(--font-heading);
+    font-weight: var(--fw-heading);
+    font-size: clamp(14rem, 28vw, 26rem);
+    line-height: 1;
+    color: var(--c-surface);
+    pointer-events: none;
+  }
+
+  @media (min-width: 900px) {
+    :global(.quotes-section)::before {
+      background-image: url('/images/hero-bg-1800.webp');
+    }
+  }
+
   .band {
     display: grid;
     gap: var(--s-6);

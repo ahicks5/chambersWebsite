@@ -4,7 +4,7 @@ description: "What if stepping away from your work is actually the most producti
 pubDate: "2026-04-21"
 category: burnout
 keywords: []
-draft: true
+draft: false
 ---
 
 A few weeks ago, I was depleted.

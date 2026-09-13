@@ -4,7 +4,7 @@ description: "When goals fail, shame often follows. Here’s how to reframe fail
 pubDate: "2026-01-25"
 category: resilience
 keywords: []
-draft: true
+draft: false
 ---
 
 This week, one of my 2026 goals was put on pause.

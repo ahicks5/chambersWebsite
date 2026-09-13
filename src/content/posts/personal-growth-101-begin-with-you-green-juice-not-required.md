@@ -5,7 +5,7 @@ pubDate: "2025-06-06"
 updatedDate: "2025-10-03"
 category: practices
 keywords: []
-draft: true
+draft: false
 ---
 
 Back when I was in college, I had the fortune of studying under the late, great Judith Kellock – who almost exclusively went by JK. She was the head of Cornell’s vocal department and easily one of the most disciplined humans I have ever met.

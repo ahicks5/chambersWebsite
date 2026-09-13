@@ -5,7 +5,7 @@ pubDate: "2025-04-07"
 updatedDate: "2025-10-03"
 category: leadership
 keywords: []
-draft: true
+draft: false
 ---
 
 Let’s just call it: the world is in flux.
