@@ -15,6 +15,7 @@ import { getCollection, getEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import ResourceList from '../components/sections/ResourceList.astro';
+import JournalShelf from '../components/sections/JournalShelf.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
 
 const page = await getEntry('pages', 'resources');
@@ -28,7 +29,7 @@ const of = (kind: 'journal' | 'book' | 'talk') => all.filter((r) => r.data.kind 
 <Base {title} {description} page="resources">
   <PageHero {h1} {subhead} flip />
 
-  <ResourceList items={of('journal')} heading="Journals I wrote" id="journals" alt />
+  <JournalShelf heading="Journals I wrote" id="journals" alt withBody />
   <ResourceList items={of('book')} heading="Books I recommend" id="books" />
   <ResourceList items={of('talk')} heading="Talks worth your time" id="talks" alt />
 

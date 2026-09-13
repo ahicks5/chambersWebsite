@@ -11,10 +11,10 @@ import { getEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 
 import Base from '../layouts/Base.astro';
-import Section from '../components/layout/Section.astro';
 import PageHero from '../components/sections/PageHero.astro';
 import Prose from '../components/ui/Prose.astro';
 import CopyBand from '../components/sections/CopyBand.astro';
+import JournalShelf from '../components/sections/JournalShelf.astro';
 import ProofStrip from '../components/sections/ProofStrip.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
 import { render } from 'astro:content';
@@ -52,18 +52,10 @@ const { Content } = await render(page);
 
   {/*
     Audit §3.3 calls the three journals a major authority signal that appears
-    nowhere useful. Titles are known from §2.6; the Amazon short links are not
-    in the repo yet — see docs/parity-checklist.md.
+    nowhere useful. A shelf of typographic covers until the real ones arrive
+    (docs/parity-checklist.md), from the resources collection.
   */}
-  <Section rule aria-labelledby="journals">
-    <h2 id="journals">Books and journals</h2>
-    <ul class="journals">
-      <li>Bhavana</li>
-      <li>Rest Regimen</li>
-      <li>Highlight of My Day</li>
-    </ul>
-    {/* Covers and links are tracked in docs/parity-checklist.md, not shown here. */}
-  </Section>
+  <JournalShelf heading="Journals I wrote" id="journals" />
 
   <FinalCta band="final-cta-home" cta="intro" page="about" />
 </Base>
@@ -74,13 +66,4 @@ const { Content } = await render(page);
     margin-top: var(--s-3);
   }
 
-  .journals {
-    margin: var(--s-3) 0 0;
-    padding-left: 1.1rem;
-    font-weight: var(--fw-heading);
-  }
-
-  .journals li {
-    margin-bottom: var(--s-1);
-  }
 </style>
